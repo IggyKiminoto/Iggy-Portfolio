@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio</title>
+  <meta name="description" content="Video Editor ที่เข้าใจการทำคอนเทนต์ คลิปสั้น พอดแคสต์ และโมชันกราฟิก">
+  <meta name="theme-color" content="#2994B2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span data-sprite="heart" class="brand-icon"></span><span data-site="name"></span></a>
+    <nav>
+      <a class="px-chip" href="#selected">ผลงาน</a>
+      <a class="px-chip hide-sm" href="#services">บริการ</a>
+      <a class="px-chip hide-sm" href="#about">เกี่ยวกับ</a>
+      <a class="px-chip px-chip-hot" href="#contact">คุยเรื่องงาน</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- ===== 02 HERO ===== -->
+    <section class="hero grain">
+      <span class="sticker sticker-main" data-sprite="sparkle" style="--x:4%;--y:7%;--s:52px;--d:0s"></span>
+      <span class="sticker hide-sm" data-sprite="plus" style="--x:46%;--y:8%;--s:28px;--d:.2s"></span>
+      <span class="sticker hide-sm" data-sprite="plus" style="--x:47%;--y:84%;--s:22px;--d:.3s"></span>
+
+      <div class="hero-grid">
+        <div class="hero-inner">
+          <p class="label-sticker" data-site="role"></p>
+          <h1 class="px-title hero-title"><span data-site="name"></span></h1>
+          <p class="speech" data-site="tagline"></p>
+          <div class="hero-offer">
+            <span class="mini-label">รับงาน</span>
+            <ul id="offer-list" class="offer-list"></ul>
+          </div>
+          <div class="hero-actions">
+            <a class="px-btn" href="#selected">ดูผลงาน</a>
+            <a class="px-btn px-btn-cream" href="#contact">คุยเรื่องงาน</a>
+          </div>
+        </div>
+
+        <div class="tv" id="reel-wrap">
+          <div class="tv-top">
+            <span class="tv-label" id="reel-label">▶ SHOWREEL</span>
+            <span class="tv-rec"><i></i>REC</span>
+          </div>
+          <div class="tv-screen" id="reel"></div>
+          <div class="tv-bottom">
+            <span class="tv-grill"></span>
+            <span class="tv-knobs"><i></i><i></i></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+
+    <!-- ===== 03 งานเด่น ===== -->
+    <section id="selected" class="section">
+      <div class="section-head">
+        <h2 class="px-title">SELECTED WORK</h2>
+        <p class="section-sub"><mark>งานเด่น</mark></p>
+      </div>
+      <div id="selected-list" class="selected-list"></div>
+    </section>
+
+    <!-- ===== 04 ผลงานเพิ่มเติม ===== -->
+    <section id="works" class="section">
+      <div class="section-head">
+        <h2 class="px-title">MORE WORK</h2>
+        <p class="section-sub"><mark>ผลงานเพิ่มเติม</mark></p>
+      </div>
+      <div id="filters" class="filters" role="toolbar" aria-label="กรองผลงาน"></div>
+      <div id="works-grid" class="works-grid"></div>
+      <p id="works-empty" class="empty" hidden>ยังไม่มีงานในหมวดนี้</p>
+    </section>
+
+    <!-- ===== 05 บริการและวิธีทำงาน ===== -->
+    <section id="services" class="section">
+      <div class="section-head">
+        <h2 class="px-title">SERVICES</h2>
+        <p class="section-sub"><mark>บริการและวิธีทำงาน</mark></p>
+      </div>
+      <ul id="services-list" class="services"></ul>
+      <div class="process-wrap">
+        <p class="mini-label">HOW WE WORK</p>
+        <ol id="process-list" class="process"></ol>
+      </div>
+    </section>
+
+    <!-- ===== 06 เกี่ยวกับ ===== -->
+    <section id="about" class="section">
+      <div class="section-head">
+        <h2 class="px-title">ABOUT</h2>
+        <p class="section-sub"><mark>เกี่ยวกับ <span data-site="name"></span></mark></p>
+      </div>
+      <div class="about">
+        <figure class="polaroid">
+          <div class="polaroid-img" id="photo"></div>
+          <figcaption><span data-site="name"></span>.EXE</figcaption>
+        </figure>
+        <div class="about-body">
+          <p class="about-text" data-site="about"></p>
+          <div id="experience-wrap">
+            <p class="mini-label">EXPERIENCE</p>
+            <ul id="experience" class="experience"></ul>
+          </div>
+          <div class="about-meta">
+            <div>
+              <p class="mini-label">TOOLS</p>
+              <ul id="tools" class="tools"></ul>
+            </div>
+            <div id="languages-wrap">
+              <p class="mini-label">LANGUAGES</p>
+              <ul id="languages" class="tools"></ul>
+            </div>
+          </div>
+          <a class="px-btn px-btn-cream resume-btn" id="resume-about" target="_blank" rel="noopener" hidden>ดู Resume ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 07 ติดต่อ ===== -->
+    <section id="contact" class="contact grain torn-top torn-blue">
+      <div class="contact-inner">
+        <div class="section-head">
+          <h2 class="px-title">LET'S TALK</h2>
+          <p class="section-sub"><mark>คุยเรื่องงานกัน</mark></p>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-main">
+            <div id="contact-links" class="contact-links"></div>
+            <a class="contact-resume" id="resume-contact" target="_blank" rel="noopener" hidden>ดู Resume ↗</a>
+          </div>
+          <div class="brief-card" id="brief-card">
+            <p class="mini-label">ส่งข้อมูลนี้มาได้เลย</p>
+            <ul id="brief-list" class="brief-list"></ul>
+          </div>
+        </div>
+        <div id="socials-wrap" class="socials-wrap">
+          <p class="mini-label">ดูตัวตนและผลงานเพิ่มเติม</p>
+          <div id="socials" class="socials"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span data-site="year"></span> <span data-site="name"></span></span>
+    <a href="#top">กลับขึ้นบน ↑</a>
+  </footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
