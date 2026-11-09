@@ -1,0 +1,8 @@
+// ตั้งค่าสำหรับ Cloudflare — บอกว่าไฟล์เว็บอยู่ในโฟลเดอร์ public
+{
+  "name": "iggy-portfolio",
+  "compatibility_date": "2025-06-01",
+  "assets": {
+    "directory": "./public"
+  }
+}

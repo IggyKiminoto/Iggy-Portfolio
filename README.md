@@ -1,1 +1,50 @@
-# Iggy-Portfolio
+# Iggy Portfolio
+
+เว็บพอร์ตโฟลิโอรวมผลงานตัดต่อวิดีโอและโมชันกราฟิก ฝังคลิปจาก YouTube / TikTok / Facebook / Instagram / Vimeo / Google Drive ได้เลย ไม่ต้องอัปโหลดไฟล์ขึ้นเว็บเอง
+
+## ไฟล์ในโปรเจกต์
+
+| ไฟล์ | คืออะไร | ต้องแก้ไหม |
+|---|---|---|
+| `public/content.js` | ชื่อ, คำแนะนำตัว, ลิงก์ผลงาน, ช่องทางติดต่อ | **แก้ไฟล์นี้ไฟล์เดียวพอ** |
+| `public/style.css` | สีและหน้าตาเว็บ (เปลี่ยนสีได้ที่บรรทัดบน ๆ) | ถ้าอยากเปลี่ยนสี |
+| `public/index.html` | โครงหน้าเว็บ | ไม่ต้อง |
+| `public/app.js` | ตัวแปลงลิงก์ให้เป็นเครื่องเล่นวิดีโอ | ไม่ต้อง |
+| `wrangler.jsonc` | ตั้งค่าให้ Cloudflare | ไม่ต้อง |
+
+## ดูเว็บในเครื่องตัวเอง
+
+ดับเบิลคลิกเปิด `public/index.html` ในเบราว์เซอร์ได้เลย
+(คลิป TikTok / Facebook บางตัวอาจไม่เล่นตอนเปิดจากไฟล์ในเครื่อง แต่จะเล่นได้ปกติเมื่อขึ้นเว็บจริง)
+
+## เพิ่มผลงาน
+
+เปิด `public/content.js` แล้วก๊อปบล็อกนี้ไปวางในรายการ `WORKS`
+
+```js
+{
+  title: "ชื่องาน",
+  url: "ลิงก์คลิป",
+  category: "เกม",
+  description: "ทำอะไรในงานนี้",
+  tools: ["Premiere Pro"],
+  year: "2026",
+},
+```
+
+คลิปต้องเป็น **สาธารณะ** หรือ **ไม่เป็นสาธารณะ (Unlisted)** ถ้าเป็นส่วนตัวคนอื่นจะเล่นไม่ได้
+
+## เอาขึ้น Cloudflare (ทำครั้งเดียว)
+
+1. สมัคร/ล็อกอิน https://dash.cloudflare.com (ฟรี)
+2. เมนูซ้าย **Compute (Workers) → Workers & Pages** → กด **Create**
+3. เลือก **Import a repository** → เชื่อม GitHub → เลือก repo `Iggy-Portfolio`
+4. ตั้งค่า
+   - Build command: เว้นว่าง
+   - Deploy command: `npx wrangler deploy` (ถ้ามีช่องนี้ ปกติจะเติมให้อัตโนมัติ)
+   - ถ้าหน้าจอเป็นแบบ Pages ให้ใส่ **Build output directory: `public`**
+5. กด Deploy รอ 1-2 นาที จะได้ลิงก์ฟรีแบบ `iggy-portfolio.xxx.workers.dev` หรือ `.pages.dev`
+
+หลังจากนี้ ทุกครั้งที่แก้ไฟล์ใน GitHub แล้วกด Commit เว็บจะอัปเดตเองภายในไม่กี่นาที
+
+อยากได้ชื่อเว็บของตัวเอง (เช่น `iggy.work`) ซื้อโดเมนใน Cloudflare (เมนู Domain Registration) แล้วผูกในหน้าโปรเจกต์ → Settings → Domains

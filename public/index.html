@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio</title>
+  <meta name="description" content="ผลงานตัดต่อวิดีโอ คลิปสั้น เกมเพลย์ และโมชันกราฟิก">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-dot" aria-hidden="true"></span><span data-site="name"></span></a>
+    <nav>
+      <a href="#works">ผลงาน</a>
+      <a href="#services">บริการ</a>
+      <a href="#about">เกี่ยวกับ</a>
+      <a class="nav-cta" href="#contact">ติดต่อ</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow" data-site="role"></p>
+      <h1><span data-site="name"></span><span class="cursor" aria-hidden="true">_</span></h1>
+      <p class="lead" data-site="tagline"></p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#works">ดูผลงาน</a>
+        <a class="btn" href="#contact">จ้างงาน</a>
+      </div>
+      <div id="showreel" class="showreel">
+        <p class="section-label">SHOWREEL</p>
+      </div>
+    </section>
+
+    <section id="works" class="section">
+      <div class="section-head">
+        <p class="section-label">01 / WORKS</p>
+        <h2>ผลงาน</h2>
+      </div>
+      <div id="filters" class="filters" role="toolbar" aria-label="กรองตามหมวด"></div>
+      <div id="works-grid" class="works-grid"></div>
+    </section>
+
+    <section id="services" class="section">
+      <div class="section-head">
+        <p class="section-label">02 / SERVICES</p>
+        <h2>รับทำอะไรบ้าง</h2>
+      </div>
+      <ul id="services-list" class="services"></ul>
+    </section>
+
+    <section id="about" class="section about">
+      <div class="section-head">
+        <p class="section-label">03 / ABOUT</p>
+        <h2>เกี่ยวกับ</h2>
+      </div>
+      <div>
+        <p class="about-text" data-site="about"></p>
+        <p class="section-label">TOOLS</p>
+        <ul id="tools" class="tools"></ul>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact">
+      <div class="section-head">
+        <p class="section-label">04 / CONTACT</p>
+        <h2>คุยงานกันได้</h2>
+      </div>
+      <div id="contact-links" class="contact-links"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span data-site="year"></span> <span data-site="name"></span></span>
+    <a href="#top">กลับขึ้นบน ↑</a>
+  </footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
