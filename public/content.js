@@ -13,14 +13,33 @@ window.SITE = {
   role: "Video Editor & Motion Designer",
   tagline: "ตัดต่อวิดีโอสั้น เกมเพลย์ และโมชันกราฟิก ให้คนดูอยู่จนจบคลิป",
 
-  // คลิปโชว์รีล (Showreel) ที่จะโชว์ใหญ่ ๆ ด้านบนสุด
+  // คลิปโชว์รีล (Showreel) ที่จะโชว์ในจอทีวีด้านบน
   // แนะนำ: รวมงานเด่นยาว 30-90 วินาที อัปไว้ที่ YouTube แบบ "ไม่เป็นสาธารณะ (Unlisted)"
   showreel: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+
+  // ข้อความในแถบเหลืองที่วิ่งผ่านหน้าเว็บ
+  marquee: ["VIDEO EDITOR", "MOTION GRAPHIC", "SHORT-FORM", "GAMEPLAY", "OPEN FOR WORK"],
+
+  /* ---------- ประเภทสื่อ (กล่องเลือกใต้ Cover) ----------
+     name    ชื่อหมวด ต้องสะกดตรงกับ category ของผลงานด้านล่าง
+     label   ชื่ออังกฤษตัวพิกเซล
+     icon    รูปไอคอนที่วาดเอง: เอาไฟล์ไปไว้ในโฟลเดอร์ public/icons แล้วใส่ชื่อ เช่น "icons/short.png"
+             (แนะนำ PNG พื้นใส สี่เหลี่ยมจัตุรัส ขนาด 256x256 ขึ้นไป)
+             ถ้าปล่อยว่าง "" จะใช้ไอคอนพิกเซลที่มีให้ในตัว                                  */
+  categories: [
+    { name: "คลิปสั้น",     label: "SHORT-FORM", icon: "", sprite: "phone" },
+    { name: "เกมเพลย์",    label: "GAMEPLAY",   icon: "", sprite: "gamepad" },
+    { name: "โมชันกราฟิก", label: "MOTION",     icon: "", sprite: "sparkle" },
+    { name: "ตัดต่อวิดีโอ", label: "VIDEO EDIT", icon: "", sprite: "clapper" },
+  ],
 
   about:
     "สวัสดีครับ ผมอิกกี้ ทำช่องเกม \"อิกกี้จะเล่นเกม\" และรับตัดต่อวิดีโอ " +
     "ถนัดคลิปสั้นแนวตั้งสำหรับ TikTok / Reels / Shorts งานเกมเพลย์ " +
     "และโมชันกราฟิกเล็ก ๆ ที่ทำให้คลิปดูมีชีวิต",
+
+  // รูปตัวเองในหน้า "เกี่ยวกับ" เช่น "icons/me.png"  ปล่อยว่างจะใช้รูปพิกเซลแทน
+  photo: "",
 
   tools: ["Premiere Pro", "After Effects", "CapCut", "Photoshop"],
 
@@ -46,11 +65,12 @@ window.SITE = {
 
    url        ลิงก์คลิป ก๊อปจากแถบที่อยู่เว็บ หรือปุ่ม "แชร์ > คัดลอกลิงก์" ได้เลย
               หรือจะวางโค้ดฝัง <iframe ...> ทั้งก้อนก็ได้ เว็บจะดึงลิงก์ออกมาเอง
-   category   หมวดงาน ใช้ทำปุ่มกรอง (ตั้งชื่อเองได้ เช่น "เกม", "โมชัน", "ลูกค้า")
+   category   หมวดงาน ต้องสะกดตรงกับ name ใน categories ด้านบน
    format     "vertical" = แนวตั้ง 9:16 / "horizontal" = แนวนอน 16:9
               ไม่ใส่ก็ได้ เว็บเดาให้จากลิงก์ (TikTok, Shorts, Reels = แนวตั้ง)
    thumbnail  รูปปกเอง (ไม่ใส่ก็ได้ YouTube จะดึงปกให้อัตโนมัติ)
    featured   true = ขึ้นก่อนงานอื่น
+   wip        true = ติดป้าย "WIP" (งานที่กำลังทำอยู่)
 
    แพลตฟอร์มที่รองรับ:
    - YouTube   https://www.youtube.com/watch?v=xxxx  หรือ  https://youtube.com/shorts/xxxx
@@ -69,42 +89,43 @@ window.SITE = {
 window.WORKS = [
   // ↓↓↓ 4 ชิ้นนี้เป็น "ตัวอย่าง" (หนังสั้นสาธารณะของ Blender) ลบแล้วใส่งานจริงของคุณแทน ↓↓↓
   {
-    title: "ตัวอย่าง: Showreel แนวนอน",
+    title: "ตัวอย่าง: งานตัดต่อเด่น",
     url: "https://www.youtube.com/watch?v=eRsGyueVLvQ",
-    category: "โมชัน",
+    category: "ตัดต่อวิดีโอ",
     description: "ใส่คำอธิบายสั้น ๆ ว่าทำอะไรในงานนี้ เช่น ตัดต่อ + ทำกราฟิก + ใส่ซับ",
-    tools: ["After Effects"],
+    tools: ["Premiere Pro", "After Effects"],
     client: "ชื่อลูกค้า / ช่อง",
     year: "2026",
     featured: true,
   },
   {
-    title: "ตัวอย่าง: คลิปลูกค้า",
-    url: "https://www.youtube.com/watch?v=R6MlUcmOul8",
-    category: "ลูกค้า",
-    description: "ตัดต่อ ปรับสี และทำ title",
-    tools: ["Premiere Pro"],
-    year: "2026",
-  },
-  {
     title: "ตัวอย่าง: แอนิเมชันสั้น",
     url: "https://www.youtube.com/watch?v=WhWc3b3KhnY",
-    category: "โมชัน",
+    category: "โมชันกราฟิก",
     description: "งานแอนิเมชัน / Motion graphic",
     tools: ["After Effects"],
-    year: "2025",
+    year: "2026",
+    wip: true,
   },
   {
     title: "ตัวอย่าง: ไฮไลต์เกม",
     url: "https://www.youtube.com/watch?v=PVGeM40dABA",
-    category: "เกม",
+    category: "เกมเพลย์",
     description: "ตัดไฮไลต์ + มีม + Text overlay",
     tools: ["CapCut"],
     year: "2025",
   },
+  {
+    title: "ตัวอย่าง: คลิปลูกค้า",
+    url: "https://www.youtube.com/watch?v=R6MlUcmOul8",
+    category: "ตัดต่อวิดีโอ",
+    description: "ตัดต่อ ปรับสี และทำ title",
+    tools: ["Premiere Pro"],
+    year: "2025",
+  },
 
   // ↓ ตัวอย่างการใส่คลิปจากแพลตฟอร์มอื่น ลบ // หน้าบรรทัดออกแล้วเปลี่ยนลิงก์เป็นของคุณ
-  // { title: "คลิป TikTok", url: "https://www.tiktok.com/@ชื่อ/video/1234567890123456789", category: "เกม" },
-  // { title: "Reels Facebook", url: "https://www.facebook.com/reel/1234567890", category: "เกม" },
-  // { title: "Reels IG", url: "https://www.instagram.com/reel/ABCdef123/", category: "ลูกค้า" },
+  // { title: "คลิป TikTok", url: "https://www.tiktok.com/@ชื่อ/video/1234567890123456789", category: "คลิปสั้น" },
+  // { title: "Reels Facebook", url: "https://www.facebook.com/reel/1234567890", category: "คลิปสั้น" },
+  // { title: "Reels IG", url: "https://www.instagram.com/reel/ABCdef123/", category: "คลิปสั้น" },
 ];

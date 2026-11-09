@@ -5,71 +5,113 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Portfolio</title>
   <meta name="description" content="ผลงานตัดต่อวิดีโอ คลิปสั้น เกมเพลย์ และโมชันกราฟิก">
+  <meta name="theme-color" content="#2994B2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#top"><span class="brand-dot" aria-hidden="true"></span><span data-site="name"></span></a>
+    <a class="brand" href="#top"><span data-sprite="heart" class="brand-icon"></span><span data-site="name"></span></a>
     <nav>
-      <a href="#works">ผลงาน</a>
-      <a href="#services">บริการ</a>
-      <a href="#about">เกี่ยวกับ</a>
-      <a class="nav-cta" href="#contact">ติดต่อ</a>
+      <a class="px-chip" href="#works">ผลงาน</a>
+      <a class="px-chip hide-sm" href="#services">บริการ</a>
+      <a class="px-chip hide-sm" href="#about">เกี่ยวกับ</a>
+      <a class="px-chip px-chip-hot" href="#contact">ติดต่อ</a>
     </nav>
   </header>
 
   <main id="top">
-    <section class="hero">
-      <p class="eyebrow" data-site="role"></p>
-      <h1><span data-site="name"></span><span class="cursor" aria-hidden="true">_</span></h1>
-      <p class="lead" data-site="tagline"></p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#works">ดูผลงาน</a>
-        <a class="btn" href="#contact">จ้างงาน</a>
+    <!-- ===== COVER ===== -->
+    <section class="hero grain">
+      <span class="sticker" data-sprite="sparkle" style="--x:6%;--y:14%;--s:58px;--d:0s"></span>
+      <span class="sticker hide-sm" data-sprite="plus" style="--x:88%;--y:10%;--s:30px;--d:.2s"></span>
+      <span class="sticker hide-sm" data-sprite="gamepad" style="--x:84%;--y:34%;--s:76px;--d:.1s"></span>
+      <span class="sticker hide-sm" data-sprite="plus" style="--x:12%;--y:44%;--s:24px;--d:.3s"></span>
+
+      <div class="hero-inner">
+        <p class="label-sticker" data-site="role"></p>
+        <h1 class="px-title hero-title"><span data-site="name"></span></h1>
+        <p class="speech" data-site="tagline"></p>
+        <div class="hero-actions">
+          <a class="px-btn" href="#works">ดูผลงาน</a>
+          <a class="px-btn px-btn-cream" href="#contact">จ้างงาน</a>
+        </div>
       </div>
-      <div id="showreel" class="showreel">
-        <p class="section-label">SHOWREEL</p>
+
+      <div class="tv" id="showreel-wrap">
+        <div class="tv-top">
+          <span class="tv-label">▶ SHOWREEL</span>
+          <span class="tv-rec"><i></i>REC</span>
+        </div>
+        <div class="tv-screen" id="showreel"></div>
+        <div class="tv-bottom">
+          <span class="tv-grill"></span>
+          <span class="tv-knobs"><i></i><i></i></span>
+        </div>
       </div>
     </section>
 
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+
+    <!-- ===== เลือกประเภทสื่อ ===== -->
+    <section id="media" class="section">
+      <div class="section-head">
+        <h2 class="px-title">PICK A MEDIA</h2>
+        <p class="section-sub"><mark>เลือกประเภทงาน</mark></p>
+      </div>
+      <div id="media-tiles" class="media-tiles"></div>
+    </section>
+
+    <!-- ===== ผลงาน ===== -->
     <section id="works" class="section">
       <div class="section-head">
-        <p class="section-label">01 / WORKS</p>
-        <h2>ผลงาน</h2>
+        <h2 class="px-title">WORKS</h2>
+        <p class="section-sub"><mark>ผลงาน</mark></p>
       </div>
       <div id="filters" class="filters" role="toolbar" aria-label="กรองตามหมวด"></div>
       <div id="works-grid" class="works-grid"></div>
+      <p id="works-empty" class="empty" hidden>ยังไม่มีงานในหมวดนี้ — เร็ว ๆ นี้!</p>
     </section>
 
+    <!-- ===== บริการ ===== -->
     <section id="services" class="section">
       <div class="section-head">
-        <p class="section-label">02 / SERVICES</p>
-        <h2>รับทำอะไรบ้าง</h2>
+        <h2 class="px-title">SERVICES</h2>
+        <p class="section-sub"><mark>รับทำอะไรบ้าง</mark></p>
       </div>
       <ul id="services-list" class="services"></ul>
     </section>
 
-    <section id="about" class="section about">
+    <!-- ===== เกี่ยวกับ ===== -->
+    <section id="about" class="section">
       <div class="section-head">
-        <p class="section-label">03 / ABOUT</p>
-        <h2>เกี่ยวกับ</h2>
+        <h2 class="px-title">ABOUT</h2>
+        <p class="section-sub"><mark>เกี่ยวกับ</mark></p>
       </div>
-      <div>
-        <p class="about-text" data-site="about"></p>
-        <p class="section-label">TOOLS</p>
-        <ul id="tools" class="tools"></ul>
+      <div class="about">
+        <figure class="polaroid" id="polaroid">
+          <div class="polaroid-img" id="photo"></div>
+          <figcaption><span data-site="name"></span>.EXE</figcaption>
+        </figure>
+        <div>
+          <p class="about-text" data-site="about"></p>
+          <p class="mini-label">TOOLS</p>
+          <ul id="tools" class="tools"></ul>
+        </div>
       </div>
     </section>
 
-    <section id="contact" class="section contact">
-      <div class="section-head">
-        <p class="section-label">04 / CONTACT</p>
-        <h2>คุยงานกันได้</h2>
+    <!-- ===== ติดต่อ ===== -->
+    <section id="contact" class="contact grain torn-top torn-blue">
+      <div class="contact-inner">
+        <div class="section-head">
+          <h2 class="px-title">LET'S TALK</h2>
+          <p class="section-sub"><mark>คุยงานกันได้</mark></p>
+        </div>
+        <div id="contact-links" class="contact-links"></div>
       </div>
-      <div id="contact-links" class="contact-links"></div>
     </section>
   </main>
 
