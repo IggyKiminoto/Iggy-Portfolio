@@ -265,31 +265,33 @@
     return span.firstChild;
   }
 
-  // ---------- 4) แอนิเมชันเฟรมเรตต่ำ ----------
+  // ---------- 4) แอนิเมชัน ----------
+  // เฟรมเรตต่ำ (posterize) ใช้เฉพาะตอน reveal / pop-up เท่านั้น
+  // ส่วนการเลื่อนหน้า (scroll) ลื่นปกติ
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const FPS = 12;
 
-  // เลื่อนหน้าแบบกระตุกทีละเฟรม (12 เฟรม/วินาที) เหมือนการ์ตูนเก่า
-  function steppedScrollTo(targetY) {
-    if (reduceMotion) { window.scrollTo(0, targetY); return; }
-    const startY = window.scrollY;
-    const dist = targetY - startY;
-    const dur = Math.min(900, 300 + Math.abs(dist) * 0.15);
-    const frame = 1000 / FPS;
-    let t0 = null, lastStep = -1;
-    function tick(now) {
-      if (t0 === null) t0 = now;
-      const step = Math.floor((now - t0) / frame);
-      if (step !== lastStep) {
-        lastStep = step;
-        const p = Math.min(1, (step * frame) / dur);
-        const eased = 1 - Math.pow(1 - p, 3);
-        window.scrollTo(0, Math.round(startY + dist * eased));
-        if (p >= 1) return;
+  // เลื่อนหน้าแบบลื่น — คืนค่าเป็น Promise ที่เสร็จเมื่อเลื่อนถึงที่หมาย
+  function smoothScrollTo(targetY) {
+    return new Promise((resolve) => {
+      const startY = window.scrollY;
+      const dist = targetY - startY;
+      if (reduceMotion || Math.abs(dist) < 2) {
+        window.scrollTo(0, targetY);
+        return resolve();
+      }
+      const dur = Math.min(1000, 450 + Math.abs(dist) * 0.12);
+      let t0 = null;
+      function tick(now) {
+        if (t0 === null) t0 = now;
+        const p = Math.min(1, (now - t0) / dur);
+        const eased = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        window.scrollTo(0, startY + dist * eased);
+        if (p < 1) requestAnimationFrame(tick);
+        else resolve();
       }
       requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
+    });
   }
 
   function scrollToId(id) {
@@ -297,7 +299,7 @@
     const header = document.querySelector(".topbar");
     const offset = header ? header.offsetHeight : 0;
     const y = target ? target.getBoundingClientRect().top + window.scrollY - offset + 8 : 0;
-    steppedScrollTo(Math.max(0, y));
+    return smoothScrollTo(Math.max(0, y));
   }
 
   document.addEventListener("click", (e) => {
@@ -521,9 +523,8 @@
       tile.dataset.cat = cat.name;
       tile.addEventListener("click", () => {
         setFilter(cat.name, false);
-        scrollToId("works");
-        // การ์ดเด้งขึ้นหลังเลื่อนไปถึง
-        setTimeout(() => setFilter(cat.name, true), 450);
+        // เลื่อนลงไปแบบลื่น แล้วการ์ดค่อยเด้งขึ้นแบบเฟรมต่ำ
+        scrollToId("works").then(() => setFilter(cat.name, true));
       });
       tileButtons.push(tile);
       wrap.appendChild(tile);

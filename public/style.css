@@ -14,7 +14,7 @@
   --font: "Prompt", system-ui, sans-serif;
   --pixel: "Silkscreen", "Courier New", monospace;
   --px: 4px;           /* ขนาด "พิกเซล" ของขอบ */
-  --fps: 12;           /* ความลื่นของแอนิเมชัน (ยิ่งน้อยยิ่งกระตุกแบบการ์ตูนเก่า) */
+  --fps: 12;           /* เฟรมเรตของแอนิเมชัน reveal / pop-up (ยิ่งน้อยยิ่งกระตุกแบบการ์ตูนเก่า) */
   --torn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 30' preserveAspectRatio='none'%3E%3Cpath d='M0 30 L0 12 L18 14 L52 3 L68 19 L85 13 L117 3 L147 8 L162 4 L189 15 L205 9 L221 19 L248 3 L280 5 L301 22 L335 20 L350 20 L382 14 L397 9 L412 19 L430 11 L457 6 L488 5 L520 11 L551 23 L570 5 L602 20 L636 8 L661 5 L692 24 L708 20 L723 21 L743 17 L778 19 L805 26 L829 16 L861 16 L886 11 L907 7 L943 26 L964 4 L996 11 L1026 17 L1050 25 L1078 11 L1111 4 L1128 18 L1155 7 L1193 12 L1200 12 L1200 30 Z'/%3E%3C/svg%3E");
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.07 0 0 0 0 0.25 0 0 0 0 0.35 .9 0 0 0 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   color-scheme: light;
@@ -250,7 +250,7 @@ h1, h2, h3, p, figure { margin: 0; }
 }
 .ticker-track {
   display: flex; width: max-content;
-  animation: marquee 24s steps(288) infinite; /* 288 เฟรม / 24 วิ = 12fps */
+  animation: marquee 30s linear infinite; /* วิ่งลื่น ไม่กระตุก */
 }
 .ticker-item {
   display: flex; align-items: center; gap: 18px; padding-right: 18px;
@@ -343,7 +343,7 @@ mark {
   padding: 10px;
   box-shadow: 6px 6px 0 var(--ink);
   transform: rotate(var(--r));
-  transition: transform calc(3s / var(--fps)) steps(2), box-shadow calc(3s / var(--fps)) steps(2);
+  transition: transform .2s ease-out, box-shadow .2s ease-out;
 }
 .card:hover { transform: rotate(0deg) translate(-3px, -3px); box-shadow: 10px 10px 0 var(--ink); }
 .card::before { /* เทปกาว */
@@ -500,7 +500,8 @@ mark {
 
 /* =====================================================================
    แอนิเมชันแบบเฟรมเรตต่ำ (posterize)
-   ทุกอันใช้ steps() = ขยับเป็นช่วง ๆ ไม่ลื่น เหมือนการ์ตูนยุคเก่า
+   ใช้ steps() = ขยับเป็นช่วง ๆ เหมือนการ์ตูนยุคเก่า
+   ใช้เฉพาะ reveal / pop-up และสติกเกอร์ตกแต่ง — การเลื่อนหน้า, แถบวิ่ง, hover การ์ด ยังลื่นปกติ
    ===================================================================== */
 @keyframes boil {
   0%   { transform: rotate(-4deg) translate(0, 0); }
