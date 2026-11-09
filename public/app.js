@@ -214,6 +214,20 @@
       ".....nn.....",
       "............",
     ],
+    mic: [
+      "....nnnn....",
+      "...nbbbbn...",
+      "...nbccbn...",
+      "...nbbbbn...",
+      "...nbccbn...",
+      "...nbbbbn...",
+      ".n.nbbbbn.n.",
+      ".n..nnnn..n.",
+      "..n......n..",
+      "...nnnnnn...",
+      ".....nn.....",
+      "...nnnnnn...",
+    ],
     plus: [
       "..y..",
       "..y..",
@@ -346,7 +360,6 @@
               const node = en.target;
               popObserver.unobserve(node);
               node.style.animationDelay = i++ * 90 + "ms";
-              node.classList.remove("will-pop");
               node.classList.add("pop");
             });
           },
@@ -354,15 +367,14 @@
         )
       : null;
 
+  // ของทุกชิ้นมองเห็นได้ตั้งแต่แรก แอนิเมชันแค่ "เด้ง" ตอนเลื่อนมาถึง ไม่ได้ซ่อนไว้ก่อน
   function popOnScroll(node) {
     if (!popObserver) return;
-    node.classList.add("will-pop");
     popObserver.observe(node);
   }
 
   function popNow(node, delay) {
     if (popObserver) popObserver.unobserve(node);
-    node.classList.remove("will-pop");
     if (reduceMotion) return;
     node.classList.remove("pop");
     void node.offsetWidth; // รีสตาร์ทแอนิเมชัน
@@ -422,49 +434,176 @@
     return { node: frame, info: v, vertical: vertical };
   }
 
-  // ---------- 6) เติมเนื้อหาลงหน้าเว็บ ----------
+  // ---------- 6) ข้อมูลผลงาน ----------
   function setText(sel, text) {
     document.querySelectorAll(sel).forEach((n) => (n.textContent = text || ""));
   }
+  function asList(v) {
+    if (!v) return [];
+    return (Array.isArray(v) ? v : [v]).filter(Boolean);
+  }
 
+  // รองรับทั้ง categories: [...] และ category: "..." แบบเก่า
+  const works = WORKS.filter((w) => !w.wip).map((w) => {
+    const info = parseVideo(w.url || w.embed);
+    let original = "";
+    if (/^https?:\/\//i.test(String(w.url || "").trim())) original = String(w.url).trim();
+    else if (info && info.src && info.platform !== "Embed") original = info.src;
+    return Object.assign({}, w, {
+      cats: asList(w.categories || w.category),
+      tagList: asList(w.tags),
+      roles: asList(w.role),
+      highlightText: w.highlight || w.description || "",
+      info: info,
+      original: original,
+    });
+  });
+  const featured = works.filter((w) => w.featured).slice(0, 3);
+  const rest = works.filter((w) => featured.indexOf(w) === -1);
+
+  const categories = (SITE.categories || []).map((c, i) =>
+    Object.assign({ sprite: ["phone", "mic", "sparkle"][i % 3] }, c)
+  );
+  const catInfo = (name) => categories.find((c) => c.name === name);
+
+  // ---------- 7) การ์ดผลงาน ----------
+  function iconFor(item) {
+    const wrap = el("span", { class: "chip-icon" });
+    if (item && item.icon) wrap.appendChild(el("img", { src: item.icon, alt: "" }));
+    else wrap.appendChild(spriteNode((item && item.sprite) || "sparkle"));
+    return wrap;
+  }
+
+  function openLink(w) {
+    if (!w.original) return null;
+    const name = (w.info && w.info.platform && !/Embed|Video/.test(w.info.platform)) ? w.info.platform : "ต้นฉบับ";
+    return el("a", { class: "open-link", href: w.original, target: "_blank", rel: "noopener", text: "เปิดบน " + name + " ↗" });
+  }
+
+  function detailsBlock(w, label) {
+    const d = w.details || {};
+    const rows = [];
+    const add = (term, value) => {
+      if (!value) return;
+      rows.push(el("dt", { text: term }));
+      rows.push(typeof value === "string" ? el("dd", { text: value }) : el("dd", {}, [value]));
+    };
+    add("โจทย์และคนดู", d.brief);
+    add("หน้าที่ของ " + (SITE.name || "ผม"), d.responsibility);
+    add("การตัดสินใจสำคัญ", d.decisions);
+    if (d.results) {
+      const res = el("span", { text: d.results });
+      if (d.resultsSource) res.appendChild(el("small", { class: "source", text: "ที่มา: " + d.resultsSource }));
+      add("ผลลัพธ์", res);
+    }
+    add("โปรแกรม", asList(d.tools).join(", "));
+    add("ระยะเวลา", d.duration);
+    if (d.beforeAfter) {
+      add("Before / After", el("a", { href: d.beforeAfter, target: "_blank", rel: "noopener", text: "ดูคลิปเทียบ ↗" }));
+    }
+    if (!rows.length) return null;
+    return el("details", { class: "work-more" }, [el("summary", { text: label || "ดูเบื้องหลัง" }), el("dl", {}, rows)]);
+  }
+
+  function workInfo(w, opts) {
+    const meta = [w.cats.join(" / "), w.client].filter(Boolean).join(" · ");
+    const children = [
+      el("h3", { text: w.title || "ไม่มีชื่อ" }),
+      meta ? el("p", { class: "work-meta", text: meta }) : null,
+    ];
+    if (w.roles.length || w.ongoing) {
+      const roles = el("ul", { class: "roles", "aria-label": "บทบาท" });
+      w.roles.forEach((r) => roles.appendChild(el("li", { text: r })));
+      if (w.ongoing) roles.appendChild(el("li", { class: "is-ongoing", text: "โปรเจกต์ต่อเนื่อง" }));
+      children.push(roles);
+    }
+    if (w.highlightText) children.push(el("p", { class: "work-highlight", text: w.highlightText }));
+    if (w.tagList.length && opts && opts.showTags) {
+      const tags = el("p", { class: "work-tags" });
+      tags.textContent = w.tagList.map((t) => "#" + t).join("  ");
+      children.push(tags);
+    }
+    children.push(detailsBlock(w, opts && opts.detailsLabel));
+    const actions = el("div", { class: "work-actions" }, [openLink(w)]);
+    if (actions.childNodes.length) children.push(actions);
+    return children;
+  }
+
+  function featuredRow(w, i) {
+    const player = makePlayer(w);
+    const row = el("article", { class: "feature" + (player.vertical ? " is-vertical" : "") }, [
+      el("div", { class: "feature-media" }, [player.node]),
+      el("div", { class: "feature-info" }, [el("span", { class: "feature-num", text: String(i + 1).padStart(2, "0") })].concat(
+        workInfo(w, { showTags: true, detailsLabel: "อ่านเบื้องหลังงานนี้" })
+      )),
+    ]);
+    return row;
+  }
+
+  function workCard(w, i) {
+    const player = makePlayer(w);
+    const card = el("article", { class: "card" }, [
+      player.node,
+      el("div", { class: "card-body" }, workInfo(w, {})),
+    ]);
+    card.style.setProperty("--r", [-0.6, 0.5, -0.3, 0.7][i % 4] + "deg");
+    card._work = w;
+    return card;
+  }
+
+  // ---------- 8) ตัวกรองชุดเดียว ----------
   const ALL = "ทั้งหมด";
-  const categories = (SITE.categories && SITE.categories.length
-    ? SITE.categories
-    : Array.from(new Set(WORKS.map((w) => w.category).filter(Boolean))).map((name) => ({ name: name }))
-  ).map((c, i) => Object.assign({ sprite: ["phone", "gamepad", "sparkle", "clapper"][i % 4] }, c));
-
   let cards = [];
   const chipButtons = [];
-  const tileButtons = [];
 
-  function setFilter(cat, animate) {
-    chipButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === cat)));
-    tileButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === cat)));
+  function matches(w, f) {
+    if (f.type === "all") return true;
+    if (f.type === "cat") return w.cats.indexOf(f.name) !== -1;
+    return w.tagList.indexOf(f.name) !== -1;
+  }
+
+  function setFilter(f, animate) {
+    chipButtons.forEach((b) => b.setAttribute("aria-pressed", String(b._filter === f)));
     let shown = 0;
     cards.forEach((card) => {
-      const show = cat === ALL || card.dataset.category === cat;
+      const show = matches(card._work, f);
       card.hidden = !show;
-      if (show && animate) popNow(card, shown * 80);
+      if (show && animate) popNow(card, shown * 70);
       if (show) shown++;
     });
     document.getElementById("works-empty").hidden = shown > 0;
   }
 
-  function renderSite() {
+  // ---------- 9) เติมหน้าเว็บ ----------
+  function renderHero() {
     document.title = (SITE.name || "Portfolio") + " — " + (SITE.role || "Video Editor");
     setText("[data-site=name]", SITE.name);
     setText("[data-site=role]", SITE.role);
     setText("[data-site=tagline]", SITE.tagline);
     setText("[data-site=about]", SITE.about);
     setText("[data-site=year]", String(new Date().getFullYear()));
-
     document.querySelectorAll("[data-sprite]").forEach((n) => (n.innerHTML = sprite(n.dataset.sprite)));
 
-    const reel = document.getElementById("showreel");
-    if (SITE.showreel) reel.appendChild(makePlayer({ url: SITE.showreel, title: "Showreel" }).node);
-    else document.getElementById("showreel-wrap").remove();
+    // รับงานอะไร: ใช้หมวดที่มีงานจริง
+    const offer = document.getElementById("offer-list");
+    const offered = categories.filter((c) => works.some((w) => w.cats.indexOf(c.name) !== -1));
+    (offered.length ? offered : categories).forEach((c) => {
+      const li = el("li", {}, [iconFor(c), el("span", { text: c.name })]);
+      offer.appendChild(li);
+    });
+    if (!offer.children.length) offer.parentNode.remove();
 
-    // แถบวิ่ง (ทำ 2 ชุดเพื่อให้วนต่อกันได้เนียน)
+    // Showreel หรือ งานเด่นชิ้นแรก
+    const reel = document.getElementById("reel");
+    if (SITE.showreel) {
+      reel.appendChild(makePlayer({ url: SITE.showreel, title: "Showreel" }).node);
+    } else if (featured[0]) {
+      document.getElementById("reel-label").textContent = "▶ FEATURED";
+      reel.appendChild(makePlayer(featured[0]).node);
+    } else {
+      document.getElementById("reel-wrap").remove();
+    }
+
     const ticker = document.getElementById("ticker");
     const words = SITE.marquee && SITE.marquee.length ? SITE.marquee : [SITE.role || "PORTFOLIO"];
     for (let k = 0; k < 2; k++) {
@@ -477,40 +616,131 @@
       }
       ticker.appendChild(group);
     }
+  }
 
-    // รูปในหน้า about
+  function renderSelected() {
+    const list = document.getElementById("selected-list");
+    if (!featured.length) {
+      document.getElementById("selected").remove();
+      document.querySelectorAll('a[href="#selected"]').forEach((a) => a.setAttribute("href", "#works"));
+      return;
+    }
+    featured.forEach((w, i) => {
+      const row = featuredRow(w, i);
+      list.appendChild(row);
+      popOnScroll(row);
+    });
+  }
+
+  function renderWorks() {
+    const grid = document.getElementById("works-grid");
+    const filters = document.getElementById("filters");
+    if (!rest.length) {
+      document.getElementById("works").remove();
+      return;
+    }
+    cards = rest.map((w, i) => {
+      const card = workCard(w, i);
+      grid.appendChild(card);
+      popOnScroll(card);
+      return card;
+    });
+
+    // ตัวกรอง: หมวดที่มีงาน + tag เด่น (ซ่อนอันที่ว่าง)
+    const list = [{ type: "all", name: ALL }];
+    categories.forEach((c) => {
+      if (rest.some((w) => w.cats.indexOf(c.name) !== -1)) list.push({ type: "cat", name: c.name, item: c });
+    });
+    rest.forEach((w) => w.cats.forEach((n) => {
+      if (!list.some((f) => f.type === "cat" && f.name === n)) list.push({ type: "cat", name: n });
+    }));
+    (SITE.filterTags || []).forEach((t) => {
+      const tag = typeof t === "string" ? { name: t } : t;
+      if (rest.some((w) => w.tagList.indexOf(tag.name) !== -1)) list.push({ type: "tag", name: tag.name, item: tag });
+    });
+    if (list.length < 3) {
+      filters.remove();
+      return;
+    }
+    list.forEach((f) => {
+      const b = el("button", { type: "button", class: "filter" + (f.type === "tag" ? " filter-tag" : ""), "aria-pressed": "false" }, [
+        f.type !== "all" ? iconFor(f.item || { sprite: f.type === "tag" ? "gamepad" : "sparkle" }) : null,
+        el("span", { text: f.type === "tag" ? "#" + f.name : f.name }),
+      ]);
+      b._filter = f;
+      b.addEventListener("click", () => setFilter(f, true));
+      chipButtons.push(b);
+      filters.appendChild(b);
+    });
+    setFilter(list[0], false);
+  }
+
+  function renderServices() {
+    const services = document.getElementById("services-list");
+    (SITE.services || []).forEach((s) => {
+      const c = catInfo(s.title);
+      const head = el("div", { class: "service-head" }, [c ? iconFor(c) : null, el("h3", { text: s.title })]);
+      const li = el("li", { class: "service" }, [head, s.detail ? el("p", { text: s.detail }) : null]);
+      if (s.includes && s.includes.length) {
+        const ul = el("ul", { class: "service-includes" });
+        s.includes.forEach((x) => ul.appendChild(el("li", { text: x })));
+        li.appendChild(ul);
+      }
+      services.appendChild(li);
+      popOnScroll(li);
+    });
+    if (!services.children.length) services.remove();
+
+    const proc = document.getElementById("process-list");
+    (SITE.process || []).forEach((p, i) => {
+      proc.appendChild(el("li", { class: "step" }, [
+        el("span", { class: "step-num", text: String(i + 1) }),
+        el("div", {}, [el("h3", { text: p.title }), p.detail ? el("p", { text: p.detail }) : null]),
+      ]));
+    });
+    if (!proc.children.length) proc.parentNode.remove();
+  }
+
+  function renderAbout() {
     const photo = document.getElementById("photo");
     if (SITE.photo) photo.appendChild(el("img", { src: SITE.photo, alt: SITE.name || "" }));
     else photo.appendChild(spriteNode("gamepad"));
 
+    const exp = document.getElementById("experience");
+    (SITE.experience || []).forEach((x) => {
+      exp.appendChild(el("li", {}, [el("strong", { text: x.title }), x.detail ? el("span", { text: x.detail }) : null]));
+    });
+    if (!exp.children.length) document.getElementById("experience-wrap").remove();
+
     const tools = document.getElementById("tools");
     (SITE.tools || []).forEach((t) => tools.appendChild(el("li", { text: t })));
+    const langs = document.getElementById("languages");
+    (SITE.languages || []).forEach((t) => langs.appendChild(el("li", { text: t })));
+    if (!langs.children.length) document.getElementById("languages-wrap").remove();
 
-    const services = document.getElementById("services-list");
-    (SITE.services || []).forEach((s, i) => {
-      const li = el("li", { class: "service" }, [
-        el("span", { class: "service-num", text: String(i + 1).padStart(2, "0") }),
-        el("h3", { text: s.title }),
-        el("p", { text: s.detail }),
-      ]);
-      services.appendChild(li);
-      popOnScroll(li);
-    });
+    if (SITE.resume) {
+      ["resume-about", "resume-contact"].forEach((id) => {
+        const a = document.getElementById(id);
+        a.href = SITE.resume;
+        a.hidden = false;
+      });
+    }
+    document.querySelectorAll(".section-head, .polaroid").forEach(popOnScroll);
+  }
 
+  function renderContact() {
     const c = SITE.contact || {};
     const links = document.getElementById("contact-links");
+    // ช่องทางหลัก: LINE ก่อน แล้วตามด้วยอีเมล
     [
+      c.line && ["LINE", c.line, "แอดไลน์คุยงาน"],
       c.email && ["EMAIL", "mailto:" + c.email, c.email],
-      c.line && ["LINE", c.line],
-      c.facebook && ["FACEBOOK", c.facebook],
-      c.tiktok && ["TIKTOK", c.tiktok],
-      c.youtube && ["YOUTUBE", c.youtube],
     ]
       .filter(Boolean)
       .forEach(([label, href, text], i) => {
         const a = el("a", { class: "px-btn contact-link" + (i ? " px-btn-cream" : ""), href: href }, [
           el("span", { class: "contact-label", text: label }),
-          el("span", { text: text || href.replace(/^https?:\/\/(www\.)?/, "") }),
+          el("span", { text: text }),
         ]);
         if (!href.startsWith("mailto:")) {
           a.target = "_blank";
@@ -519,230 +749,21 @@
         links.appendChild(a);
       });
 
-    document.querySelectorAll(".section-head, .polaroid").forEach(popOnScroll);
+    const brief = document.getElementById("brief-list");
+    (SITE.briefChecklist || []).forEach((t) => brief.appendChild(el("li", { text: t })));
+    if (!brief.children.length) document.getElementById("brief-card").remove();
+
+    const socials = document.getElementById("socials");
+    [["TikTok", c.tiktok], ["YouTube", c.youtube], ["Facebook", c.facebook]].forEach(([label, href]) => {
+      if (href) socials.appendChild(el("a", { class: "px-chip", href: href, target: "_blank", rel: "noopener", text: label + " ↗" }));
+    });
+    if (!socials.children.length) document.getElementById("socials-wrap").remove();
   }
 
-  function renderMediaTiles() {
-    const wrap = document.getElementById("media-tiles");
-    if (!categories.length) {
-      document.getElementById("media").remove();
-      return;
-    }
-    categories.forEach((cat) => {
-      const count = WORKS.filter((w) => w.category === cat.name).length;
-      const icon = el("span", { class: "media-icon" });
-      if (cat.icon) icon.appendChild(el("img", { src: cat.icon, alt: "" }));
-      else icon.appendChild(spriteNode(cat.sprite));
-      const tile = el("button", { type: "button", class: "media-tile", "aria-pressed": "false" }, [
-        el("span", { class: "media-count" + (count ? "" : " is-soon"), text: count ? count + " งาน" : "เร็ว ๆ นี้" }),
-        icon,
-        el("span", { class: "media-label", text: cat.label || cat.name }),
-        el("span", { class: "media-name", text: cat.name }),
-      ]);
-      tile.dataset.cat = cat.name;
-      tile.addEventListener("click", () => {
-        setFilter(cat.name, false);
-        // เลื่อนลงไปแบบลื่น แล้วการ์ดค่อยเด้งขึ้นแบบเฟรมต่ำ
-        scrollToId("works").then(() => setFilter(cat.name, true));
-      });
-      tileButtons.push(tile);
-      wrap.appendChild(tile);
-      popOnScroll(tile);
-    });
-  }
-
-  // สไลด์พรีวิวบริการบน Cover (แบบโพสต์ IG)
-  function renderServiceCarousel() {
-    const box = document.getElementById("service-carousel");
-    const services = SITE.services || [];
-    if (!box) return;
-    if (!services.length) return box.remove();
-
-    const track = document.getElementById("ig-track");
-    const dotsWrap = document.getElementById("ig-dots");
-    const counter = document.getElementById("ig-counter");
-    const caption = document.getElementById("ig-caption");
-    const prev = box.querySelector(".ig-prev");
-    const next = box.querySelector(".ig-next");
-    const desktop = window.matchMedia("(min-width: 900px)");
-
-    function previewFor(s, i) {
-      if (s.preview) {
-        if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(s.preview)) {
-          const v = el("video", { src: s.preview, muted: "", loop: "", playsinline: "", preload: "metadata" });
-          v.muted = true;
-          if (!reduceMotion) v.autoplay = true;
-          return v;
-        }
-        return el("img", { src: s.preview, alt: "", loading: i ? "lazy" : "eager" });
-      }
-      const work = WORKS.find((w) => s.category && w.category === s.category);
-      const info = work && parseVideo(work.url || work.embed);
-      const thumb = work && (work.thumbnail || (info && info.thumb));
-      if (work && !work.thumbnail && info && info.thumbMax) {
-        // ปก YouTube ความละเอียดสูง ถ้าไม่มีให้ใช้ปกธรรมดาแล้วซูมตัดขอบดำ
-        const img = el("img", { src: info.thumbMax, alt: "", loading: i ? "lazy" : "eager" });
-        img.addEventListener("load", () => {
-          if (img.naturalWidth < 200) { img.src = info.thumb; img.classList.add("yt-crop"); }
-        });
-        img.addEventListener("error", () => { img.src = info.thumb; img.classList.add("yt-crop"); }, { once: true });
-        return img;
-      }
-      if (thumb) return el("img", { src: thumb, alt: "", loading: i ? "lazy" : "eager" });
-      const cat = categories.find((c) => c.name === s.category);
-      const fb = el("div", { class: "ig-fallback grain" });
-      fb.appendChild(spriteNode((cat && cat.sprite) || ["phone", "gamepad", "sparkle", "clapper"][i % 4]));
-      return fb;
-    }
-
-    const dots = services.map((s, i) => {
-      const cat = categories.find((c) => c.name === s.category);
-      const slide = el("div", { class: "ig-slide", role: "group", "aria-label": i + 1 + " / " + services.length }, [
-        previewFor(s, i),
-        el("span", { class: "ig-slide-label" }, [
-          el("b", { text: String(i + 1).padStart(2, "0") }),
-          el("span", { text: (cat && cat.label) || s.title }),
-        ]),
-      ]);
-      track.appendChild(slide);
-      const dot = el("button", { class: "ig-dot", type: "button", role: "tab", "aria-label": s.title, "aria-selected": "false" });
-      dot.addEventListener("click", () => { stopAuto(); go(i); });
-      dotsWrap.appendChild(dot);
-      return dot;
-    });
-    if (services.length < 2) {
-      prev.remove(); next.remove(); dotsWrap.remove();
-    }
-
-    let current = -1;
-    function go(i) {
-      const n = services.length;
-      i = (i + n) % n;
-      track.scrollTo({ left: i * track.clientWidth, behavior: reduceMotion ? "auto" : "smooth" });
-    }
-
-    function show(i) {
-      if (i === current) return;
-      current = i;
-      const s = services[i];
-      dots.forEach((d, k) => d.setAttribute("aria-selected", String(k === i)));
-      counter.textContent = i + 1 + "/" + services.length;
-      prev.disabled = i === 0;
-      next.disabled = i === services.length - 1;
-
-      const cat = categories.find((c) => c.name === s.category);
-      const children = [
-        el("h3", {}, [el("b", { text: SITE.name || "" }), document.createTextNode(s.title)]),
-        el("p", { text: s.detail || "" }),
-      ];
-      if (s.category && cards.some((c) => c.dataset.category === s.category)) {
-        const link = el("a", { class: "px-chip px-chip-hot", href: "#works", text: "ดูงาน" + ((cat && cat.name) || s.category) + " →" });
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setFilter(s.category, false);
-          scrollToId("works").then(() => setFilter(s.category, true));
-        });
-        children.push(link);
-      }
-      caption.replaceChildren.apply(caption, children);
-      // คำบรรยายโผล่ขึ้นแบบเฟรมต่ำ (reveal) — ตัวสไลด์ยังเลื่อนลื่น
-      popNow(caption, 0);
-    }
-
-    let raf = 0;
-    track.addEventListener("scroll", () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => show(Math.round(track.scrollLeft / Math.max(1, track.clientWidth))));
-    }, { passive: true });
-    prev.addEventListener("click", () => { stopAuto(); go(current - 1); });
-    next.addEventListener("click", () => { stopAuto(); go(current + 1); });
-    track.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") { e.preventDefault(); stopAuto(); go(current + 1); }
-      if (e.key === "ArrowLeft") { e.preventDefault(); stopAuto(); go(current - 1); }
-    });
-    track.addEventListener("pointerdown", stopAuto);
-    track.addEventListener("wheel", stopAuto, { passive: true });
-    window.addEventListener("resize", () => {
-      track.style.scrollBehavior = "auto";
-      track.scrollLeft = current * track.clientWidth;
-      track.style.scrollBehavior = "";
-    });
-
-    // เลื่อนเองทุก 4.5 วินาที (หยุดเมื่อเอาเมาส์ชี้ หรือเมื่อผู้ใช้กดเอง)
-    let timer = null, paused = false;
-    function stopAuto() { clearInterval(timer); timer = null; }
-    box.addEventListener("mouseenter", () => (paused = true));
-    box.addEventListener("mouseleave", () => (paused = false));
-    box.addEventListener("focusin", () => (paused = true));
-    box.addEventListener("focusout", () => (paused = false));
-    if (!reduceMotion && services.length > 1) {
-      timer = setInterval(() => {
-        if (paused || document.hidden || !desktop.matches || window.scrollY > box.offsetTop + box.offsetHeight) return;
-        go(current + 1);
-      }, 4500);
-    }
-
-    show(0);
-  }
-
-  function renderWorks() {
-    const grid = document.getElementById("works-grid");
-    const filters = document.getElementById("filters");
-    const list = WORKS.slice().sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    const tilts = [-1.4, 1, -0.6, 1.6, -1, 0.5];
-
-    cards = list.map((w, i) => {
-      const player = makePlayer(w);
-      const meta = [w.client, w.year].filter(Boolean).join(" · ");
-      const card = el("article", { class: "card" }, [
-        w.wip ? el("span", { class: "wip", text: "WIP" }) : null,
-        player.node,
-        el("div", { class: "card-body" }, [
-          el("div", { class: "card-tags" }, [
-            w.category ? el("span", { class: "tag", text: w.category }) : null,
-            player.info && player.info.platform ? el("span", { class: "tag tag-blue", text: player.info.platform }) : null,
-          ]),
-          el("h3", { text: w.title || "ไม่มีชื่อ" }),
-          w.description ? el("p", { text: w.description }) : null,
-          meta || (w.tools && w.tools.length)
-            ? el("p", { class: "card-meta", text: [meta, (w.tools || []).join(", ")].filter(Boolean).join("  /  ") })
-            : null,
-        ]),
-      ]);
-      card.style.setProperty("--r", tilts[i % tilts.length] + "deg");
-      card.dataset.category = w.category || "";
-      grid.appendChild(card);
-      popOnScroll(card);
-      return card;
-    });
-
-    if (!cards.length) {
-      filters.remove();
-      document.getElementById("works-empty").textContent = "ยังไม่มีผลงาน — เพิ่มได้ในไฟล์ content.js";
-      document.getElementById("works-empty").hidden = false;
-      return;
-    }
-
-    const used = new Set(list.map((w) => w.category).filter(Boolean));
-    const chipCats = categories.map((c) => c.name).filter((n) => used.has(n));
-    used.forEach((n) => chipCats.includes(n) || chipCats.push(n));
-    if (chipCats.length < 2) {
-      filters.remove();
-      return;
-    }
-    [ALL].concat(chipCats).forEach((cat) => {
-      const b = el("button", { type: "button", class: "filter", text: cat, "aria-pressed": "false" });
-      b.dataset.cat = cat;
-      b.addEventListener("click", () => setFilter(cat, true));
-      chipButtons.push(b);
-      filters.appendChild(b);
-    });
-    setFilter(ALL, false);
-  }
-
-  renderSite();
-  renderMediaTiles();
+  renderHero();
+  renderSelected();
   renderWorks();
-  renderServiceCarousel();
+  renderServices();
+  renderAbout();
+  renderContact();
 })();
