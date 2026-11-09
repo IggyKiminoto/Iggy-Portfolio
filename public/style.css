@@ -36,6 +36,7 @@ img, iframe, video { display: block; max-width: 100%; }
 a { color: inherit; }
 h1, h2, h3, p, figure { margin: 0; }
 [hidden] { display: none !important; }
+main { overflow-x: clip; } /* กันแถบวิ่งเอียงล้นขอบจอ */
 ::selection { background: var(--yellow); color: var(--ink); }
 
 /* ---------- ไอคอนพิกเซล ---------- */
@@ -180,7 +181,7 @@ h1, h2, h3, p, figure { margin: 0; }
   box-shadow: 4px 4px 0 var(--ink);
 }
 .hero-title {
-  font-size: clamp(76px, 19vw, 210px);
+  font-size: clamp(56px, 15vw, 120px);
   margin: 14px 0 10px;
   --o: .045em;
 }
@@ -198,6 +199,112 @@ h1, h2, h3, p, figure { margin: 0; }
 }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 28px; }
 
+/* ---------- สไลด์พรีวิวบริการ (สไตล์โพสต์ IG) ---------- */
+.ig { display: none; }
+@media (min-width: 900px) {
+  .hero { padding-top: clamp(32px, 4vw, 52px); }
+  .hero-grid {
+    display: grid; align-items: center;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
+    gap: clamp(32px, 5vw, 72px);
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero-inner { text-align: left; margin: 0; }
+  .hero-actions { justify-content: flex-start; }
+  .hero-title { font-size: clamp(64px, 8.5vw, 124px); margin: 18px 0 14px; }
+  .ig { display: block; }
+  .hide-lg { display: none !important; }
+}
+.ig {
+  position: relative; z-index: 2;
+  width: 100%; justify-self: end;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+  transform: rotate(1.2deg);
+}
+.ig::before { /* เทปกาว */
+  content: ""; position: absolute; z-index: 3; top: -16px; left: 28px; width: 110px; height: 28px;
+  transform: rotate(-5deg);
+  background: color-mix(in srgb, var(--yellow) 70%, transparent);
+  clip-path: polygon(0 10%, 6% 0, 12% 12%, 18% 0, 24% 8%, 76% 4%, 82% 0, 88% 10%, 94% 0, 100% 10%, 100% 90%, 94% 100%, 88% 88%, 82% 100%, 76% 92%, 24% 96%, 18% 100%, 12% 88%, 6% 100%, 0 92%);
+}
+.ig-head { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-bottom: 3px solid var(--ink); }
+.ig-avatar {
+  width: 36px; height: 36px; padding: 5px; flex: none;
+  background: var(--blue);
+  box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--yellow), 0 0 0 6px var(--ink);
+  margin: 6px;
+}
+.ig-user { display: flex; flex-direction: column; line-height: 1.15; }
+.ig-user b { font-family: var(--pixel); font-size: 15px; text-transform: uppercase; }
+.ig-user small { font-family: var(--pixel); font-size: 11px; color: var(--ink-2); letter-spacing: .06em; }
+.ig-more { margin-left: auto; display: flex; gap: 4px; }
+.ig-more i { width: 5px; height: 5px; background: var(--ink); }
+
+.ig-media { position: relative; border-bottom: 3px solid var(--ink); }
+.ig-track {
+  display: flex; aspect-ratio: 1;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.ig-track::-webkit-scrollbar { display: none; }
+.ig-track:focus-visible { outline: 3px dashed var(--yellow); outline-offset: -6px; }
+.ig-slide {
+  position: relative; flex: 0 0 100%; overflow: hidden;
+  scroll-snap-align: start; scroll-snap-stop: always;
+  background: var(--blue);
+}
+.ig-slide img, .ig-slide video { width: 100%; height: 100%; object-fit: cover; }
+.ig-slide img.yt-crop { transform: scale(1.34); } /* ตัดขอบดำของปก YouTube */
+.ig-fallback { position: relative; isolation: isolate; display: grid; place-items: center; width: 100%; height: 100%; }
+.ig-fallback .sprite { width: 46%; height: 46%; }
+.ig-slide-label {
+  position: absolute; left: 14px; bottom: 16px;
+  display: flex; align-items: stretch;
+  font-family: var(--pixel); font-weight: 700; font-size: 14px; letter-spacing: .04em;
+  border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+  transform: rotate(-2deg);
+}
+.ig-slide-label b { background: var(--yellow); padding: 3px 9px; border-right: 3px solid var(--ink); }
+.ig-slide-label span { background: var(--cream); padding: 3px 10px; }
+.ig-counter {
+  position: absolute; top: 12px; right: 12px;
+  font-family: var(--pixel); font-size: 12px;
+  background: var(--ink); color: var(--cream);
+  padding: 2px 8px;
+  pointer-events: none;
+}
+.ig-arrow {
+  --c: var(--ink);
+  position: absolute; top: 50%; translate: 0 -50%;
+  width: 36px; height: 36px; padding: 9px;
+  border: 0; cursor: pointer;
+  background: var(--cream);
+  box-shadow: 0 -3px var(--c), 0 3px var(--c), -3px 0 var(--c), 3px 0 var(--c);
+  transition: opacity .2s;
+}
+.ig-arrow:hover { background: var(--yellow); }
+.ig-arrow:active { translate: 0 calc(-50% + 2px); }
+.ig-arrow:focus-visible { outline: 3px dashed var(--yellow); outline-offset: 4px; }
+.ig-arrow[disabled] { opacity: 0; pointer-events: none; }
+.ig-prev { left: 12px; }
+.ig-next { right: 12px; }
+
+/* จุดบอกสไลด์แบบพิกเซล */
+.ig-dots { display: flex; justify-content: center; gap: 2px; padding: 8px 0 2px; }
+.ig-dot { width: 18px; height: 18px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+.ig-dot::before { content: ""; width: 6px; height: 6px; background: color-mix(in srgb, var(--ink) 30%, transparent); }
+.ig-dot[aria-selected="true"]::before { width: 8px; height: 8px; background: var(--yellow); box-shadow: 0 0 0 2px var(--ink); }
+.ig-dot:focus-visible { outline: 2px dashed var(--ink); }
+
+.ig-caption { padding: 2px 16px 14px; min-height: 108px; }
+.ig-caption h3 { font-size: 18px; font-weight: 700; line-height: 1.4; }
+.ig-caption h3 b { font-family: var(--pixel); font-size: 14px; text-transform: uppercase; margin-right: 8px; }
+.ig-caption p { font-size: 15px; color: var(--ink-2); line-height: 1.55; margin-top: 2px; }
+.ig-caption .px-chip { margin-top: 12px; font-size: 14px; }
+
 /* สติกเกอร์ตกแต่ง — ขยับแบบ "boil" เหมือนการ์ตูนวาดมือ */
 .sticker {
   position: absolute; z-index: 1;
@@ -207,6 +314,8 @@ h1, h2, h3, p, figure { margin: 0; }
   animation-delay: var(--d, 0s);
   pointer-events: none;
 }
+
+@media (max-width: 899px) { .sticker-main { left: auto; right: 4%; top: 2.5%; } }
 
 /* ---------- ทีวีโชว์รีล ---------- */
 .tv {

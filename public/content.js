@@ -43,10 +43,15 @@ window.SITE = {
 
   tools: ["Premiere Pro", "After Effects", "CapCut", "Photoshop"],
 
+  /* ---------- บริการ ----------
+     แสดง 2 ที่: สไลด์ด้านขวาของ Cover (จอคอม) และส่วน "รับทำอะไรบ้าง"
+     category  หมวดผลงานที่เกี่ยวข้อง (กดในสไลด์แล้วจะพาไปดูงานหมวดนั้น)
+     preview   รูปหรือคลิปพรีวิวในสไลด์ เช่น "icons/short-preview.jpg" หรือไฟล์ .mp4 สั้น ๆ (เล่นวนเอง ไม่มีเสียง)
+               ถ้าปล่อยว่าง "" จะใช้ปกจากผลงานหมวดนั้นให้อัตโนมัติ ถ้าไม่มีงานจะใช้ไอคอนพิกเซล      */
   services: [
-    { title: "คลิปสั้นแนวตั้ง", detail: "TikTok, Reels, Shorts พร้อม Hook, Text overlay และซับ" },
-    { title: "ตัดต่อเกมเพลย์", detail: "ไฮไลต์, มีม, รีแอคชัน, ตัดจากไลฟ์ให้เป็นคลิปสั้น" },
-    { title: "โมชันกราฟิก", detail: "โลโก้เคลื่อนไหว, Intro/Outro, Lower third, Overlay ไลฟ์" },
+    { title: "คลิปสั้นแนวตั้ง", detail: "TikTok, Reels, Shorts พร้อม Hook, Text overlay และซับ", category: "คลิปสั้น", preview: "" },
+    { title: "ตัดต่อเกมเพลย์", detail: "ไฮไลต์, มีม, รีแอคชัน, ตัดจากไลฟ์ให้เป็นคลิปสั้น", category: "เกมเพลย์", preview: "" },
+    { title: "โมชันกราฟิก", detail: "โลโก้เคลื่อนไหว, Intro/Outro, Lower third, Overlay ไลฟ์", category: "โมชันกราฟิก", preview: "" },
   ],
 
   contact: {

@@ -25,19 +25,38 @@
   <main id="top">
     <!-- ===== COVER ===== -->
     <section class="hero grain">
-      <span class="sticker" data-sprite="sparkle" style="--x:6%;--y:14%;--s:58px;--d:0s"></span>
-      <span class="sticker hide-sm" data-sprite="plus" style="--x:88%;--y:10%;--s:30px;--d:.2s"></span>
-      <span class="sticker hide-sm" data-sprite="gamepad" style="--x:84%;--y:34%;--s:76px;--d:.1s"></span>
-      <span class="sticker hide-sm" data-sprite="plus" style="--x:12%;--y:44%;--s:24px;--d:.3s"></span>
+      <span class="sticker sticker-main" data-sprite="sparkle" style="--x:4%;--y:7%;--s:52px;--d:0s"></span>
+      <span class="sticker hide-sm" data-sprite="plus" style="--x:48%;--y:6%;--s:28px;--d:.2s"></span>
+      <span class="sticker hide-sm hide-lg" data-sprite="gamepad" style="--x:84%;--y:30%;--s:72px;--d:.1s"></span>
+      <span class="sticker hide-sm" data-sprite="plus" style="--x:6%;--y:40%;--s:22px;--d:.3s"></span>
 
-      <div class="hero-inner">
-        <p class="label-sticker" data-site="role"></p>
-        <h1 class="px-title hero-title"><span data-site="name"></span></h1>
-        <p class="speech" data-site="tagline"></p>
-        <div class="hero-actions">
-          <a class="px-btn" href="#works">ดูผลงาน</a>
-          <a class="px-btn px-btn-cream" href="#contact">จ้างงาน</a>
+      <div class="hero-grid">
+        <div class="hero-inner">
+          <p class="label-sticker" data-site="role"></p>
+          <h1 class="px-title hero-title"><span data-site="name"></span></h1>
+          <p class="speech" data-site="tagline"></p>
+          <div class="hero-actions">
+            <a class="px-btn" href="#works">ดูผลงาน</a>
+            <a class="px-btn px-btn-cream" href="#contact">จ้างงาน</a>
+          </div>
         </div>
+
+        <!-- สไลด์พรีวิวบริการ (โชว์เฉพาะจอคอม) -->
+        <aside class="ig" id="service-carousel" aria-roledescription="carousel" aria-label="บริการ">
+          <div class="ig-head">
+            <span class="ig-avatar" data-sprite="heart"></span>
+            <span class="ig-user"><b data-site="name"></b><small>SERVICES</small></span>
+            <span class="ig-more" aria-hidden="true"><i></i><i></i><i></i></span>
+          </div>
+          <div class="ig-media">
+            <div class="ig-track" id="ig-track" tabindex="0"></div>
+            <span class="ig-counter" id="ig-counter"></span>
+            <button class="ig-arrow ig-prev" type="button" aria-label="ก่อนหน้า"><span data-sprite="arrowL"></span></button>
+            <button class="ig-arrow ig-next" type="button" aria-label="ถัดไป"><span data-sprite="arrowR"></span></button>
+          </div>
+          <div class="ig-dots" id="ig-dots" role="tablist" aria-label="เลือกบริการ"></div>
+          <div class="ig-caption" id="ig-caption" aria-live="polite"></div>
+        </aside>
       </div>
 
       <div class="tv" id="showreel-wrap">

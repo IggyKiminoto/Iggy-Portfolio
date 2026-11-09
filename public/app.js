@@ -113,6 +113,7 @@
       vertical: vertical,
       src: "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1",
       thumb: "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg",
+      thumbMax: "https://i.ytimg.com/vi/" + id + "/maxresdefault.jpg",
       autoplayParam: "autoplay=1",
     };
   }
@@ -228,6 +229,24 @@
       ".nn.nn.",
       "nn...nn",
       "n.....n",
+    ],
+    arrowR: [
+      "...n...",
+      "...nn..",
+      "nnnnnn.",
+      "nnnnnnn",
+      "nnnnnn.",
+      "...nn..",
+      "...n...",
+    ],
+    arrowL: [
+      "...n...",
+      "..nn...",
+      ".nnnnnn",
+      "nnnnnnn",
+      ".nnnnnn",
+      "..nn...",
+      "...n...",
     ],
     play: [
       "nn.....",
@@ -532,6 +551,141 @@
     });
   }
 
+  // สไลด์พรีวิวบริการบน Cover (แบบโพสต์ IG)
+  function renderServiceCarousel() {
+    const box = document.getElementById("service-carousel");
+    const services = SITE.services || [];
+    if (!box) return;
+    if (!services.length) return box.remove();
+
+    const track = document.getElementById("ig-track");
+    const dotsWrap = document.getElementById("ig-dots");
+    const counter = document.getElementById("ig-counter");
+    const caption = document.getElementById("ig-caption");
+    const prev = box.querySelector(".ig-prev");
+    const next = box.querySelector(".ig-next");
+    const desktop = window.matchMedia("(min-width: 900px)");
+
+    function previewFor(s, i) {
+      if (s.preview) {
+        if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(s.preview)) {
+          const v = el("video", { src: s.preview, muted: "", loop: "", playsinline: "", preload: "metadata" });
+          v.muted = true;
+          if (!reduceMotion) v.autoplay = true;
+          return v;
+        }
+        return el("img", { src: s.preview, alt: "", loading: i ? "lazy" : "eager" });
+      }
+      const work = WORKS.find((w) => s.category && w.category === s.category);
+      const info = work && parseVideo(work.url || work.embed);
+      const thumb = work && (work.thumbnail || (info && info.thumb));
+      if (work && !work.thumbnail && info && info.thumbMax) {
+        // ปก YouTube ความละเอียดสูง ถ้าไม่มีให้ใช้ปกธรรมดาแล้วซูมตัดขอบดำ
+        const img = el("img", { src: info.thumbMax, alt: "", loading: i ? "lazy" : "eager" });
+        img.addEventListener("load", () => {
+          if (img.naturalWidth < 200) { img.src = info.thumb; img.classList.add("yt-crop"); }
+        });
+        img.addEventListener("error", () => { img.src = info.thumb; img.classList.add("yt-crop"); }, { once: true });
+        return img;
+      }
+      if (thumb) return el("img", { src: thumb, alt: "", loading: i ? "lazy" : "eager" });
+      const cat = categories.find((c) => c.name === s.category);
+      const fb = el("div", { class: "ig-fallback grain" });
+      fb.appendChild(spriteNode((cat && cat.sprite) || ["phone", "gamepad", "sparkle", "clapper"][i % 4]));
+      return fb;
+    }
+
+    const dots = services.map((s, i) => {
+      const cat = categories.find((c) => c.name === s.category);
+      const slide = el("div", { class: "ig-slide", role: "group", "aria-label": i + 1 + " / " + services.length }, [
+        previewFor(s, i),
+        el("span", { class: "ig-slide-label" }, [
+          el("b", { text: String(i + 1).padStart(2, "0") }),
+          el("span", { text: (cat && cat.label) || s.title }),
+        ]),
+      ]);
+      track.appendChild(slide);
+      const dot = el("button", { class: "ig-dot", type: "button", role: "tab", "aria-label": s.title, "aria-selected": "false" });
+      dot.addEventListener("click", () => { stopAuto(); go(i); });
+      dotsWrap.appendChild(dot);
+      return dot;
+    });
+    if (services.length < 2) {
+      prev.remove(); next.remove(); dotsWrap.remove();
+    }
+
+    let current = -1;
+    function go(i) {
+      const n = services.length;
+      i = (i + n) % n;
+      track.scrollTo({ left: i * track.clientWidth, behavior: reduceMotion ? "auto" : "smooth" });
+    }
+
+    function show(i) {
+      if (i === current) return;
+      current = i;
+      const s = services[i];
+      dots.forEach((d, k) => d.setAttribute("aria-selected", String(k === i)));
+      counter.textContent = i + 1 + "/" + services.length;
+      prev.disabled = i === 0;
+      next.disabled = i === services.length - 1;
+
+      const cat = categories.find((c) => c.name === s.category);
+      const children = [
+        el("h3", {}, [el("b", { text: SITE.name || "" }), document.createTextNode(s.title)]),
+        el("p", { text: s.detail || "" }),
+      ];
+      if (s.category && cards.some((c) => c.dataset.category === s.category)) {
+        const link = el("a", { class: "px-chip px-chip-hot", href: "#works", text: "ดูงาน" + ((cat && cat.name) || s.category) + " →" });
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setFilter(s.category, false);
+          scrollToId("works").then(() => setFilter(s.category, true));
+        });
+        children.push(link);
+      }
+      caption.replaceChildren.apply(caption, children);
+      // คำบรรยายโผล่ขึ้นแบบเฟรมต่ำ (reveal) — ตัวสไลด์ยังเลื่อนลื่น
+      popNow(caption, 0);
+    }
+
+    let raf = 0;
+    track.addEventListener("scroll", () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => show(Math.round(track.scrollLeft / Math.max(1, track.clientWidth))));
+    }, { passive: true });
+    prev.addEventListener("click", () => { stopAuto(); go(current - 1); });
+    next.addEventListener("click", () => { stopAuto(); go(current + 1); });
+    track.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); stopAuto(); go(current + 1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); stopAuto(); go(current - 1); }
+    });
+    track.addEventListener("pointerdown", stopAuto);
+    track.addEventListener("wheel", stopAuto, { passive: true });
+    window.addEventListener("resize", () => {
+      track.style.scrollBehavior = "auto";
+      track.scrollLeft = current * track.clientWidth;
+      track.style.scrollBehavior = "";
+    });
+
+    // เลื่อนเองทุก 4.5 วินาที (หยุดเมื่อเอาเมาส์ชี้ หรือเมื่อผู้ใช้กดเอง)
+    let timer = null, paused = false;
+    function stopAuto() { clearInterval(timer); timer = null; }
+    box.addEventListener("mouseenter", () => (paused = true));
+    box.addEventListener("mouseleave", () => (paused = false));
+    box.addEventListener("focusin", () => (paused = true));
+    box.addEventListener("focusout", () => (paused = false));
+    if (!reduceMotion && services.length > 1) {
+      timer = setInterval(() => {
+        if (paused || document.hidden || !desktop.matches || window.scrollY > box.offsetTop + box.offsetHeight) return;
+        go(current + 1);
+      }, 4500);
+    }
+
+    show(0);
+  }
+
   function renderWorks() {
     const grid = document.getElementById("works-grid");
     const filters = document.getElementById("filters");
@@ -590,4 +744,5 @@
   renderSite();
   renderMediaTiles();
   renderWorks();
+  renderServiceCarousel();
 })();
