@@ -1,0 +1,141 @@
+/* =====================================================================
+   ลูกเล่นแอนิเมชัน (FX) — ทำงานคู่กับ fx.js
+   กฎที่ใช้: ของที่ "โผล่/เด้ง" ขยับแบบเฟรมต่ำ (steps) / hover ขยาย-เปลี่ยนสีแบบลื่น
+   ===================================================================== */
+:root {
+  --fx-hl: color-mix(in srgb, var(--yellow) 30%, var(--paper)); /* สีไฮไลต์ตอนเอาเมาส์ชี้ */
+}
+
+/* ---------- 1) เลื่อนเข้ามาจากทิศต่าง ๆ (4 เฟรม) ---------- */
+.fx-left  { --fx-x: -64px; --fx-y: 0px;   --fx-rot: -3deg;  --fx-s: 1; }
+.fx-right { --fx-x: 64px;  --fx-y: 0px;   --fx-rot: 3deg;   --fx-s: 1; }
+.fx-up    { --fx-x: 0px;   --fx-y: 56px;  --fx-rot: 1.5deg; --fx-s: 1; }
+.fx-drop  { --fx-x: 0px;   --fx-y: -48px; --fx-rot: -10deg; --fx-s: 1; }
+.fx-pop   { --fx-x: 0px;   --fx-y: 0px;   --fx-rot: -4deg;  --fx-s: .7; }
+
+.fx-pending { translate: var(--fx-x) var(--fx-y); rotate: var(--fx-rot); scale: var(--fx-s); }
+.fx-in { animation: fx-in calc(5s / var(--fps)) steps(1) backwards; }
+@keyframes fx-in {
+  0%   { translate: var(--fx-x) var(--fx-y); rotate: var(--fx-rot); scale: var(--fx-s); }
+  25%  { translate: calc(var(--fx-x) * .35) calc(var(--fx-y) * .35); rotate: calc(var(--fx-rot) * .35); scale: calc(1 + (var(--fx-s) - 1) * .3); }
+  50%  { translate: calc(var(--fx-x) * -.12) calc(var(--fx-y) * -.12); rotate: calc(var(--fx-rot) * -.4); scale: 1.04; }
+  75%  { translate: 0px 0px; rotate: 0deg; scale: .99; }
+  100% { translate: 0px 0px; rotate: 0deg; scale: 1; }
+}
+
+/* ---------- 2) ตัวอักษรหัวข้อเด้งทีละตัว + ปากกาไฮไลต์ ---------- */
+.fx-word { display: inline-block; white-space: nowrap; }
+.fx-ch { display: inline-block; }
+.fx-ch-wait { translate: 0 -.35em; rotate: -8deg; }
+.fx-ch-in { animation: fx-ch calc(4s / var(--fps)) steps(1) backwards; }
+@keyframes fx-ch {
+  0%   { translate: 0 -.5em; rotate: -12deg; }
+  33%  { translate: 0 .08em; rotate: 6deg; }
+  66%  { translate: 0 -.04em; rotate: -2deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+.fx .section-sub mark { background-repeat: no-repeat; background-size: 100% 100%; }
+.fx .section-sub mark.fx-mark-wait { background-size: 0% 100%; }
+.fx-mark-in { animation: fx-mark calc(5s / var(--fps)) steps(5) backwards; }
+@keyframes fx-mark { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
+
+/* ---------- 3) กระดาษฉีกเปิดงานเด่น ---------- */
+.fx .feature-media { position: relative; }
+.fx-tear { position: absolute; inset: -3px; z-index: 5; }
+.fx-tear i {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background-color: var(--sand);
+  background-image:
+    var(--grain),
+    repeating-linear-gradient(transparent 0 26px, color-mix(in srgb, var(--ink) 14%, transparent) 26px 28px);
+}
+.fx-tear b {
+  font-family: var(--pixel); font-weight: 700; font-size: clamp(16px, 2.4vw, 26px); letter-spacing: .06em;
+  background: var(--yellow); color: var(--ink);
+  border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink);
+  padding: 4px 14px; rotate: -3deg;
+}
+.fx-tear-l { transform-origin: 0 0; }
+.fx-tear-r { transform-origin: 100% 0; }
+.is-tearing .fx-tear-l { animation: fx-tear-l calc(7s / var(--fps)) steps(1) forwards; }
+.is-tearing .fx-tear-r { animation: fx-tear-r calc(7s / var(--fps)) steps(1) forwards; }
+@keyframes fx-tear-l {
+  0%   { translate: 0 0; rotate: 0deg; }
+  15%  { translate: -1% 0; rotate: -1deg; }
+  35%  { translate: -8% 2%; rotate: -4deg; }
+  55%  { translate: -28% 10%; rotate: -10deg; }
+  75%  { translate: -60% 26%; rotate: -18deg; opacity: 1; }
+  100% { translate: -90% 50%; rotate: -26deg; opacity: 0; }
+}
+@keyframes fx-tear-r {
+  0%   { translate: 0 0; rotate: 0deg; }
+  15%  { translate: 1% 0; rotate: 1deg; }
+  35%  { translate: 8% 3%; rotate: 5deg; }
+  55%  { translate: 26% 12%; rotate: 11deg; }
+  75%  { translate: 58% 30%; rotate: 19deg; opacity: 1; }
+  100% { translate: 92% 56%; rotate: 28deg; opacity: 0; }
+}
+
+/* ---------- 4) เช็กลิสต์ติ๊กทีละข้อ ---------- */
+.brief-list li.is-ticked::before {
+  background: var(--yellow) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6' shape-rendering='crispEdges'%3E%3Cpath fill='%23113F59' d='M5 0h1v1H5zM4 1h2v1H4zM0 2h1v1H0zM3 2h2v1H3zM0 3h4v1H0zM1 4h2v1H1z'/%3E%3C/svg%3E") center / 80% no-repeat;
+  animation: fx-tick calc(3s / var(--fps)) steps(1);
+}
+@keyframes fx-tick { 0% { scale: 1.6; } 50% { scale: .8; } 100% { scale: 1; } }
+
+/* ---------- 5) Hover: ขยาย + เปลี่ยนสี (ลื่น) / ไอคอนสลับเฟรมแบบ GIF ---------- */
+.sprite .fr-2 { opacity: 0; }
+@media (hover: hover) {
+  .fx .card { transition: transform .2s ease-out, box-shadow .2s ease-out, scale .2s ease-out, background-color .2s; }
+  .fx .card:hover { scale: 1.025; background: var(--fx-hl); }
+
+  .fx .feature-media { transition: scale .25s ease-out, rotate .25s ease-out, box-shadow .25s ease-out, background-color .25s; }
+  .fx .feature-media:hover { scale: 1.015; rotate: -.5deg; background: var(--yellow); box-shadow: 12px 12px 0 var(--ink); }
+
+  .fx .service { transition: scale .2s ease-out, box-shadow .2s ease-out, background-color .2s; }
+  .fx .service:hover { scale: 1.03; background: var(--yellow); box-shadow: 10px 10px 0 var(--ink); }
+  .fx .service:hover > p { color: var(--ink); }
+  .fx .service:hover .service-includes li::before { background: var(--paper); }
+
+  .fx .step-num { transition: background-color .15s; }
+  .fx .step:hover .step-num { background: var(--orange); color: var(--paper); animation: fx-wiggle calc(6s / var(--fps)) steps(1) infinite; }
+
+  .fx .polaroid { transition: rotate .25s ease-out, scale .25s ease-out; }
+  .fx .polaroid:hover { rotate: 3deg; scale: 1.04; }
+  .fx .tv { transition: rotate .25s ease-out; }
+  .fx .tv:hover { rotate: .6deg; }
+  .fx .brief-card { transition: rotate .2s ease-out; }
+  .fx .brief-card:hover { rotate: -1deg; }
+
+  .fx .experience li { transition: border-left-width .15s, background-color .15s; }
+  .fx .experience li:hover { border-left-width: 10px; background: var(--fx-hl); }
+
+  /* ป้ายเล็ก ๆ และปุ่ม: ส่ายแบบเฟรมต่ำ เหมือนตัวการ์ตูน */
+  .fx .offer-list li:hover, .fx .tools li:hover { background: var(--yellow); animation: fx-wiggle calc(6s / var(--fps)) steps(1) infinite; }
+  .fx .px-btn:hover, .fx .px-chip:hover, .fx .filter:hover { animation: fx-wiggle calc(6s / var(--fps)) steps(1) infinite; }
+
+  /* ไอคอน: กระโดด + สลับเฟรม + สีกะพริบ (palette cycle แบบเกม 8-bit) */
+  .fx :is(.filter, .offer-list li, .service, .brand, .polaroid):hover .chip-icon,
+  .fx .brand:hover .brand-icon { animation: hop calc(6s / var(--fps)) steps(1) infinite; }
+  .fx :is(.filter, .offer-list li, .service, .brand, .polaroid):hover .sprite.has-frames .fr-1 { animation: fx-fr-a calc(6s / var(--fps)) steps(1) infinite; }
+  .fx :is(.filter, .offer-list li, .service, .brand, .polaroid):hover .sprite.has-frames .fr-2 { animation: fx-fr-b calc(6s / var(--fps)) steps(1) infinite; }
+  .fx :is(.filter, .offer-list li, .service, .brand, .polaroid):hover .sprite .px-y { animation: fx-pal calc(9s / var(--fps)) steps(1) infinite; }
+
+  /* ไอคอนที่วาดเอง: สลับเป็นไฟล์ iconHover (เช่น GIF) ตอนเอาเมาส์ชี้ */
+  .fx :is(.filter, .offer-list li, .service):hover .has-hover-icon > :first-child { visibility: hidden; }
+  .fx :is(.filter, .offer-list li, .service):hover .has-hover-icon .ic-hover { display: block; }
+}
+@keyframes fx-wiggle { 0% { rotate: -2deg; } 33% { rotate: 2deg; } 66% { rotate: -1deg; } }
+@keyframes fx-fr-a { 0% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes fx-fr-b { 0% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes fx-pal { 0% { fill: var(--yellow); } 33% { fill: var(--orange); } 66% { fill: var(--cream); } }
+
+/* ---------- 6) เมาส์พิกเซล ---------- */
+.fx-cursor { cursor: var(--fx-cursor), auto; }
+.fx-cursor :is(a, button, summary, label, .player-facade, .fx-tear, [role="tab"]) { cursor: var(--fx-cursor-hot), pointer; }
+
+/* ---------- 7) พิกเซลแตกกระจายตอนคลิก ---------- */
+.fx-burst { position: fixed; z-index: 100; width: 0; height: 0; pointer-events: none; }
+.fx-burst i { position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; animation: fx-burst calc(5s / var(--fps)) steps(4) forwards; }
+@keyframes fx-burst { to { translate: var(--dx) var(--dy); scale: .3; opacity: 0; } }
