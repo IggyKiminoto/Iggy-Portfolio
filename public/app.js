@@ -273,9 +273,68 @@
     ],
   };
 
-  function sprite(name) {
-    const rows = SPRITES[name] || SPRITES.sparkle;
-    const h = rows.length, w = rows[0].length;
+  // เฟรมที่ 2 ของไอคอน — เวลาเอาเมาส์ชี้ ไอคอนจะสลับเฟรมเหมือนภาพ GIF
+  const SPRITE_FRAMES = {
+    mic: [
+      "....nnnn....",
+      "...nbbbbn...",
+      "y..nbccbn..y",
+      ".y.nbbbbn.y.",
+      "y..nbccbn..y",
+      "...nbbbbn...",
+      ".n.nbbbbn.n.",
+      ".n..nnnn..n.",
+      "..n......n..",
+      "...nnnnnn...",
+      ".....nn.....",
+      "...nnnnnn...",
+    ],
+    sparkle: [
+      "............",
+      "............",
+      ".....nn.....",
+      "....nyyn....",
+      "...nyyyyn...",
+      "..nyyccyyn..",
+      "..nyyyyyyn..",
+      "...nyyyyn...",
+      "....nyyn....",
+      ".....nn.....",
+      "............",
+      "............",
+    ],
+    phone: [
+      "..nnnnnnnn..",
+      "..nbbbbbbn..",
+      "..nbbbbbbn..",
+      "..nbybybbn..",
+      "..nbybybbn..",
+      "..nbybybbn..",
+      "..nbybybbn..",
+      "..nbybybbn..",
+      "..nbbbbbbn..",
+      "..nnnnnnnn..",
+      "..nnnyynnn..",
+      "..nnnnnnnn..",
+    ],
+    heart: [
+      "............",
+      "............",
+      "..nn....nn..",
+      ".nyyn..nyyn.",
+      ".nycynnyyyn.",
+      ".nyyyyyyyyn.",
+      "..nyyyyyyn..",
+      "...nyyyyn...",
+      "....nyyn....",
+      ".....nn.....",
+      "............",
+      "............",
+    ],
+  };
+
+  function spriteRects(rows) {
+    const w = rows[0].length;
     let rects = "";
     rows.forEach((r, y) => {
       let x = 0;
@@ -288,7 +347,17 @@
         x = x2;
       }
     });
-    return '<svg class="sprite" viewBox="0 0 ' + w + " " + h + '" shape-rendering="crispEdges" aria-hidden="true">' + rects + "</svg>";
+    return rects;
+  }
+
+  function sprite(name) {
+    const rows = SPRITES[name] || SPRITES.sparkle;
+    const h = rows.length, w = rows[0].length;
+    const alt = SPRITE_FRAMES[name];
+    const body = alt
+      ? '<g class="fr fr-1">' + spriteRects(rows) + '</g><g class="fr fr-2">' + spriteRects(alt) + "</g>"
+      : spriteRects(rows);
+    return '<svg class="sprite' + (alt ? " has-frames" : "") + '" viewBox="0 0 ' + w + " " + h + '" shape-rendering="crispEdges" aria-hidden="true">' + body + "</svg>";
   }
 
   function spriteNode(name) {
@@ -368,8 +437,10 @@
       : null;
 
   // ของทุกชิ้นมองเห็นได้ตั้งแต่แรก แอนิเมชันแค่ "เด้ง" ตอนเลื่อนมาถึง ไม่ได้ซ่อนไว้ก่อน
+  // ถ้ามีไฟล์ fx.js (ชุดลูกเล่น) ให้ fx.js เป็นคนจัดการแอนิเมชันตอนเลื่อนแทน
+  const hasFx = !!document.querySelector('script[src="fx.js"]');
   function popOnScroll(node) {
-    if (!popObserver) return;
+    if (!popObserver || hasFx) return;
     popObserver.observe(node);
   }
 
@@ -471,6 +542,11 @@
     const wrap = el("span", { class: "chip-icon" });
     if (item && item.icon) wrap.appendChild(el("img", { src: item.icon, alt: "" }));
     else wrap.appendChild(spriteNode((item && item.sprite) || "sparkle"));
+    // ไอคอนตอนเอาเมาส์ชี้ (เช่นไฟล์ .gif ที่วาดเอง)
+    if (item && item.iconHover) {
+      wrap.classList.add("has-hover-icon");
+      wrap.appendChild(el("img", { src: item.iconHover, alt: "", class: "ic-hover", loading: "lazy" }));
+    }
     return wrap;
   }
 

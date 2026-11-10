@@ -26,6 +26,7 @@ window.SITE = {
      name    ชื่อหมวด ต้องสะกดตรงกับ categories ของผลงานด้านล่าง
      th      คำอธิบายภาษาไทยสั้น ๆ
      icon    ไอคอนที่วาดเอง เช่น "icons/short.png" (ปล่อยว่าง = ใช้ไอคอนพิกเซลในตัว)
+     iconHover  (ไม่ใส่ก็ได้) ไอคอนตอนเอาเมาส์ชี้ เช่นไฟล์ GIF ที่ขยับได้ "icons/short.gif"
      หมวดที่ยังไม่มีงาน จะถูกซ่อนเอง                                                */
   categories: [
     { name: "Short-form & Social", th: "คลิปสั้นแนวตั้ง", icon: "", sprite: "phone" },
