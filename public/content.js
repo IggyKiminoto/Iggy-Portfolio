@@ -27,11 +27,19 @@ window.SITE = {
   ],
 
   // แบรนด์ที่เคยทำงานด้วย (ขึ้นใต้ปุ่มบน Cover)
-  workedWith: ["Garena RoV Thailand"],
+  workedWith: ["AIS", "Garena RoV Thailand"],
 
-  // คลิปในจอทีวีบน Cover — ปล่อยว่าง "" = ใช้งานเด่นชิ้นแรก
+  /* ---------- ทีวีบน Cover: แต่ละช่อง = งาน 1 ประเภท ----------
+     label = ชื่อช่อง / clip = ลิงก์คลิป / sprite = ไอคอนพิกเซล
+     กรอบทีวีจะปรับตามสัดส่วนคลิปเอง (แนวตั้ง / แนวนอน)
+     ถ้าไม่มีช่องเลย จะใช้ showreel หรืองานเด่นชิ้นแรกแทน                          */
+  channels: [
+    { label: "BRAND", sprite: "clapper", clip: "https://www.tiktok.com/@ais_club/video/7701369408421154068" },
+    { label: "CREATOR", sprite: "gamepad", clip: "https://www.tiktok.com/@iggylengame/video/7658989879522626836" },
+    { label: "EVENTS", sprite: "camera", clip: "https://www.tiktok.com/@ais_club/video/7683364721118039313" },
+    { label: "MOTION", sprite: "sparkle", clip: "https://www.tiktok.com/@ais_club/video/7538425611467902216" },
+  ],
   showreel: "",
-  reelLabel: "LATEST WORK",
 
   marquee: ["PLAN", "SHOOT", "EDIT", "POST", "SHORT-FORM", "EVENT CONTENT", "OPEN FOR WORK"],
 
@@ -42,12 +50,17 @@ window.SITE = {
      หมวดที่ยังไม่มีงาน จะถูกซ่อนเอง                                                */
   categories: [
     { name: "Short-form & Social", icon: "", sprite: "phone" },
+    { name: "Brand & Corporate", icon: "", sprite: "clapper" },
     { name: "Event & Creator Content", icon: "", sprite: "camera" },
     { name: "Podcast & Long-form", icon: "", sprite: "mic" },
     { name: "Motion & Animation", icon: "", sprite: "sparkle" },
   ],
   // Tag ที่กดกรองได้ด้วย (ต้องสะกดตรงกับ tags ของผลงาน)
-  filterTags: [{ name: "Behind the Scenes", sprite: "clapper" }],
+  filterTags: [
+    { name: "Gaming", sprite: "gamepad" },
+    { name: "AI", sprite: "sparkle" },
+    { name: "Behind the Scenes", sprite: "clapper" },
+  ],
 
   services: [
     {
@@ -80,11 +93,12 @@ window.SITE = {
   ],
 
   about:
-    "I run the Thai gaming channel \"Iggy Will Play Games\" on TikTok and make short-form video for brands and events. " +
-    "Running my own channel taught me what makes people stop scrolling, so every edit starts from the platform and the audience. " +
-    "Beyond short-form, I edit podcasts and long-form video, and add motion graphics when a project needs them.",
+    "I make short-form video for AIS's employee channel and for gaming brands like RoV, and I run my own Thai gaming channel, \"Iggy Will Play Games\". " +
+    "Running a channel taught me what makes people stop scrolling, so every edit starts from the platform and the audience. " +
+    "I can take a video from idea to post: plan it, shoot it, edit it, voice it and add motion graphics or hand-drawn animation when it needs them.",
 
   experience: [
+    { title: "Video content for AIS Club (AIS)", detail: "Employer-brand, recruitment, event and internal videos for the AIS employee channel, since 2022." },
     { title: "\"Iggy Will Play Games\" (TikTok @iggylengame)", detail: "My own gaming channel. I plan, shoot, edit and post everything myself." },
     { title: "Event and campaign content for RoV Thailand", detail: "On-site event coverage, campaign clips and music video behind-the-scenes, 2025 to 2026." },
   ],
@@ -116,30 +130,53 @@ window.SITE = {
    ===================================================================== */
 
 window.WORKS = [
+  // ---------------- งานเด่น (featured) ----------------
   {
-    title: "RoV 10th Anniversary Exhibition",
-    clips: ["https://www.tiktok.com/@iggylengame/video/7693598745371495700"],
-    categories: ["Short-form & Social", "Event & Creator Content"],
-    tags: ["Gaming", "Event", "Paid Partnership"],
-    client: "RoV Thailand",
-    role: ["Concept", "On-site shoot", "Edit", "Post"],
-    highlight: "A 3-minute event walkthrough, shot on site and cut so a long vertical video keeps moving.",
+    title: "HR Chatbot Launch Animation",
+    clips: ["https://www.tiktok.com/@ais_club/video/7538425611467902216"],
+    categories: ["Motion & Animation", "Brand & Corporate"],
+    tags: ["Hand-drawn Animation", "No AI", "Character"],
+    client: "AIS",
+    year: "2025",
+    role: ["Illustration", "Animation", "Edit"],
+    highlight: "Launch film for AIS's new HR chatbot. Every frame drawn and animated by hand, with no AI.",
     featured: true,
     details: {
-      platform: "TikTok · vertical · 3:06 · paid partnership",
-      responsibility: "Planned the content, shot it at the exhibition, edited it and posted it on my channel.",
+      platform: "TikTok · vertical",
+      responsibility: "Drew, animated and edited the film. The story came from the team and the character design was provided.",
+    },
+  },
+  {
+    title: "AIS Club Launch: Employer Branding",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7161622924850367771", label: "My first clip at AIS" },
+      { url: "https://www.tiktok.com/@ais_club/video/7173988177990913306", label: "Office Q&A" },
+      { url: "https://www.tiktok.com/@ais_club/video/7189203236740533530", label: "IT recruitment call" },
+    ],
+    categories: ["Brand & Corporate", "Short-form & Social"],
+    tags: ["Employer Branding", "Recruitment", "Early Work"],
+    client: "AIS Club",
+    year: "2022–2023",
+    role: ["Concept", "Shoot", "Edit", "Post"],
+    highlight: "My first clips at AIS. The launch clip helped grow the page from 1,084 to 3,539 followers (+226%).",
+    featured: true,
+    details: {
+      platform: "TikTok · vertical · 0:14 to 0:45 per clip",
+      responsibility: "Came up with the ideas, shot, edited and posted all three clips.",
+      results: "Followers grew 226%, from 1,084 to 3,539",
+      resultsSource: "AIS Club TikTok follower count after the first clip (Nov 2022)",
     },
   },
   {
     title: "RoV Day 2026 at Siam",
     clips: [
-      "https://www.tiktok.com/@iggylengame/video/7658989879522626836",
-      "https://www.tiktok.com/@iggylengame/video/7664258469968612629",
+      { url: "https://www.tiktok.com/@iggylengame/video/7658989879522626836", label: "Mystery Box promo: 68 angles of one box" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7664258469968612629", label: "RoV Day, introvert edition" },
     ],
-    clipLabels: ["Mystery Box promo: 68 angles of one box", "RoV Day, introvert edition"],
-    categories: ["Short-form & Social", "Event & Creator Content"],
+    categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Offline Promo"],
     client: "RoV Thailand",
+    year: "2026",
     role: ["Concept", "On-site shoot", "Edit", "Post"],
     highlight: "Offline event promo. With only a mystery box to film, I shot it from 68 angles to make a small setup feel big.",
     featured: true,
@@ -148,22 +185,77 @@ window.WORKS = [
       responsibility: "Planned both clips, shot them on site, edited and posted them on my channel.",
     },
   },
+
+  // ---------------- ผลงานเพิ่มเติม ----------------
+  {
+    title: "AI & VFX Edits for AIS",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7701369408421154068", label: "Apply via LINE OA, with AI effects", role: ["Edit", "AI effects"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7481265093930437895", label: "Staff Party 2025: AI outfit swap", role: ["Concept", "Shoot", "Edit", "AI effects", "Post"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7638923717929651477", label: "Staff Party 2026: green screen", role: ["Shoot", "Edit", "Green screen"] },
+    ],
+    categories: ["Brand & Corporate", "Short-form & Social"],
+    tags: ["AI", "Green Screen", "VFX"],
+    client: "AIS",
+    year: "2025–2026",
+    highlight: "Real people on camera first, with AI and green screen as the trick that makes people watch again.",
+  },
+  {
+    title: "JUMP Thailand Hackathon 2026",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7676400754101423380", label: "Kick-off: a Saturday of ideas", role: ["Edit"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7683364721118039313", label: "What the HACK did you learn?", role: ["Shoot", "Edit", "Voiceover"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7685719654207311124", label: "Final pitching", role: ["Edit"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7689094466644282645", label: "The volunteer buddies", role: ["Edit", "Voiceover"] },
+    ],
+    categories: ["Event & Creator Content", "Brand & Corporate"],
+    tags: ["Event", "Voiceover", "Series"],
+    client: "AIS",
+    year: "2026",
+    highlight: "Four clips that follow a national student hackathon from kick-off to the final pitch.",
+  },
+  {
+    title: "Life at AIS",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7694612498561207572", label: "MAKE IT CONTENT workshop", role: ["Shoot", "Edit", "Voiceover"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7692056564957564181", label: "AIS 36th anniversary", role: ["Edit"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7669755196855110919", label: "AIS Wellness: Hack Your Health", role: ["Shoot", "Edit"] },
+    ],
+    categories: ["Brand & Corporate", "Short-form & Social"],
+    tags: ["Employer Branding", "Event"],
+    client: "AIS",
+    year: "2026",
+    highlight: "Workshops, celebrations and wellness tips for the AIS employee channel.",
+  },
+  {
+    title: "RoV 10th Anniversary Exhibition",
+    clips: ["https://www.tiktok.com/@iggylengame/video/7693598745371495700"],
+    categories: ["Event & Creator Content", "Short-form & Social"],
+    tags: ["Gaming", "Event", "Paid Partnership"],
+    client: "RoV Thailand",
+    year: "2026",
+    role: ["Concept", "On-site shoot", "Edit", "Post"],
+    highlight: "A 3-minute event walkthrough, shot on site and cut so a long vertical video keeps moving.",
+    details: {
+      platform: "TikTok · vertical · 3:06 · paid partnership",
+      responsibility: "Planned the content, shot it at the exhibition, edited it and posted it on my channel.",
+    },
+  },
   {
     title: "RoV Community Party",
     clips: [
-      "https://www.tiktok.com/@iggylengame/video/7597129496097082645",
-      "https://www.tiktok.com/@iggylengame/video/7596625148455783701",
-      "https://www.tiktok.com/@iggylengame/video/7597141740008508693",
-      "https://www.tiktok.com/@iggylengame/video/7596649416795163924",
-      "https://www.tiktok.com/@iggylengame/video/7597438483124276500",
+      { url: "https://www.tiktok.com/@iggylengame/video/7597129496097082645", label: "Event recap" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7596625148455783701", label: "\"No more parties after this?\"" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7597141740008508693", label: "Every skin in the game vs. iPhone 17" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7596649416795163924", label: "Ambassador of Valor moment" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7597438483124276500", label: "LIVE Incentive Program" },
     ],
-    clipLabels: ["Event recap", "\"No more parties after this?\"", "Every skin in the game vs. iPhone 17", "Ambassador of Valor moment", "LIVE Incentive Program"],
-    categories: ["Short-form & Social", "Event & Creator Content"],
+    categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Community"],
     client: "RoV Thailand",
+    year: "2026",
     role: ["Concept", "On-site shoot", "Edit", "Post"],
     highlight: "Five clips from one community night: the recap, the funny moments and a skins vs. iPhone 17 bit.",
-    featured: true,
     details: {
       platform: "TikTok · vertical · 0:25 to 1:32 per clip",
       responsibility: "Planned the angles for each clip, shot everything at the party, edited and posted the series.",
@@ -172,40 +264,36 @@ window.WORKS = [
   {
     title: "RoV × Pasulol Songkran Campaign",
     clips: [
-      "https://www.tiktok.com/@iggylengame/video/7622302000113700117",
-      "https://www.tiktok.com/@iggylengame/video/7625189174424980757",
-      "https://www.tiktok.com/@iggylengame/video/7625287795392744724",
-      "https://www.tiktok.com/@iggylengame/video/7622321059538144532",
+      { url: "https://www.tiktok.com/@iggylengame/video/7622302000113700117", label: "What should I offer?" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7625189174424980757", label: "Dressing up for the event" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7625287795392744724", label: "The ultimate combo" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7622321059538144532", label: "Too much?" },
     ],
-    clipLabels: ["What should I offer?", "Dressing up for the event", "The ultimate combo", "Too much?"],
-    categories: ["Short-form & Social", "Event & Creator Content"],
+    categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Campaign", "Comedy"],
     client: "RoV Thailand",
+    year: "2026",
     role: ["Concept", "On-site shoot", "Edit", "Post"],
     highlight: "Short, joke-led clips that pushed the 4 April in-game Songkran event.",
-    details: {
-      platform: "TikTok · vertical · 0:12 to 0:36 per clip",
-    },
+    details: { platform: "TikTok · vertical · 0:12 to 0:36 per clip" },
   },
   {
     title: "Behind the Scenes: RoV Songkran Music Video",
     clips: [
-      "https://www.tiktok.com/@iggylengame/video/7629455901514124564",
-      "https://www.tiktok.com/@iggylengame/video/7489839347240275208",
+      { url: "https://www.tiktok.com/@iggylengame/video/7629455901514124564", label: "2026 music video" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7489839347240275208", label: "2025: my first music video shoot" },
     ],
-    clipLabels: ["2026 music video", "2025: my first music video shoot"],
-    categories: ["Short-form & Social", "Event & Creator Content"],
+    categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Behind the Scenes", "Music Video"],
     client: "Garena RoV Thailand",
+    year: "2025–2026",
     role: ["On-site shoot", "Edit", "Post"],
     highlight: "Two years on set for RoV's Songkran music video, in front of the camera and behind it.",
     ongoing: true,
-    details: {
-      platform: "TikTok · vertical · 1:11 (2026)",
-    },
+    details: { platform: "TikTok · vertical · 1:11 (2026)" },
   },
 
   // ↓ งานประเภทอื่นที่จะเพิ่มทีหลัง: ลบ // หน้าบรรทัด แล้วเปลี่ยนลิงก์
   // { title: "Company podcast", clips: ["https://www.youtube.com/watch?v=xxxx"], categories: ["Podcast & Long-form"], role: ["Edit", "Sound"], highlight: "..." },
-  // { title: "Motion banner", clips: ["https://www.youtube.com/watch?v=xxxx"], categories: ["Motion & Animation"], role: ["Motion"], highlight: "..." },
+  // คลิปหลายตัวที่หน้าที่ต่างกัน: clips: [{ url: "...", label: "ชื่อคลิป", role: ["Edit", "Voiceover"] }, ...]
 ];

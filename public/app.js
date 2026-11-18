@@ -549,16 +549,22 @@
     return info && info.src && info.platform !== "Embed" ? info.src : "";
   }
 
-  const works = WORKS.filter((w) => !w.wip).map((w) => {
-    const info = parseVideo(asList(w.clips || w.url)[0] || w.embed);
-    const original = originalOf(asList(w.clips || w.url)[0], info);
-    const clipList = asList(w.clips || w.url);
+  const works = WORKS.filter((w) => !w.wip).map((w, idx) => {
+    const labels = asList(w.clipLabels);
+    const clipMeta = asList(w.clips || w.url).map((c, i) =>
+      typeof c === "string" ? { url: c, label: labels[i] || "" } : Object.assign({ label: labels[i] || "" }, c)
+    );
+    const clipList = clipMeta.map((c) => c.url);
+    const info = parseVideo(clipList[0] || w.embed);
+    const original = originalOf(clipList[0], info);
     return Object.assign({}, w, {
+      id: "work-" + (idx + 1),
       url: clipList[0],
       clipList: clipList,
+      clipMeta: clipMeta,
       cats: asList(w.categories || w.category),
       tagList: asList(w.tags),
-      roles: asList(w.role),
+      roles: asList((clipMeta[0] && clipMeta[0].role) || w.role),
       highlightText: w.highlight || w.description || "",
       info: info,
       original: original,
@@ -568,7 +574,7 @@
   const rest = works.filter((w) => featured.indexOf(w) === -1);
 
   const categories = (SITE.categories || []).map((c, i) =>
-    Object.assign({ sprite: ["phone", "camera", "mic", "sparkle"][i % 4] }, c)
+    Object.assign({ sprite: ["phone", "clapper", "camera", "mic", "sparkle"][i % 5] }, c)
   );
   const catInfo = (name) => categories.find((c) => c.name === name);
 
@@ -621,15 +627,20 @@
 
   function workInfo(w, opts) {
     const count = w.clipList.length > 1 ? w.clipList.length + " clips" : "";
-    const meta = [w.client, w.cats.join(" / "), count].filter(Boolean).join(" · ");
+    const meta = [w.client, w.cats.join(" / "), w.year, count].filter(Boolean).join(" · ");
     const children = [
       el("h3", { text: w.title || "Untitled" }),
       meta ? el("p", { class: "work-meta", text: meta }) : null,
     ];
-    if (w.roles.length || w.ongoing) {
+    const anyRoles = w.roles.length || w.ongoing || w.clipMeta.some((c) => c.role);
+    if (anyRoles) {
       const roles = el("ul", { class: "roles", "aria-label": "My role" });
-      w.roles.forEach((r) => roles.appendChild(el("li", { text: r })));
-      if (w.ongoing) roles.appendChild(el("li", { class: "is-ongoing", text: "Ongoing series" }));
+      w._fillRoles = (list) => {
+        roles.replaceChildren();
+        asList(list).forEach((r) => roles.appendChild(el("li", { text: r })));
+        if (w.ongoing) roles.appendChild(el("li", { class: "is-ongoing", text: "Ongoing series" }));
+      };
+      w._fillRoles(w.roles);
       children.push(roles);
     }
     if (w.highlightText) children.push(el("p", { class: "work-highlight", text: w.highlightText }));
@@ -650,7 +661,7 @@
     let player = makePlayer(w);
     box.appendChild(player.node);
     if (w.clipList.length > 1) {
-      const labels = asList(w.clipLabels);
+      const labels = w.clipMeta.map((c) => c.label || "");
       const caption = el("span", { class: "clip-caption", text: labels[0] || "" });
       const tabs = el("div", { class: "clip-tabs", role: "group", "aria-label": "Clips in this project" }, [
         el("span", { class: "clip-tabs-label", text: "CLIPS" }),
@@ -669,6 +680,7 @@
           btns.forEach((x, k) => x.setAttribute("aria-pressed", String(k === i)));
           caption.textContent = labels[i] || "";
           if (w._open) w._open.href = originalOf(u, next.info);
+          if (w._fillRoles) w._fillRoles(w.clipMeta[i].role || w.role);
           popNow(next.node, 0);
         });
         tabs.appendChild(b);
@@ -682,7 +694,7 @@
 
   function featuredRow(w, i) {
     const media = mediaBlock(w);
-    const row = el("article", { class: "feature" + (media.vertical ? " is-vertical" : "") }, [
+    const row = el("article", { class: "feature" + (media.vertical ? " is-vertical" : ""), id: w.id }, [
       el("div", { class: "feature-media" }, [media.node]),
       el("div", { class: "feature-info" }, [el("span", { class: "feature-num", text: String(i + 1).padStart(2, "0") })].concat(
         workInfo(w, { showTags: true, detailsLabel: "Read the story behind it" })
@@ -693,7 +705,7 @@
 
   function workCard(w, i) {
     const media = mediaBlock(w);
-    const card = el("article", { class: "card" }, [
+    const card = el("article", { class: "card", id: w.id }, [
       media.node,
       el("div", { class: "card-body" }, workInfo(w, {})),
     ]);
@@ -755,17 +767,7 @@
     });
     if (!offer.children.length) offer.parentNode.remove();
 
-    // Showreel หรือ งานเด่นชิ้นแรก
-    const reel = document.getElementById("reel");
-    if (SITE.showreel) {
-      if (SITE.reelLabel) document.getElementById("reel-label").textContent = "▶ " + SITE.reelLabel;
-      reel.appendChild(makePlayer({ url: SITE.showreel, title: "Showreel" }).node);
-    } else if (featured[0]) {
-      document.getElementById("reel-label").textContent = "▶ " + (SITE.reelLabel || "LATEST WORK");
-      reel.appendChild(makePlayer(featured[0]).node);
-    } else {
-      document.getElementById("reel-wrap").remove();
-    }
+    renderReel();
 
     const ticker = document.getElementById("ticker");
     const words = SITE.marquee && SITE.marquee.length ? SITE.marquee : [SITE.role || "PORTFOLIO"];
@@ -779,6 +781,70 @@
       }
       ticker.appendChild(group);
     }
+  }
+
+  // ทีวีบน Cover: แต่ละ "ช่อง" = งาน 1 ประเภท กดเลือกช่อง หรือกดลูกศรเลื่อนดูได้
+  function renderReel() {
+    const wrap = document.getElementById("reel-wrap");
+    const screen = document.getElementById("reel");
+    const label = document.getElementById("reel-label");
+    const count = document.getElementById("reel-count");
+    const chips = document.getElementById("reel-channels");
+    const from = document.getElementById("reel-from");
+    const prev = document.getElementById("reel-prev");
+    const next = document.getElementById("reel-next");
+
+    let channels = asList(SITE.channels).filter((c) => c && c.clip);
+    if (!channels.length && SITE.showreel) channels = [{ label: SITE.reelLabel || "SHOWREEL", clip: SITE.showreel }];
+    if (!channels.length && featured[0]) channels = [{ label: SITE.reelLabel || "LATEST WORK", clip: featured[0].url }];
+    if (!channels.length) return wrap.remove();
+
+    const findWork = (url) => works.find((w) => w.clipList.indexOf(url) !== -1);
+    let current = -1;
+    const buttons = channels.map((c, i) => {
+      const b = el("button", { type: "button", class: "filter", "aria-pressed": "false" }, [
+        c.sprite ? iconFor({ sprite: c.sprite }) : null,
+        el("span", { text: c.label }),
+      ]);
+      b.addEventListener("click", () => show(i));
+      chips.appendChild(b);
+      return b;
+    });
+    if (channels.length < 2) {
+      chips.remove();
+      prev.hidden = true;
+      next.hidden = true;
+    }
+
+    function show(i) {
+      const n = channels.length;
+      i = (i + n) % n;
+      if (i === current) return;
+      const first = current === -1;
+      current = i;
+      const c = channels[i];
+      const work = findWork(c.clip);
+      const player = makePlayer({ url: c.clip, title: c.label, format: c.format });
+      screen.replaceChildren(player.node);
+      if (!first && !reduceMotion) {
+        screen.classList.remove("is-static");
+        void screen.offsetWidth;
+        screen.classList.add("is-static");
+      }
+      label.textContent = "▶ " + (n > 1 ? "CH " + (i + 1) + " · " : "") + c.label;
+      count.textContent = n > 1 ? i + 1 + " / " + n : "";
+      buttons.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i)));
+      if (work) {
+        from.textContent = "From: " + work.title + " ↓";
+        from.setAttribute("href", "#" + work.id);
+        from.hidden = false;
+      } else {
+        from.hidden = true;
+      }
+    }
+    prev.addEventListener("click", () => show(current - 1));
+    next.addEventListener("click", () => show(current + 1));
+    show(0);
   }
 
   function renderSelected() {

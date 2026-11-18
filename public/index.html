@@ -47,16 +47,24 @@
           <p class="hero-clients" id="hero-clients"><span class="mini-label">WORKED WITH</span></p>
         </div>
 
-        <div class="tv" id="reel-wrap">
-          <div class="tv-top">
-            <span class="tv-label" id="reel-label">▶ SHOWREEL</span>
-            <span class="tv-rec"><i></i>REC</span>
+        <!-- ทีวีเปลี่ยนช่อง: กรอบปรับตามสัดส่วนคลิป -->
+        <div class="reel" id="reel-wrap" aria-roledescription="carousel" aria-label="Video channels">
+          <div class="tv">
+            <div class="tv-top">
+              <span class="tv-label" id="reel-label" aria-live="polite">▶ SHOWREEL</span>
+              <span class="tv-rec"><i></i>REC</span>
+            </div>
+            <div class="tv-screen" id="reel"></div>
+            <div class="tv-bottom">
+              <button class="tv-arrow" type="button" id="reel-prev" aria-label="Previous channel"><span data-sprite="arrowL"></span></button>
+              <span class="tv-grill"></span>
+              <span class="tv-count" id="reel-count"></span>
+              <span class="tv-grill"></span>
+              <button class="tv-arrow" type="button" id="reel-next" aria-label="Next channel"><span data-sprite="arrowR"></span></button>
+            </div>
           </div>
-          <div class="tv-screen" id="reel"></div>
-          <div class="tv-bottom">
-            <span class="tv-grill"></span>
-            <span class="tv-knobs"><i></i><i></i></span>
-          </div>
+          <div class="reel-channels" id="reel-channels" role="group" aria-label="Choose a type of work"></div>
+          <a class="reel-from" id="reel-from" href="#selected" hidden></a>
         </div>
       </div>
     </section>
