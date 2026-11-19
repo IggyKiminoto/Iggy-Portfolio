@@ -97,6 +97,12 @@ window.SITE = {
     "Running a channel taught me what makes people stop scrolling, so every edit starts from the platform and the audience. " +
     "I can take a video from idea to post: plan it, shoot it, edit it, voice it and add motion graphics or hand-drawn animation when it needs them.",
 
+  // รางวัล / โครงการที่ได้รับคัดเลือก (ขึ้นในส่วน About)
+  achievements: [
+    { year: "2025", title: "iCreator Camp Gen 2, presented by SONY", detail: "Selected from 600+ applicants into the final 100 creators, and placed Top 5 in the content competition." },
+    { year: "2024", title: "Thai Honda Creator Connect Club 2024", detail: "Selected as one of 80 creators for Honda Motorcycle Thailand's creator program." },
+  ],
+
   experience: [
     { title: "Video content for AIS Club (AIS)", detail: "Employer-brand, recruitment, event and internal videos for the AIS employee channel, since 2022." },
     { title: "\"Iggy Will Play Games\" (TikTok @iggylengame)", detail: "My own gaming channel. I plan, shoot, edit and post everything myself." },
@@ -110,7 +116,7 @@ window.SITE = {
 
   contact: {
     line: "",         // เช่น "https://line.me/ti/p/~yourid"
-    email: "you@example.com",
+    email: "kamonpope.pro@hotmail.com",
     tiktok: "https://www.tiktok.com/@iggylengame",
     youtube: "",
     facebook: "",
@@ -248,7 +254,7 @@ window.WORKS = [
       { url: "https://www.tiktok.com/@iggylengame/video/7596625148455783701", label: "\"No more parties after this?\"" },
       { url: "https://www.tiktok.com/@iggylengame/video/7597141740008508693", label: "Every skin in the game vs. iPhone 17" },
       { url: "https://www.tiktok.com/@iggylengame/video/7596649416795163924", label: "Ambassador of Valor moment" },
-      { url: "https://www.tiktok.com/@iggylengame/video/7597438483124276500", label: "LIVE Incentive Program" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7597438483124276500", label: "Who gets to go?" },
     ],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Community"],

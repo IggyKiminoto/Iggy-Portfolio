@@ -948,6 +948,15 @@
     });
     if (!exp.children.length) document.getElementById("experience-wrap").remove();
 
+    const ach = document.getElementById("achievements");
+    (SITE.achievements || []).forEach((a) => {
+      ach.appendChild(el("li", {}, [
+        a.year ? el("span", { class: "ach-year", text: a.year }) : null,
+        el("div", {}, [el("strong", { text: a.title }), a.detail ? el("span", { text: a.detail }) : null]),
+      ]));
+    });
+    if (!ach.children.length) document.getElementById("achievements-wrap").remove();
+
     const tools = document.getElementById("tools");
     (SITE.tools || []).forEach((t) => tools.appendChild(el("li", { text: t })));
     const langs = document.getElementById("languages");
