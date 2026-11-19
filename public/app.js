@@ -944,7 +944,13 @@
 
     const exp = document.getElementById("experience");
     (SITE.experience || []).forEach((x) => {
-      exp.appendChild(el("li", {}, [el("strong", { text: x.title }), x.detail ? el("span", { text: x.detail }) : null]));
+      const points = asList(x.points);
+      let list = null;
+      if (points.length) {
+        list = el("ul", { class: "exp-points" });
+        points.forEach((p) => list.appendChild(el("li", { text: p })));
+      }
+      exp.appendChild(el("li", {}, [el("strong", { text: x.title }), x.detail ? el("span", { text: x.detail }) : null, list]));
     });
     if (!exp.children.length) document.getElementById("experience-wrap").remove();
 
