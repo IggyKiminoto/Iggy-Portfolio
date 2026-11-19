@@ -543,6 +543,15 @@
   }
 
   // รองรับทั้ง categories: [...] และ category: "..." แบบเก่า
+  // หน้าที่ระดับโปรเจกต์ (เช่น Key visual) + หน้าที่ของคลิปที่เลือก
+  function mergeRoles(projectRole, clipRole) {
+    const out = [];
+    asList(projectRole).concat(asList(clipRole)).forEach((r) => {
+      if (out.map((x) => x.toLowerCase()).indexOf(String(r).toLowerCase()) === -1) out.push(r);
+    });
+    return out;
+  }
+
   function originalOf(url, info) {
     const u = String(url || "").trim();
     if (/^https?:\/\//i.test(u)) return u;
@@ -564,7 +573,7 @@
       clipMeta: clipMeta,
       cats: asList(w.categories || w.category),
       tagList: asList(w.tags),
-      roles: asList((clipMeta[0] && clipMeta[0].role) || w.role),
+      roles: mergeRoles(w.role, clipMeta[0] && clipMeta[0].role),
       highlightText: w.highlight || w.description || "",
       info: info,
       original: original,
@@ -625,6 +634,25 @@
     return el("details", { class: "work-more" }, [el("summary", { text: label || "Behind the work" }), el("dl", {}, rows)]);
   }
 
+  // จัดคำบอกหน้าที่เข้ากลุ่มขั้นตอนงาน (ไม่ต้องแก้ข้อมูลเดิม)
+  const PHASES = [
+    { label: "DESIGN", words: ["key visual", "illustration", "design", "character", "artwork", "poster"] },
+    { label: "PRE-PROD", words: ["concept", "idea", "script", "shot list", "storyboard", "brief", "planning", "plan"] },
+    { label: "PRODUCTION", words: ["shoot", "on-site shoot", "filming", "camera", "directing", "animation", "animate"] },
+    { label: "POST-PROD", words: [] },
+    { label: "PUBLISH", words: ["post", "publish", "posting", "upload"] },
+  ];
+  function groupByPhase(list) {
+    const groups = PHASES.map((p) => ({ label: p.label, tasks: [] }));
+    asList(list).forEach((r) => {
+      const key = String(r).toLowerCase().trim();
+      let idx = PHASES.findIndex((p) => p.words.indexOf(key) !== -1);
+      if (idx === -1) idx = 3; // ตัดต่อ เสียง โมชัน เอฟเฟกต์ ฯลฯ = Post-production
+      groups[idx].tasks.push(key === "post" ? "Publish" : String(r));
+    });
+    return groups.filter((g) => g.tasks.length);
+  }
+
   function workInfo(w, opts) {
     const count = w.clipList.length > 1 ? w.clipList.length + " clips" : "";
     const meta = [w.client, w.cats.join(" / "), w.year, count].filter(Boolean).join(" · ");
@@ -632,16 +660,22 @@
       el("h3", { text: w.title || "Untitled" }),
       meta ? el("p", { class: "work-meta", text: meta }) : null,
     ];
-    const anyRoles = w.roles.length || w.ongoing || w.clipMeta.some((c) => c.role);
+    if (w.ongoing) children.push(el("p", { class: "roles" }, [el("span", { class: "is-ongoing", text: "Ongoing series" })]));
+    const anyRoles = w.roles.length || w.clipMeta.some((c) => c.role);
     if (anyRoles) {
-      const roles = el("ul", { class: "roles", "aria-label": "My role" });
+      // หน้าที่ แยกตามขั้นตอนงาน: Design / Pre-production / Production / Post-production / Publishing
+      const phases = el("ul", { class: "phases", "aria-label": "My role" });
       w._fillRoles = (list) => {
-        roles.replaceChildren();
-        asList(list).forEach((r) => roles.appendChild(el("li", { text: r })));
-        if (w.ongoing) roles.appendChild(el("li", { class: "is-ongoing", text: "Ongoing series" }));
+        phases.replaceChildren();
+        groupByPhase(list).forEach((g) => {
+          phases.appendChild(el("li", {}, [
+            el("span", { class: "phase-label", text: g.label }),
+            el("span", { class: "phase-tasks", text: g.tasks.join(" · ") }),
+          ]));
+        });
       };
       w._fillRoles(w.roles);
-      children.push(roles);
+      children.push(phases);
     }
     if (w.highlightText) children.push(el("p", { class: "work-highlight", text: w.highlightText }));
     if (w.tagList.length && opts && opts.showTags) {
@@ -680,7 +714,7 @@
           btns.forEach((x, k) => x.setAttribute("aria-pressed", String(k === i)));
           caption.textContent = labels[i] || "";
           if (w._open) w._open.href = originalOf(u, next.info);
-          if (w._fillRoles) w._fillRoles(w.clipMeta[i].role || w.role);
+          if (w._fillRoles) w._fillRoles(mergeRoles(w.role, w.clipMeta[i].role));
           popNow(next.node, 0);
         });
         tabs.appendChild(b);

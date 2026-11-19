@@ -246,20 +246,51 @@ window.WORKS = [
     },
   },
   {
-    title: "Life at AIS",
+    title: "AIS Wellness: Hack Your Health",
     clips: [
-      { url: "https://www.tiktok.com/@ais_club/video/7694612498561207572", label: "MAKE IT CONTENT workshop", role: ["Shoot", "Edit", "Voiceover"] },
-      { url: "https://www.tiktok.com/@ais_club/video/7692056564957564181", label: "AIS 36th anniversary", role: ["Edit"] },
-      { url: "https://www.tiktok.com/@ais_club/video/7669755196855110919", label: "AIS Wellness: Hack Your Health", role: ["Shoot", "Edit"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7669755196855110919", label: "Program teaser", role: ["Shot list", "Shoot", "Edit", "Sound", "Text & effects"] },
     ],
     categories: ["Brand & Corporate", "Short-form & Social"],
-    tags: ["Employer Branding", "Event"],
+    tags: ["Key Visual", "Teaser", "Wellness"],
     client: "AIS",
     year: "2026",
-    highlight: "Workshops, celebrations and wellness tips for the AIS employee channel.",
+    role: ["Key visual"],
+    highlight: "I designed the key visual used across the whole wellness program, then shot and edited its teaser.",
     details: {
       platform: "TikTok · vertical",
-      responsibility: "Workshop and wellness clips: shot and edited, with voiceover on the workshop clip. Anniversary clip: edited, building on a key visual by a designer on the team.",
+      brief: "An employee wellness program run by the engagement team.",
+      responsibility: "Designed the main key visual the team used throughout the program. For the teaser, the story came from the team; I planned the shot list, shot it and edited it, including sound, text and effects.",
+    },
+  },
+  {
+    title: "MAKE IT CONTENT Workshop",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7694612498561207572", label: "Workshop recap", role: ["Shoot", "Edit", "Voiceover"] },
+    ],
+    categories: ["Brand & Corporate", "Short-form & Social"],
+    tags: ["Key Visual", "Recap", "Event"],
+    client: "AIS",
+    year: "2026",
+    role: ["Key visual"],
+    highlight: "Key visual for the employee comms, then a recap clip of the workshop day.",
+    details: {
+      platform: "TikTok · vertical",
+      responsibility: "Designed the main key visual for the workshop's employee comms; its look was carried into the rest of the campaign. Shot, edited and voiced the recap clip. I was not the workshop owner.",
+    },
+  },
+  {
+    title: "AIS 36th Anniversary",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7692056564957564181", label: "Anniversary recap", role: ["Edit"] },
+    ],
+    categories: ["Brand & Corporate", "Event & Creator Content"],
+    tags: ["Event", "Recap"],
+    client: "AIS",
+    year: "2026",
+    highlight: "Anniversary recap edited to match the event's key visual.",
+    details: {
+      platform: "TikTok · vertical",
+      responsibility: "Edited the recap, building on a key visual by a designer on the team.",
     },
   },
   {
