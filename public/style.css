@@ -418,7 +418,16 @@ mark {
   font-size: 13px; font-weight: 600; line-height: 1.5;
   padding: 0 9px; background: var(--yellow); border: 2px solid var(--ink);
 }
-.roles li.is-ongoing { background: var(--blue); color: var(--cream); }
+.roles li.is-ongoing, .roles .is-ongoing { background: var(--blue); color: var(--cream); }
+.roles .is-ongoing { display: inline-block; font-size: 13px; font-weight: 600; padding: 0 9px; border: 2px solid var(--ink); }
+/* หน้าที่แยกตามขั้นตอน */
+.phases { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 10px; align-items: baseline; }
+.phases li { display: contents; }
+.phase-label {
+  font-family: var(--pixel); font-weight: 700; font-size: 11px; letter-spacing: .04em;
+  background: var(--yellow); border: 2px solid var(--ink); padding: 0 6px; justify-self: start; white-space: nowrap;
+}
+.phase-tasks { font-size: 14px; font-weight: 600; line-height: 1.45; }
 .work-highlight { font-size: 16px; line-height: 1.6; }
 .work-tags { font-size: 13px; color: var(--ink-2); }
 .work-more { border-top: 2px dashed color-mix(in srgb, var(--ink) 40%, transparent); padding-top: 8px; }
@@ -562,9 +571,21 @@ mark {
 .about-body { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
 .about-text { font-size: clamp(18px, 2vw, 20px); max-width: 680px; }
 .experience { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.experience li { display: flex; flex-direction: column; border-left: 4px solid var(--yellow); padding-left: 12px; }
-.experience strong { font-weight: 600; }
+.experience > li { display: flex; flex-direction: column; border-left: 4px solid var(--yellow); padding-left: 12px; }
+.experience > li > strong { font-weight: 600; }
 .experience span { font-size: 15px; color: var(--ink-2); }
+.exp-points { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.exp-points li { display: flex; flex-direction: row; gap: 8px; font-size: 15px; color: var(--ink-2); border: 0; padding: 0; }
+.exp-points li::before { content: ""; flex: none; width: 7px; height: 7px; margin-top: .6em; background: var(--yellow); box-shadow: 0 0 0 2px var(--ink); }
+.achievements { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.achievements li { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.achievements li > div { display: flex; flex-direction: column; min-width: 0; }
+.achievements strong { font-weight: 600; }
+.achievements li span:not(.ach-year) { font-size: 15px; color: var(--ink-2); }
+.ach-year {
+  font-family: var(--pixel); font-weight: 700; font-size: 13px;
+  background: var(--yellow); border: 2px solid var(--ink); padding: 1px 8px; margin-top: 2px;
+}
 .about-meta { display: flex; flex-wrap: wrap; gap: 24px 48px; }
 .tools { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px; }
 .tools li {

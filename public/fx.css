@@ -108,8 +108,8 @@
   .fx .brief-card { transition: rotate .2s ease-out; }
   .fx .brief-card:hover { rotate: -1deg; }
 
-  .fx .experience li { transition: border-left-width .15s, background-color .15s; }
-  .fx .experience li:hover { border-left-width: 10px; background: var(--fx-hl); }
+  .fx .experience > li { transition: border-left-width .15s, background-color .15s; }
+  .fx .experience > li:hover { border-left-width: 10px; background: var(--fx-hl); }
 
   /* ป้ายเล็ก ๆ และปุ่ม: ส่ายแบบเฟรมต่ำ เหมือนตัวการ์ตูน */
   .fx .offer-list li:hover, .fx .tools li:hover { background: var(--yellow); animation: fx-wiggle calc(6s / var(--fps)) steps(1) infinite; }

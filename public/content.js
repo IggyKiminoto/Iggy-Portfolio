@@ -24,6 +24,7 @@ window.SITE = {
     { name: "On-site shoots", sprite: "camera" },
     { name: "Podcast & long-form", sprite: "mic" },
     { name: "Motion graphics", sprite: "sparkle" },
+    { name: "Key visuals & print", sprite: "star" },
   ],
 
   // แบรนด์ที่เคยทำงานด้วย (ขึ้นใต้ปุ่มบน Cover)
@@ -83,6 +84,11 @@ window.SITE = {
       detail: "Motion graphics that support a video, or carry it.",
       includes: ["Motion banners", "Animated typography", "Intros, outros and lower thirds"],
     },
+    {
+      title: "Key Visuals & Graphics",
+      detail: "Set the look of a campaign, then carry it across every format.",
+      includes: ["Mood & tone and key visuals", "Social, email and FAQ graphics", "Posters and print artwork", "Motion and video built from the key visual"],
+    },
   ],
 
   process: [
@@ -93,12 +99,31 @@ window.SITE = {
   ],
 
   about:
-    "I make short-form video for AIS's employee channel and for gaming brands like RoV, and I run my own Thai gaming channel, \"Iggy Will Play Games\". " +
+    "For 4+ years I've worked in the Creative & Multimedia Design team at AIS, making short-form and podcast video, motion graphics, key visuals and print for internal comms and the employer brand. " +
+    "Outside work I make content for gaming brands like RoV and run my own Thai gaming channel, \"Iggy Will Play Games\". " +
     "Running a channel taught me what makes people stop scrolling, so every edit starts from the platform and the audience. " +
     "I can take a video from idea to post: plan it, shoot it, edit it, voice it and add motion graphics or hand-drawn animation when it needs them.",
 
+  // รางวัล / โครงการที่ได้รับคัดเลือก (ขึ้นในส่วน About)
+  achievements: [
+    { year: "2025", title: "iCreator Camp Gen 2, presented by SONY", detail: "Selected from 600+ applicants into the final 100 creators, and placed Top 5 in the content competition." },
+    { year: "2024", title: "Thai Honda Creator Connect Club 2024", detail: "Selected as one of 80 creators for Honda Motorcycle Thailand's creator program." },
+  ],
+
   experience: [
-    { title: "Video content for AIS Club (AIS)", detail: "Employer-brand, recruitment, event and internal videos for the AIS employee channel, since 2022." },
+    {
+      title: "Creative & Multimedia Design, AIS",
+      detail: "Since 2022. Short-form and podcast video, motion graphics, key visuals and print for internal comms, HR and the employer brand.",
+      // ไฮไลต์ปี 2026 (จาก Annual Review) — ใช้เฉพาะตัวเลขที่บันทึกไว้
+      points: [
+        "Turned the internal podcast into a video show and edited and published a 6-episode series, cutting edit time from 1–2 days to about half a day per episode.",
+        "Shot and edited event clips to brief in about 2–3 hours each, delivered in time for every social post.",
+        "Shot, edited and built a motion banner for a rush job within one week.",
+        "Visual lead for an internal creator program: mood & tone, key visual, promo set and launch clip.",
+        "Redesigned the employee TikTok challenge into optional missions. Participants, posts and posts per person all went up on the previous round.",
+        "Designed and taught a 3-part AI workshop for non-tech employees: briefs, visual prompts and presentation design.",
+      ],
+    },
     { title: "\"Iggy Will Play Games\" (TikTok @iggylengame)", detail: "My own gaming channel. I plan, shoot, edit and post everything myself." },
     { title: "Event and campaign content for RoV Thailand", detail: "On-site event coverage, campaign clips and music video behind-the-scenes, 2025 to 2026." },
   ],
@@ -110,7 +135,7 @@ window.SITE = {
 
   contact: {
     line: "",         // เช่น "https://line.me/ti/p/~yourid"
-    email: "you@example.com",
+    email: "kamonpope.pro@hotmail.com",
     tiktok: "https://www.tiktok.com/@iggylengame",
     youtube: "",
     facebook: "",
@@ -213,19 +238,60 @@ window.WORKS = [
     client: "AIS",
     year: "2026",
     highlight: "Four clips that follow a national student hackathon from kick-off to the final pitch.",
+    details: {
+      platform: "TikTok · vertical",
+      brief: "Social clips timed to each stage of the event: a lessons-learned clip, the final round and the volunteer story.",
+      responsibility: "Took the brief, shot and edited each clip ready for social. The overall direction came from the project team.",
+      duration: "About 2–3 hours of production per clip, delivered on schedule",
+    },
   },
   {
-    title: "Life at AIS",
+    title: "AIS Wellness: Hack Your Health",
     clips: [
-      { url: "https://www.tiktok.com/@ais_club/video/7694612498561207572", label: "MAKE IT CONTENT workshop", role: ["Shoot", "Edit", "Voiceover"] },
-      { url: "https://www.tiktok.com/@ais_club/video/7692056564957564181", label: "AIS 36th anniversary", role: ["Edit"] },
-      { url: "https://www.tiktok.com/@ais_club/video/7669755196855110919", label: "AIS Wellness: Hack Your Health", role: ["Shoot", "Edit"] },
+      { url: "https://www.tiktok.com/@ais_club/video/7669755196855110919", label: "Program teaser", role: ["Shot list", "Shoot", "Edit", "Sound", "Text & effects"] },
     ],
     categories: ["Brand & Corporate", "Short-form & Social"],
-    tags: ["Employer Branding", "Event"],
+    tags: ["Key Visual", "Teaser", "Wellness"],
     client: "AIS",
     year: "2026",
-    highlight: "Workshops, celebrations and wellness tips for the AIS employee channel.",
+    role: ["Key visual"],
+    highlight: "I designed the key visual used across the whole wellness program, then shot and edited its teaser.",
+    details: {
+      platform: "TikTok · vertical",
+      brief: "An employee wellness program run by the engagement team.",
+      responsibility: "Designed the main key visual the team used throughout the program. For the teaser, the story came from the team; I planned the shot list, shot it and edited it, including sound, text and effects.",
+    },
+  },
+  {
+    title: "MAKE IT CONTENT Workshop",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7694612498561207572", label: "Workshop recap", role: ["Shoot", "Edit", "Voiceover"] },
+    ],
+    categories: ["Brand & Corporate", "Short-form & Social"],
+    tags: ["Key Visual", "Recap", "Event"],
+    client: "AIS",
+    year: "2026",
+    role: ["Key visual"],
+    highlight: "Key visual for the employee comms, then a recap clip of the workshop day.",
+    details: {
+      platform: "TikTok · vertical",
+      responsibility: "Designed the main key visual for the workshop's employee comms; its look was carried into the rest of the campaign. Shot, edited and voiced the recap clip. I was not the workshop owner.",
+    },
+  },
+  {
+    title: "AIS 36th Anniversary",
+    clips: [
+      { url: "https://www.tiktok.com/@ais_club/video/7692056564957564181", label: "Anniversary recap", role: ["Edit"] },
+    ],
+    categories: ["Brand & Corporate", "Event & Creator Content"],
+    tags: ["Event", "Recap"],
+    client: "AIS",
+    year: "2026",
+    highlight: "Anniversary recap edited to match the event's key visual.",
+    details: {
+      platform: "TikTok · vertical",
+      responsibility: "Edited the recap, building on a key visual by a designer on the team.",
+    },
   },
   {
     title: "RoV 10th Anniversary Exhibition",
@@ -248,7 +314,7 @@ window.WORKS = [
       { url: "https://www.tiktok.com/@iggylengame/video/7596625148455783701", label: "\"No more parties after this?\"" },
       { url: "https://www.tiktok.com/@iggylengame/video/7597141740008508693", label: "Every skin in the game vs. iPhone 17" },
       { url: "https://www.tiktok.com/@iggylengame/video/7596649416795163924", label: "Ambassador of Valor moment" },
-      { url: "https://www.tiktok.com/@iggylengame/video/7597438483124276500", label: "LIVE Incentive Program" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7597438483124276500", label: "Who gets to go?" },
     ],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Community"],
