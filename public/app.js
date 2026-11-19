@@ -43,10 +43,10 @@
         return {
           platform: "TikTok",
           vertical: true,
-          src: "https://www.tiktok.com/player/v1/" + m[1] + "?description=1&rel=0",
+          src: "https://www.tiktok.com/player/v1/" + m[1] + "?description=0&music_info=0&rel=0",
         };
       }
-      return { platform: "TikTok", error: "ลิงก์ TikTok แบบสั้นใช้ไม่ได้ — เปิดคลิปในเว็บแล้วก๊อปลิงก์เต็มที่มี /video/ตัวเลข" };
+      return { platform: "TikTok", error: "Short TikTok links (vt.tiktok.com) can't be embedded. Use the full link with /video/ and the number." };
     }
 
     // Facebook
@@ -214,6 +214,20 @@
       ".....nn.....",
       "............",
     ],
+    camera: [
+      "............",
+      "...nnnn.....",
+      "..nyyyyn....",
+      "nnnnnnnnnnnn",
+      "nccccccccccn",
+      "ncccnnnncccn",
+      "nccnbbbbnccn",
+      "nccnbccbnccn",
+      "nccnbbbbnccn",
+      "ncccnnnncccn",
+      "nccccccccccn",
+      "nnnnnnnnnnnn",
+    ],
     mic: [
       "....nnnn....",
       "...nbbbbn...",
@@ -275,6 +289,20 @@
 
   // เฟรมที่ 2 ของไอคอน — เวลาเอาเมาส์ชี้ ไอคอนจะสลับเฟรมเหมือนภาพ GIF
   const SPRITE_FRAMES = {
+    camera: [
+      "..y......y..",
+      "...nnnn.....",
+      "y.nyyyyn..y.",
+      "nnnnnnnnnnnn",
+      "nccccccccccn",
+      "ncccnnnncccn",
+      "nccnyyyynccn",
+      "nccnyccynccn",
+      "nccnyyyynccn",
+      "ncccnnnncccn",
+      "nccccccccccn",
+      "nnnnnnnnnnnn",
+    ],
     mic: [
       "....nnnn....",
       "...nbbbbn...",
@@ -467,8 +495,8 @@
     if (!v || v.error) {
       frame.appendChild(
         el("div", { class: "player-error" }, [
-          el("strong", { text: "เล่นคลิปนี้ไม่ได้" }),
-          el("span", { text: (v && v.error) || "ไม่รู้จักลิงก์นี้: " + (work.url || "(ว่าง)") }),
+          el("strong", { text: "This clip can't play here" }),
+          el("span", { text: (v && v.error) || "Unknown link: " + (work.url || "(empty)") }),
         ])
       );
       return { node: frame, info: v, vertical: vertical };
@@ -486,7 +514,7 @@
       // โชว์รูปปกก่อน กดแล้วค่อยโหลดคลิป (เว็บเบาและเร็วกว่ามาก)
       const playBtn = el("span", { class: "play-btn", "aria-hidden": "true" });
       playBtn.appendChild(spriteNode("play"));
-      const btn = el("button", { class: "player-facade", type: "button", "aria-label": "เล่น " + (work.title || "") }, [
+      const btn = el("button", { class: "player-facade", type: "button", "aria-label": "Play " + (work.title || "video") }, [
         el("img", { src: thumb, alt: "", loading: "lazy" }),
         playBtn,
       ]);
@@ -515,15 +543,28 @@
   }
 
   // รองรับทั้ง categories: [...] และ category: "..." แบบเก่า
-  const works = WORKS.filter((w) => !w.wip).map((w) => {
-    const info = parseVideo(w.url || w.embed);
-    let original = "";
-    if (/^https?:\/\//i.test(String(w.url || "").trim())) original = String(w.url).trim();
-    else if (info && info.src && info.platform !== "Embed") original = info.src;
+  function originalOf(url, info) {
+    const u = String(url || "").trim();
+    if (/^https?:\/\//i.test(u)) return u;
+    return info && info.src && info.platform !== "Embed" ? info.src : "";
+  }
+
+  const works = WORKS.filter((w) => !w.wip).map((w, idx) => {
+    const labels = asList(w.clipLabels);
+    const clipMeta = asList(w.clips || w.url).map((c, i) =>
+      typeof c === "string" ? { url: c, label: labels[i] || "" } : Object.assign({ label: labels[i] || "" }, c)
+    );
+    const clipList = clipMeta.map((c) => c.url);
+    const info = parseVideo(clipList[0] || w.embed);
+    const original = originalOf(clipList[0], info);
     return Object.assign({}, w, {
+      id: "work-" + (idx + 1),
+      url: clipList[0],
+      clipList: clipList,
+      clipMeta: clipMeta,
       cats: asList(w.categories || w.category),
       tagList: asList(w.tags),
-      roles: asList(w.role),
+      roles: asList((clipMeta[0] && clipMeta[0].role) || w.role),
       highlightText: w.highlight || w.description || "",
       info: info,
       original: original,
@@ -533,7 +574,7 @@
   const rest = works.filter((w) => featured.indexOf(w) === -1);
 
   const categories = (SITE.categories || []).map((c, i) =>
-    Object.assign({ sprite: ["phone", "mic", "sparkle"][i % 3] }, c)
+    Object.assign({ sprite: ["phone", "clapper", "camera", "mic", "sparkle"][i % 5] }, c)
   );
   const catInfo = (name) => categories.find((c) => c.name === name);
 
@@ -552,8 +593,10 @@
 
   function openLink(w) {
     if (!w.original) return null;
-    const name = (w.info && w.info.platform && !/Embed|Video/.test(w.info.platform)) ? w.info.platform : "ต้นฉบับ";
-    return el("a", { class: "open-link", href: w.original, target: "_blank", rel: "noopener", text: "เปิดบน " + name + " ↗" });
+    const name = (w.info && w.info.platform && !/Embed|Video/.test(w.info.platform)) ? w.info.platform : "the original site";
+    const a = el("a", { class: "open-link", href: w.original, target: "_blank", rel: "noopener", text: "Watch on " + name + " ↗" });
+    w._open = a;
+    return a;
   }
 
   function detailsBlock(w, label) {
@@ -564,33 +607,40 @@
       rows.push(el("dt", { text: term }));
       rows.push(typeof value === "string" ? el("dd", { text: value }) : el("dd", {}, [value]));
     };
-    add("โจทย์และคนดู", d.brief);
-    add("หน้าที่ของ " + (SITE.name || "ผม"), d.responsibility);
-    add("การตัดสินใจสำคัญ", d.decisions);
+    add("Platform", d.platform);
+    add("Brief", d.brief);
+    add("My role", d.responsibility);
+    add("Key decisions", d.decisions);
     if (d.results) {
       const res = el("span", { text: d.results });
-      if (d.resultsSource) res.appendChild(el("small", { class: "source", text: "ที่มา: " + d.resultsSource }));
-      add("ผลลัพธ์", res);
+      if (d.resultsSource) res.appendChild(el("small", { class: "source", text: "Source: " + d.resultsSource }));
+      add("Results", res);
     }
-    add("โปรแกรม", asList(d.tools).join(", "));
-    add("ระยะเวลา", d.duration);
+    add("Tools", asList(d.tools).join(", "));
+    add("Turnaround", d.duration);
     if (d.beforeAfter) {
-      add("Before / After", el("a", { href: d.beforeAfter, target: "_blank", rel: "noopener", text: "ดูคลิปเทียบ ↗" }));
+      add("Before / After", el("a", { href: d.beforeAfter, target: "_blank", rel: "noopener", text: "Watch the comparison ↗" }));
     }
     if (!rows.length) return null;
-    return el("details", { class: "work-more" }, [el("summary", { text: label || "ดูเบื้องหลัง" }), el("dl", {}, rows)]);
+    return el("details", { class: "work-more" }, [el("summary", { text: label || "Behind the work" }), el("dl", {}, rows)]);
   }
 
   function workInfo(w, opts) {
-    const meta = [w.cats.join(" / "), w.client].filter(Boolean).join(" · ");
+    const count = w.clipList.length > 1 ? w.clipList.length + " clips" : "";
+    const meta = [w.client, w.cats.join(" / "), w.year, count].filter(Boolean).join(" · ");
     const children = [
-      el("h3", { text: w.title || "ไม่มีชื่อ" }),
+      el("h3", { text: w.title || "Untitled" }),
       meta ? el("p", { class: "work-meta", text: meta }) : null,
     ];
-    if (w.roles.length || w.ongoing) {
-      const roles = el("ul", { class: "roles", "aria-label": "บทบาท" });
-      w.roles.forEach((r) => roles.appendChild(el("li", { text: r })));
-      if (w.ongoing) roles.appendChild(el("li", { class: "is-ongoing", text: "โปรเจกต์ต่อเนื่อง" }));
+    const anyRoles = w.roles.length || w.ongoing || w.clipMeta.some((c) => c.role);
+    if (anyRoles) {
+      const roles = el("ul", { class: "roles", "aria-label": "My role" });
+      w._fillRoles = (list) => {
+        roles.replaceChildren();
+        asList(list).forEach((r) => roles.appendChild(el("li", { text: r })));
+        if (w.ongoing) roles.appendChild(el("li", { class: "is-ongoing", text: "Ongoing series" }));
+      };
+      w._fillRoles(w.roles);
       children.push(roles);
     }
     if (w.highlightText) children.push(el("p", { class: "work-highlight", text: w.highlightText }));
@@ -605,21 +655,58 @@
     return children;
   }
 
+  // คลิปในโปรเจกต์: ถ้ามีหลายคลิป จะมีปุ่ม 1 2 3 ให้สลับดู
+  function mediaBlock(w) {
+    const box = el("div", { class: "media-box" });
+    let player = makePlayer(w);
+    box.appendChild(player.node);
+    if (w.clipList.length > 1) {
+      const labels = w.clipMeta.map((c) => c.label || "");
+      const caption = el("span", { class: "clip-caption", text: labels[0] || "" });
+      const tabs = el("div", { class: "clip-tabs", role: "group", "aria-label": "Clips in this project" }, [
+        el("span", { class: "clip-tabs-label", text: "CLIPS" }),
+      ]);
+      const btns = w.clipList.map((u, i) => {
+        const b = el("button", {
+          type: "button", class: "clip-tab", text: String(i + 1),
+          "aria-pressed": i === 0 ? "true" : "false",
+          "aria-label": "Clip " + (i + 1) + (labels[i] ? ": " + labels[i] : ""),
+        });
+        b.addEventListener("click", () => {
+          if (b.getAttribute("aria-pressed") === "true") return;
+          const next = makePlayer(Object.assign({}, w, { url: u, thumbnail: i === 0 ? w.thumbnail : "" }));
+          box.replaceChild(next.node, player.node);
+          player = next;
+          btns.forEach((x, k) => x.setAttribute("aria-pressed", String(k === i)));
+          caption.textContent = labels[i] || "";
+          if (w._open) w._open.href = originalOf(u, next.info);
+          if (w._fillRoles) w._fillRoles(w.clipMeta[i].role || w.role);
+          popNow(next.node, 0);
+        });
+        tabs.appendChild(b);
+        return b;
+      });
+      tabs.appendChild(caption);
+      box.appendChild(tabs);
+    }
+    return { node: box, vertical: player.vertical };
+  }
+
   function featuredRow(w, i) {
-    const player = makePlayer(w);
-    const row = el("article", { class: "feature" + (player.vertical ? " is-vertical" : "") }, [
-      el("div", { class: "feature-media" }, [player.node]),
+    const media = mediaBlock(w);
+    const row = el("article", { class: "feature" + (media.vertical ? " is-vertical" : ""), id: w.id }, [
+      el("div", { class: "feature-media" }, [media.node]),
       el("div", { class: "feature-info" }, [el("span", { class: "feature-num", text: String(i + 1).padStart(2, "0") })].concat(
-        workInfo(w, { showTags: true, detailsLabel: "อ่านเบื้องหลังงานนี้" })
+        workInfo(w, { showTags: true, detailsLabel: "Read the story behind it" })
       )),
     ]);
     return row;
   }
 
   function workCard(w, i) {
-    const player = makePlayer(w);
-    const card = el("article", { class: "card" }, [
-      player.node,
+    const media = mediaBlock(w);
+    const card = el("article", { class: "card", id: w.id }, [
+      media.node,
       el("div", { class: "card-body" }, workInfo(w, {})),
     ]);
     card.style.setProperty("--r", [-0.6, 0.5, -0.3, 0.7][i % 4] + "deg");
@@ -628,7 +715,7 @@
   }
 
   // ---------- 8) ตัวกรองชุดเดียว ----------
-  const ALL = "ทั้งหมด";
+  const ALL = "All";
   let cards = [];
   const chipButtons = [];
 
@@ -652,7 +739,18 @@
 
   // ---------- 9) เติมหน้าเว็บ ----------
   function renderHero() {
-    document.title = (SITE.name || "Portfolio") + " — " + (SITE.role || "Video Editor");
+    document.title = SITE.pageTitle || (SITE.name || "Portfolio") + " | " + (SITE.role || "Video Editor");
+
+    // หัวข้อใหญ่บน Cover = สโลแกน (แต่ละบรรทัดเป็น 1 ข้อความใน headline)
+    const h1 = document.getElementById("hero-title");
+    asList(SITE.headline).forEach((line) => h1.appendChild(el("span", { class: "hero-line", text: line })));
+    h1.setAttribute("aria-label", asList(SITE.headline).join(" ") || SITE.name || "");
+    if (!h1.children.length) h1.appendChild(el("span", { class: "hero-line", text: SITE.name || "" }));
+
+    const clients = document.getElementById("hero-clients");
+    const names = asList(SITE.workedWith);
+    if (names.length) clients.appendChild(el("span", { text: names.join(" · ") }));
+    else clients.remove();
     setText("[data-site=name]", SITE.name);
     setText("[data-site=role]", SITE.role);
     setText("[data-site=tagline]", SITE.tagline);
@@ -660,25 +758,16 @@
     setText("[data-site=year]", String(new Date().getFullYear()));
     document.querySelectorAll("[data-sprite]").forEach((n) => (n.innerHTML = sprite(n.dataset.sprite)));
 
-    // รับงานอะไร: ใช้หมวดที่มีงานจริง
+    // รับงานอะไร: ใช้ SITE.offer ถ้ามี ไม่งั้นใช้หมวดงาน
     const offer = document.getElementById("offer-list");
-    const offered = categories.filter((c) => works.some((w) => w.cats.indexOf(c.name) !== -1));
-    (offered.length ? offered : categories).forEach((c) => {
+    const offered = asList(SITE.offer).length ? asList(SITE.offer) : categories;
+    offered.forEach((c) => {
       const li = el("li", {}, [iconFor(c), el("span", { text: c.name })]);
       offer.appendChild(li);
     });
     if (!offer.children.length) offer.parentNode.remove();
 
-    // Showreel หรือ งานเด่นชิ้นแรก
-    const reel = document.getElementById("reel");
-    if (SITE.showreel) {
-      reel.appendChild(makePlayer({ url: SITE.showreel, title: "Showreel" }).node);
-    } else if (featured[0]) {
-      document.getElementById("reel-label").textContent = "▶ FEATURED";
-      reel.appendChild(makePlayer(featured[0]).node);
-    } else {
-      document.getElementById("reel-wrap").remove();
-    }
+    renderReel();
 
     const ticker = document.getElementById("ticker");
     const words = SITE.marquee && SITE.marquee.length ? SITE.marquee : [SITE.role || "PORTFOLIO"];
@@ -692,6 +781,70 @@
       }
       ticker.appendChild(group);
     }
+  }
+
+  // ทีวีบน Cover: แต่ละ "ช่อง" = งาน 1 ประเภท กดเลือกช่อง หรือกดลูกศรเลื่อนดูได้
+  function renderReel() {
+    const wrap = document.getElementById("reel-wrap");
+    const screen = document.getElementById("reel");
+    const label = document.getElementById("reel-label");
+    const count = document.getElementById("reel-count");
+    const chips = document.getElementById("reel-channels");
+    const from = document.getElementById("reel-from");
+    const prev = document.getElementById("reel-prev");
+    const next = document.getElementById("reel-next");
+
+    let channels = asList(SITE.channels).filter((c) => c && c.clip);
+    if (!channels.length && SITE.showreel) channels = [{ label: SITE.reelLabel || "SHOWREEL", clip: SITE.showreel }];
+    if (!channels.length && featured[0]) channels = [{ label: SITE.reelLabel || "LATEST WORK", clip: featured[0].url }];
+    if (!channels.length) return wrap.remove();
+
+    const findWork = (url) => works.find((w) => w.clipList.indexOf(url) !== -1);
+    let current = -1;
+    const buttons = channels.map((c, i) => {
+      const b = el("button", { type: "button", class: "filter", "aria-pressed": "false" }, [
+        c.sprite ? iconFor({ sprite: c.sprite }) : null,
+        el("span", { text: c.label }),
+      ]);
+      b.addEventListener("click", () => show(i));
+      chips.appendChild(b);
+      return b;
+    });
+    if (channels.length < 2) {
+      chips.remove();
+      prev.hidden = true;
+      next.hidden = true;
+    }
+
+    function show(i) {
+      const n = channels.length;
+      i = (i + n) % n;
+      if (i === current) return;
+      const first = current === -1;
+      current = i;
+      const c = channels[i];
+      const work = findWork(c.clip);
+      const player = makePlayer({ url: c.clip, title: c.label, format: c.format });
+      screen.replaceChildren(player.node);
+      if (!first && !reduceMotion) {
+        screen.classList.remove("is-static");
+        void screen.offsetWidth;
+        screen.classList.add("is-static");
+      }
+      label.textContent = "▶ " + (n > 1 ? "CH " + (i + 1) + " · " : "") + c.label;
+      count.textContent = n > 1 ? i + 1 + " / " + n : "";
+      buttons.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i)));
+      if (work) {
+        from.textContent = "From: " + work.title + " ↓";
+        from.setAttribute("href", "#" + work.id);
+        from.hidden = false;
+      } else {
+        from.hidden = true;
+      }
+    }
+    prev.addEventListener("click", () => show(current - 1));
+    next.addEventListener("click", () => show(current + 1));
+    show(0);
   }
 
   function renderSelected() {
@@ -734,6 +887,13 @@
       const tag = typeof t === "string" ? { name: t } : t;
       if (rest.some((w) => w.tagList.indexOf(tag.name) !== -1)) list.push({ type: "tag", name: tag.name, item: tag });
     });
+    // ปุ่มกรองที่กดแล้วได้ผลเหมือน "All" ไม่ต้องแสดง
+    const useful = [list[0]].concat(list.slice(1).filter((f) => {
+      const n = rest.filter((w) => matches(w, f)).length;
+      return n > 0 && n < rest.length;
+    }));
+    list.length = 0;
+    useful.forEach((f) => list.push(f));
     if (list.length < 3) {
       filters.remove();
       return;
@@ -809,7 +969,7 @@
     const links = document.getElementById("contact-links");
     // ช่องทางหลัก: LINE ก่อน แล้วตามด้วยอีเมล
     [
-      c.line && ["LINE", c.line, "แอดไลน์คุยงาน"],
+      c.line && ["LINE", c.line, "Add me on LINE"],
       c.email && ["EMAIL", "mailto:" + c.email, c.email],
     ]
       .filter(Boolean)

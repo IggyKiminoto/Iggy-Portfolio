@@ -181,7 +181,7 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   box-shadow: 4px 4px 0 var(--ink);
 }
 .hero-title {
-  font-size: clamp(56px, 15vw, 120px);
+  font-size: clamp(38px, 10.5vw, 64px);
   margin: 14px 0 10px;
   --o: .045em;
 }
@@ -221,9 +221,21 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   }
   .hero-inner { text-align: left; margin: 0; }
   .hero-offer, .offer-list, .hero-actions { justify-content: flex-start; }
-  .hero-title { font-size: clamp(60px, 7.5vw, 112px); margin: 18px 0 14px; }
-  .hero-grid .tv { margin: 0; }
+  .hero-title { font-size: clamp(34px, 4.1vw, 62px); margin: 18px 0 14px; }
+  .hero-line { white-space: nowrap; }
+  .hero-grid .hero-clients { justify-content: flex-start; }
+  .hero-grid .reel { margin: 0; }
 }
+
+/* สโลแกน: แต่ละบรรทัดสลับสี */
+.hero-line { display: block; }
+.hero-line:nth-child(even) { color: var(--cream); }
+/* "Worked with" ใต้ปุ่ม */
+.hero-clients {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px;
+  margin-top: 18px; font-weight: 600; font-size: 15px; color: var(--cream);
+}
+.hero-clients .mini-label { margin: 0; opacity: .85; }
 
 /* สติกเกอร์ตกแต่ง — ขยับแบบ "boil" เหมือนการ์ตูนวาดมือ */
 .sticker {
@@ -235,14 +247,15 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   pointer-events: none;
 }
 
-@media (max-width: 899px) { .sticker-main { left: auto; right: 4%; top: 2.5%; } }
+@media (max-width: 899px) { .sticker-main { left: auto; right: 3%; top: .8%; } }
 @media (min-width: 900px) { .sticker-main { left: 45%; top: 66%; } }
 
 /* ---------- ทีวีโชว์รีล ---------- */
+.reel { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 40px auto 0; min-width: 0; }
 .tv {
   position: relative; z-index: 2;
-  max-width: 760px;
-  margin: 40px auto 0;
+  width: fit-content; max-width: 100%;
+  margin: 0;
   background: var(--sand);
   border: 4px solid var(--ink);
   border-radius: 22px;
@@ -261,9 +274,45 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
 .tv-label { font-family: var(--pixel); font-weight: 700; font-size: 15px; letter-spacing: .06em; }
 .tv-rec { font-family: var(--pixel); font-size: 13px; display: flex; align-items: center; gap: 6px; }
 .tv-rec i { width: 10px; height: 10px; background: var(--orange); animation: blink calc(12s / var(--fps)) steps(1) infinite; }
-.tv-screen { border: 4px solid var(--ink); border-radius: 10px; overflow: hidden; background: var(--ink); }
+.tv-screen { position: relative; border: 4px solid var(--ink); border-radius: 10px; overflow: hidden; background: var(--ink); }
 .tv-screen .player { border-radius: 0; }
+/* จอพอดีคลิป: แนวตั้งสูงตามจอ / แนวนอนกว้างตามคอลัมน์ */
+.tv-screen .player.is-vertical { width: calc(min(58vh, 620px) * 9 / 16); max-width: calc(100vw - 80px); }
+.tv-screen .player.is-horizontal { width: min(560px, calc(100vw - 80px)); }
+/* เปลี่ยนช่อง: ภาพซ่าแบบทีวีเก่า 3 เฟรม */
+.tv-screen.is-static::after {
+  content: ""; position: absolute; inset: 0; z-index: 3;
+  background: var(--ink) var(--grain); background-size: 120px;
+  animation: tv-static calc(3s / var(--fps)) steps(1) forwards;
+}
+@keyframes tv-static {
+  0% { background-position: 0 0; opacity: 1; }
+  33% { background-position: 37px -21px; opacity: 1; }
+  66% { background-position: -18px 44px; opacity: .85; }
+  100% { opacity: 0; }
+}
+.tv-arrow {
+  --c: var(--ink);
+  width: 30px; height: 30px; padding: 7px; border: 0; cursor: pointer;
+  background: var(--cream);
+  box-shadow: 0 -3px var(--c), 0 3px var(--c), -3px 0 var(--c), 3px 0 var(--c);
+  margin: 3px;
+}
+.tv-arrow:hover { background: var(--yellow); }
+.tv-arrow:active { translate: 0 2px; }
+.tv-arrow:focus-visible { outline: 3px dashed var(--ink); outline-offset: 4px; }
+.tv-count { font-family: var(--pixel); font-weight: 700; font-size: 13px; letter-spacing: .06em; white-space: nowrap; }
+.tv-bottom { gap: 10px; }
+.tv-bottom .tv-grill { flex: 1; width: auto; min-width: 16px; }
+
+/* ปุ่มเลือกช่อง (ประเภทงาน) ใต้ทีวี */
+.reel-channels { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.reel-channels .filter { font-size: 14px; padding: 3px 12px; }
+.reel-channels .filter[aria-pressed="true"] { background: var(--yellow); color: var(--ink); }
+.reel-from { font-size: 14px; font-weight: 600; color: var(--cream); text-underline-offset: 3px; max-width: 100%; text-align: center; }
+.reel-from:hover { color: var(--yellow); }
 .tv-bottom { margin-top: 10px; }
+.tv-bottom:has(.tv-arrow[hidden]) .tv-grill { flex: none; width: 90px; }
 .tv-grill { width: 90px; height: 14px; background: repeating-linear-gradient(90deg, var(--ink) 0 4px, transparent 4px 9px); }
 .tv-knobs { display: flex; gap: 10px; }
 .tv-knobs i { width: 18px; height: 18px; border: 3px solid var(--ink); border-radius: 50%; background: var(--yellow); }
@@ -348,6 +397,19 @@ mark {
   background: var(--yellow); border: 3px solid var(--ink); padding: 0 10px;
 }
 .feature-info h3 { font-size: clamp(22px, 2.6vw, 28px); font-weight: 700; line-height: 1.3; text-wrap: balance; }
+
+/* ---------- ปุ่มสลับคลิปในโปรเจกต์ ---------- */
+.clip-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 2px 2px; }
+.clip-tabs-label { font-family: var(--pixel); font-size: 12px; letter-spacing: .06em; margin-right: 2px; }
+.clip-tab {
+  width: 30px; height: 30px; padding: 0;
+  font-family: var(--pixel); font-weight: 700; font-size: 13px; color: var(--ink);
+  background: var(--paper); border: 2px solid var(--ink); cursor: pointer;
+}
+.clip-tab:hover { background: var(--fx-hl, var(--cream)); }
+.clip-tab[aria-pressed="true"] { background: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
+.clip-tab:focus-visible { outline: 3px dashed var(--ink); outline-offset: 2px; }
+.clip-caption { flex-basis: 100%; font-size: 14px; font-weight: 500; color: var(--ink-2); min-height: 1.4em; }
 
 /* ---------- ข้อมูลผลงาน (ใช้ทั้งงานเด่นและการ์ด) ---------- */
 .work-meta { font-size: 14px; font-weight: 500; color: var(--ink-2); }

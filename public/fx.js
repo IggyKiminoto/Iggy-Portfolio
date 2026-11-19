@@ -91,7 +91,7 @@
     const text = target.textContent;
     if (!text.trim()) return [];
     const holder = target.closest("h1, h2") || target;
-    holder.setAttribute("aria-label", holder.textContent.trim());
+    if (!holder.hasAttribute("aria-label")) holder.setAttribute("aria-label", holder.textContent.trim());
     const wrap = document.createElement("span");
     wrap.setAttribute("aria-hidden", "true");
     const letters = [];
@@ -155,10 +155,15 @@
   // ---------------------------------------------------------------
   // Cover: เล่นลำดับตอนเปิดหน้าเว็บ
   // ---------------------------------------------------------------
-  const heroTitle = document.querySelector(".hero-title span");
-  if (heroTitle) bounceLetters(splitLetters(heroTitle), 160);
+  let heroDelay = 160;
+  document.querySelectorAll(".hero-title .hero-line").forEach((line) => {
+    const letters = splitLetters(line);
+    bounceLetters(letters, heroDelay);
+    heroDelay += letters.length * 55 + 60;
+  });
   reveal(document.querySelector(".hero .label-sticker"), "drop", { now: true });
-  reveal(document.querySelector(".hero .speech"), "pop", { now: true, delay: 420 });
+  reveal(document.querySelector(".hero .speech"), "pop", { now: true, delay: 520 });
+  reveal(document.querySelector(".hero-clients"), "up", { now: true, delay: 760 });
   document.querySelectorAll(".offer-list li").forEach((li, i) => reveal(li, "up", { now: true, delay: 520 + i * 60 }));
   document.querySelectorAll(".hero-actions .px-btn").forEach((b, i) => reveal(b, "up", { now: true, delay: 640 + i * 60 }));
   reveal(document.querySelector(".hero .tv"), "right", { now: true, delay: 260 });
