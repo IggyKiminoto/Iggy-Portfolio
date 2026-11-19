@@ -594,6 +594,26 @@ mark {
 }
 .resume-btn { align-self: flex-start; }
 
+/* ---------- รูปกิจกรรม (MOMENTS) ---------- */
+.moments { margin-top: clamp(40px, 6vw, 64px); min-width: 0; }
+.moments-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.moments-head .mini-label { margin: 0; }
+.moments-nav { display: flex; gap: 10px; }
+.moments-track {
+  display: flex; gap: 24px; overflow-x: auto; padding: 22px 6px 28px;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: thin;
+}
+.moments-track:focus-visible { outline: 3px dashed var(--ink); outline-offset: 4px; }
+.moment {
+  flex: 0 0 auto; width: clamp(200px, 26vw, 280px); margin: 0;
+  scroll-snap-align: start;
+  background: var(--paper); border: 3px solid var(--ink); padding: 10px 10px 8px;
+  box-shadow: 6px 6px 0 var(--ink);
+  transform: rotate(var(--r, 0deg));
+}
+.moment img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border: 2px solid var(--ink); background: var(--sand); }
+.moment figcaption { font-size: 14px; font-weight: 600; padding-top: 8px; line-height: 1.4; }
+
 /* ---------- ติดต่อ ---------- */
 .contact {
   position: relative;

@@ -128,7 +128,15 @@ window.SITE = {
     { title: "Event and campaign content for RoV Thailand", detail: "On-site event coverage, campaign clips and music video behind-the-scenes, 2025 to 2026." },
   ],
 
-  photo: "",          // รูปตัวเอง เช่น "icons/me.jpg"
+  /* ---------- รูป (อัปโหลดเองจากมือถือได้) ----------
+     รูปโปรไฟล์: อัปไฟล์ชื่อ profile.jpg ไว้ในโฟลเดอร์ public/images  เว็บจะใช้เอง
+     รูปกิจกรรม: อัปไฟล์ชื่อ about-1.jpg, about-2.jpg ... (สูงสุด 12 รูป) ในโฟลเดอร์เดียวกัน
+     ไม่ต้องแก้ไฟล์นี้ ถ้าไม่อยากใส่คำบรรยายรูป                                          */
+  photo: "",          // ปล่อยว่าง = ใช้ images/profile.jpg อัตโนมัติ
+  // คำบรรยายใต้รูปกิจกรรม (ใส่เฉพาะรูปที่อยากมีคำบรรยาย) เช่น 1: "iCreator Camp 2025"
+  galleryCaptions: {
+    // 1: "iCreator Camp Gen 2, 2025",
+  },
   tools: ["Premiere Pro", "After Effects", "CapCut", "Photoshop"],
   languages: ["Thai (native)", "English"],
   resume: "",         // ลิงก์ Resume (ปล่อยว่าง = ไม่แสดงปุ่ม)

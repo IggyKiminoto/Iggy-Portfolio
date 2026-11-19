@@ -971,10 +971,59 @@
     if (!proc.children.length) proc.parentNode.remove();
   }
 
+  // ลองโหลดรูปทีละนามสกุล เจออันแรกที่มีจริงก็ใช้อันนั้น
+  const IMAGE_EXT = ["jpg", "jpeg", "png", "webp", "JPG", "JPEG", "PNG"];
+  function imageNames(base) {
+    return IMAGE_EXT.map((ext) => base + "." + ext);
+  }
+  function loadFirst(srcs, onFound, onNone) {
+    const list = srcs.slice();
+    (function next() {
+      if (!list.length) return onNone && onNone();
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => onFound(img);
+      img.onerror = next;
+      img.src = list.shift();
+    })();
+  }
+
+  // รูปกิจกรรม about-1 ... about-12 เรียงตามเลข
+  function renderMoments() {
+    const wrap = document.getElementById("moments-wrap");
+    const track = document.getElementById("moments");
+    if (!wrap || !track) return;
+    const captions = SITE.galleryCaptions || {};
+    const tilts = [-2, 1.5, -1, 2, -1.5, 1];
+    for (let i = 1; i <= 12; i++) {
+      const fig = el("figure", { class: "moment" });
+      fig.style.setProperty("--r", tilts[i % tilts.length] + "deg");
+      fig.hidden = true;
+      track.appendChild(fig);
+      loadFirst(imageNames("images/about-" + i), (img) => {
+        img.alt = captions[i] || "Moment " + i;
+        img.loading = "lazy";
+        fig.appendChild(img);
+        if (captions[i]) fig.appendChild(el("figcaption", { text: captions[i] }));
+        fig.hidden = false;
+        wrap.hidden = false;
+      }, () => fig.remove());
+    }
+    const step = () => Math.max(200, track.clientWidth * 0.8);
+    document.getElementById("moments-prev").addEventListener("click", () => track.scrollBy({ left: -step(), behavior: reduceMotion ? "auto" : "smooth" }));
+    document.getElementById("moments-next").addEventListener("click", () => track.scrollBy({ left: step(), behavior: reduceMotion ? "auto" : "smooth" }));
+  }
+
   function renderAbout() {
+    // รูปโปรไฟล์: SITE.photo หรือ images/profile.jpg (.jpeg / .png / .webp) ไม่มีก็ใช้รูปพิกเซล
     const photo = document.getElementById("photo");
-    if (SITE.photo) photo.appendChild(el("img", { src: SITE.photo, alt: SITE.name || "" }));
-    else photo.appendChild(spriteNode("gamepad"));
+    const fallback = spriteNode("gamepad");
+    photo.appendChild(fallback);
+    loadFirst(SITE.photo ? [SITE.photo] : imageNames("images/profile"), (img) => {
+      img.alt = SITE.name || "";
+      photo.replaceChildren(img);
+    });
+    renderMoments();
 
     const exp = document.getElementById("experience");
     (SITE.experience || []).forEach((x) => {
