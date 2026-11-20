@@ -755,6 +755,7 @@
 
   function matches(w, f) {
     if (f.type === "all") return true;
+    if (f.type === "mode") return f.names.indexOf(w.cats[0]) !== -1; // ดูจากหมวดแรกของผลงาน
     if (f.type === "cat") return w.cats.indexOf(f.name) !== -1;
     return w.tagList.indexOf(f.name) !== -1;
   }
@@ -781,10 +782,15 @@
     h1.setAttribute("aria-label", asList(SITE.headline).join(" ") || SITE.name || "");
     if (!h1.children.length) h1.appendChild(el("span", { class: "hero-line", text: SITE.name || "" }));
 
-    const clients = document.getElementById("hero-clients");
+    // ส่วน WORKED WITH ท้ายเว็บ
+    const clientList = document.getElementById("client-list");
     const names = asList(SITE.workedWith);
-    if (names.length) clients.appendChild(el("span", { text: names.join(" · ") }));
-    else clients.remove();
+    names.forEach((n, i) => {
+      const li = el("li", { class: "client", text: n });
+      li.style.setProperty("--r", [-2, 1.5, -1, 2.5, -1.5][i % 5] + "deg");
+      clientList.appendChild(li);
+    });
+    if (!names.length) document.getElementById("clients").remove();
     setText("[data-site=name]", SITE.name);
     setText("[data-site=role]", SITE.role);
     setText("[data-site=tagline]", SITE.tagline);
@@ -792,14 +798,6 @@
     setText("[data-site=year]", String(new Date().getFullYear()));
     document.querySelectorAll("[data-sprite]").forEach((n) => (n.innerHTML = sprite(n.dataset.sprite)));
 
-    // รับงานอะไร: ใช้ SITE.offer ถ้ามี ไม่งั้นใช้หมวดงาน
-    const offer = document.getElementById("offer-list");
-    const offered = asList(SITE.offer).length ? asList(SITE.offer) : categories;
-    offered.forEach((c) => {
-      const li = el("li", {}, [iconFor(c), el("span", { text: c.name })]);
-      offer.appendChild(li);
-    });
-    if (!offer.children.length) offer.parentNode.remove();
 
     renderReel();
 
@@ -817,68 +815,291 @@
     }
   }
 
-  // ทีวีบน Cover: แต่ละ "ช่อง" = งาน 1 ประเภท กดเลือกช่อง หรือกดลูกศรเลื่อนดูได้
+  // ประเภทงานของแต่ละผลงาน (ดูจากหมวดแรก) — ใช้ทั้งจอคลิปและโฟลเดอร์ผลงาน
+  function modeOfWork(w) {
+    const ms = asList(SITE.modes);
+    const m = ms.find((x) => asList(x.filter).indexOf(w.cats[0]) !== -1);
+    return m ? m.id : ((ms.find((x) => x.id === "video") || ms[0] || {}).id);
+  }
+
+  // ---------- ปุ่มโฟลเดอร์ (ใช้ทั้งบน Cover และในส่วนผลงาน) ----------
+  // รูปปกที่ "โผล่" ออกจากโฟลเดอร์: วางไฟล์ images/peek/<id>-1.jpg ถึง -3.jpg (ไม่มีก็ใช้การ์ดพิกเซลแทน)
+  const peekCache = {};
+  function peekImages(id, done) {
+    if (peekCache[id]) return peekCache[id].then(done);
+    peekCache[id] = new Promise((resolve) => {
+      const found = [];
+      let pending = 3;
+      for (let i = 1; i <= 3; i++) {
+        loadFirst(["jpg", "png", "webp"].map((ext) => "images/peek/" + id + "-" + i + "." + ext), (img) => {
+          found[i - 1] = img.src;
+          if (--pending === 0) resolve(found);
+        }, () => {
+          if (--pending === 0) resolve(found);
+        });
+      }
+    });
+    peekCache[id].then(done);
+  }
+  function makeFolder(mode, opts) {
+    const accent = (mode.colors && mode.colors.accent) || "var(--yellow)";
+    const peek = el("span", { class: "folder-peek", "aria-hidden": "true" });
+    const cards = [1, 2, 3].map((i) => {
+      const card = el("span", { class: "peek-card peek-" + i });
+      card.appendChild(spriteNode(mode.sprite || "sparkle"));
+      peek.appendChild(card);
+      return card;
+    });
+    peekImages(mode.id, (srcs) => srcs.forEach((src, i) => {
+      if (!src) return;
+      cards[i].replaceChildren(el("img", { src: src, alt: "" }));
+      cards[i].classList.add("has-img");
+    }));
+    const n = opts.count;
+    const front = el("span", { class: "folder-front" }, [
+      iconFor({ icon: mode.icon, sprite: mode.sprite }),
+      el("span", { class: "folder-name", text: mode.short || mode.label }),
+      opts.countText ? el("span", { class: "folder-count", text: opts.countText }) :
+      n == null ? null : el("span", { class: "folder-count", text: n ? n + (n > 1 ? " projects" : " project") : "Coming soon" }),
+    ]);
+    const btn = el("button", { type: "button", class: "folder " + (opts.cls || ""), "aria-label": mode.label }, [
+      el("span", { class: "folder-back", "aria-hidden": "true" }),
+      peek,
+      front,
+    ]);
+    btn.style.setProperty("--folder", accent);
+    return btn;
+  }
+
+  // ---------- จอคลิปบน Cover (หน้าต่างสไตล์ XP): ปิดอยู่จนกว่าจะเลือกประเภทงาน ----------
+  const reelApi = { tune: () => {}, off: () => {} };
   function renderReel() {
     const wrap = document.getElementById("reel-wrap");
     const screen = document.getElementById("reel");
+    const offScreen = document.getElementById("reel-off");
     const label = document.getElementById("reel-label");
     const count = document.getElementById("reel-count");
-    const chips = document.getElementById("reel-channels");
     const from = document.getElementById("reel-from");
     const prev = document.getElementById("reel-prev");
     const next = document.getElementById("reel-next");
-
-    let channels = asList(SITE.channels).filter((c) => c && c.clip);
-    if (!channels.length && SITE.showreel) channels = [{ label: SITE.reelLabel || "SHOWREEL", clip: SITE.showreel }];
-    if (!channels.length && featured[0]) channels = [{ label: SITE.reelLabel || "LATEST WORK", clip: featured[0].url }];
-    if (!channels.length) return wrap.remove();
-
+    const all = asList(SITE.channels).filter((c) => c && c.clip);
     const findWork = (url) => works.find((w) => w.clipList.indexOf(url) !== -1);
+    const title = SITE.playerTitle || "Iggy Player";
+    let list = [];
     let current = -1;
-    const buttons = channels.map((c, i) => {
-      const b = el("button", { type: "button", class: "filter", "aria-pressed": "false" }, [
-        c.sprite ? iconFor({ sprite: c.sprite }) : null,
-        el("span", { text: c.label }),
-      ]);
-      b.addEventListener("click", () => show(i));
-      chips.appendChild(b);
-      return b;
-    });
-    if (channels.length < 2) {
-      chips.remove();
-      prev.hidden = true;
-      next.hidden = true;
-    }
+    let fromWork = null;
 
-    function show(i) {
-      const n = channels.length;
-      i = (i + n) % n;
-      if (i === current) return;
-      const first = current === -1;
-      current = i;
-      const c = channels[i];
-      const work = findWork(c.clip);
+    function staticFx() {
+      if (reduceMotion) return;
+      screen.classList.remove("is-static");
+      void screen.offsetWidth;
+      screen.classList.add("is-static");
+    }
+    function render(i, dir) {
+      const n = list.length;
+      current = (i + n) % n;
+      const c = list[current];
       const player = makePlayer({ url: c.clip, title: c.label, format: c.format });
+      if (!reduceMotion) player.node.classList.add(dir < 0 ? "slide-in-left" : "slide-in");
       screen.replaceChildren(player.node);
-      if (!first && !reduceMotion) {
-        screen.classList.remove("is-static");
-        void screen.offsetWidth;
-        screen.classList.add("is-static");
-      }
-      label.textContent = "▶ " + (n > 1 ? "CH " + (i + 1) + " · " : "") + c.label;
-      count.textContent = n > 1 ? i + 1 + " / " + n : "";
-      buttons.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i)));
-      if (work) {
-        from.textContent = "From: " + work.title + " ↓";
-        from.setAttribute("href", "#" + work.id);
+      staticFx();
+      label.textContent = title + " · " + c.label;
+      count.textContent = current + 1 + " / " + n;
+      prev.hidden = next.hidden = n < 2;
+      fromWork = findWork(c.clip) || null;
+      if (fromWork) {
+        from.textContent = "From: " + fromWork.title + " ↓";
+        from.setAttribute("href", "#" + fromWork.id);
         from.hidden = false;
       } else {
         from.hidden = true;
       }
     }
-    prev.addEventListener("click", () => show(current - 1));
-    next.addEventListener("click", () => show(current + 1));
-    show(0);
+    function message(big, small) {
+      screen.replaceChildren(el("div", { class: "win-off is-msg" }, [
+        el("span", { class: "win-off-big", text: big }),
+        el("span", { class: "win-off-hint", text: small }),
+      ]));
+      staticFx();
+      count.textContent = "—";
+      prev.hidden = next.hidden = true;
+      from.hidden = true;
+    }
+    reelApi.tune = (mode) => {
+      const firstTime = !wrap.classList.contains("is-on");
+      wrap.classList.add("is-on");
+      if (firstTime && !reduceMotion) {
+        wrap.classList.remove("slide-up");
+        void wrap.offsetWidth;
+        wrap.classList.add("slide-up");
+      }
+      list = all.filter((c) => !c.mode || c.mode === mode.id);
+      label.textContent = title + " · " + (mode.short || mode.label);
+      if (!list.length) return message("COMING SOON", "Samples for this one are on the way");
+      render(0, 1);
+    };
+    reelApi.off = () => {
+      wrap.classList.remove("is-on", "slide-up");
+      screen.replaceChildren(offScreen);
+      label.textContent = title;
+      count.textContent = "READY";
+      prev.hidden = next.hidden = true;
+      from.hidden = true;
+      current = -1;
+    };
+    prev.addEventListener("click", () => render(current - 1, -1));
+    next.addEventListener("click", () => render(current + 1, 1));
+    // "From:" ของงานที่อยู่ในโฟลเดอร์ (ไม่ใช่งานเด่น) → เปิดโฟลเดอร์แล้วเลือกงานนั้นให้
+    from.addEventListener("click", (e) => {
+      if (!fromWork || document.getElementById(fromWork.id)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      libApi.show(fromWork);
+    });
+    reelApi.off();
+  }
+
+  // ---------- ตัวละครบน Cover: เลือกประเภทงาน แล้วสี + ชุด + ทีวี + ผลงาน เปลี่ยนตาม ----------
+  function renderHost() {
+    const host = document.getElementById("host");
+    if (!host) return;
+    const stage = document.getElementById("host-char");
+    const speech = document.getElementById("host-speech");
+    const choiceWrap = document.getElementById("host-choices");
+    const cta = document.getElementById("hero-cta") || el("a", { href: "#works" }); // ปุ่มนี้ถูกเอาออกจาก Cover แล้ว (ยังรองรับถ้าใส่กลับ)
+    const cfg = SITE.host || {};
+    const modes = asList(SITE.modes);
+    const ctaDefault = { text: cta.textContent, href: cta.getAttribute("href") };
+    const root = document.documentElement;
+    const defaults = {
+      hero: getComputedStyle(root).getPropertyValue("--blue").trim(),
+      accent: getComputedStyle(root).getPropertyValue("--yellow").trim(),
+    };
+
+    function greet() {
+      speech.replaceChildren(document.createTextNode((cfg.greeting || "Hi! What would you like to see?") + " "));
+      if (cfg.hint) speech.appendChild(el("span", { class: "host-hint", text: cfg.hint }));
+    }
+    greet();
+
+    // ชั้นของตัวละคร: base (+ เฟรมกะพริบตา base-2) แล้วชุดซ้อนด้านบน
+    const baseLayer = el("div", { class: "host-layer host-base" });
+    const outfitLayer = el("div", { class: "host-layer host-outfit" });
+    stage.appendChild(baseLayer);
+    stage.appendChild(outfitLayer);
+    const pngs = (base) => [base + ".gif", base + ".png", base + ".webp"]; // GIF ขยับได้ มาก่อน
+
+    function setBase(srcBase, fallbackBase) {
+      loadFirst(pngs(srcBase), (img) => {
+        img.className = "host-img";
+        img.alt = "";
+        baseLayer.replaceChildren(img);
+        stage.classList.add("has-art");
+        // เฟรมกะพริบตา (ไม่มีก็ข้าม)
+        loadFirst(pngs(srcBase + "-2"), (img2) => {
+          img2.className = "host-img host-frame-2";
+          img2.alt = "";
+          baseLayer.appendChild(img2);
+        });
+      }, () => {
+        if (fallbackBase) return setBase(fallbackBase);
+        if (!stage.classList.contains("has-art")) baseLayer.replaceChildren(spriteNode("heart"));
+      });
+    }
+    setBase("character/base");
+
+    // ชิ้นส่วนชุด 1.png ... 6.png บินมาแปะทีละชิ้นแบบ collage
+    const pieceCache = {};
+    function loadPieces(id, done) {
+      if (pieceCache[id]) return done(pieceCache[id]);
+      const found = [];
+      let pending = 6;
+      for (let i = 1; i <= 6; i++) {
+        loadFirst(pngs("character/" + id + "/" + i), (img) => {
+          found[i] = img.src;
+          if (--pending === 0) finish();
+        }, () => {
+          if (--pending === 0) finish();
+        });
+      }
+      function finish() {
+        pieceCache[id] = found.filter(Boolean);
+        done(pieceCache[id]);
+      }
+    }
+
+    let token = 0;
+    function dressUp(id) {
+      const my = ++token;
+      outfitLayer.replaceChildren();
+      if (!id) return setBase("character/base");
+      setBase("character/" + id + "/base", "character/base");
+      loadPieces(id, (srcs) => {
+        if (my !== token) return;
+        srcs.forEach((src, i) => {
+          const img = el("img", { class: "host-img host-piece", src: src, alt: "" });
+          const angle = (i * 137) % 360 * (Math.PI / 180);
+          img.style.setProperty("--pc-x", Math.round(Math.cos(angle) * 140) + "px");
+          img.style.setProperty("--pc-y", Math.round(Math.sin(angle) * 90 - 60) + "px");
+          img.style.setProperty("--pc-r", ((i % 2 ? 1 : -1) * (14 + i * 5)) + "deg");
+          img.style.animationDelay = i * 110 + "ms";
+          outfitLayer.appendChild(img);
+        });
+      });
+    }
+
+    const primaryCat = (w) => w.cats[0];
+    let active = null;
+    const buttons = modes.map((m) => {
+      const b = makeFolder(m, { cls: "host-choice", count: works.filter((w) => modeOfWork(w) === m.id).length });
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", () => choose(active === m ? null : m));
+      choiceWrap.appendChild(b);
+      return b;
+    });
+    const reset = el("button", { type: "button", class: "host-reset", text: "↺ " + (cfg.resetLabel || "Show everything") });
+    reset.hidden = true;
+    reset.addEventListener("click", () => choose(null));
+    choiceWrap.appendChild(reset);
+    if (!modes.length) choiceWrap.remove();
+
+    function choose(m) {
+      active = m;
+      if (m) host.classList.add("is-chosen"); // หยุดปุ่มเด้งชวนกด หลังจากคนดูกดแล้ว
+      buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(modes[i] === m)));
+      reset.hidden = !m;
+
+      // สี: พื้น Cover + สีเน้นทั้งเว็บ
+      const colors = (m && m.colors) || {};
+      root.style.setProperty("--blue", colors.hero || defaults.hero); // พื้นยังเป็นน้ำเงินเดิม ถ้าไม่ได้ตั้ง hero
+      root.style.setProperty("--yellow", colors.accent || defaults.accent);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", colors.hero || defaults.hero);
+
+      if (m) speech.textContent = m.line || m.label;
+      else greet();
+      popNow(speech, 0);
+      dressUp(m ? m.id : null);
+
+      // จอคลิป + โฟลเดอร์ผลงาน + ปุ่มหลัก
+      if (!m) {
+        reelApi.off();
+        libApi.close();
+        cta.textContent = ctaDefault.text;
+        cta.setAttribute("href", ctaDefault.href);
+        return;
+      }
+      reelApi.tune(m);
+      libApi.open(m.id);
+      const hasWork = works.some((w) => modeOfWork(w) === m.id);
+      if (hasWork) {
+        cta.textContent = "See " + String(m.short || m.label).toLowerCase() + " work ↓";
+        cta.setAttribute("href", "#works");
+      } else {
+        cta.textContent = "Ask me for samples →";
+        cta.setAttribute("href", "#contact");
+      }
+    }
   }
 
   function renderSelected() {
@@ -895,54 +1116,179 @@
     });
   }
 
-  function renderWorks() {
-    const grid = document.getElementById("works-grid");
-    const filters = document.getElementById("filters");
-    if (!rest.length) {
-      document.getElementById("works").remove();
-      return;
-    }
-    cards = rest.map((w, i) => {
-      const card = workCard(w, i);
-      grid.appendChild(card);
-      popOnScroll(card);
-      return card;
+  // ---------- ผลงานทั้งหมด: โฟลเดอร์ตามประเภทงาน (กดแล้วค่อยโหลดคลิป = หน้าเว็บเบาและสั้น) ----------
+  const libApi = { open: () => {}, close: () => {}, show: () => {} };
+  function renderLibrary() {
+    const section = document.getElementById("works");
+    const lib = document.getElementById("lib");
+    const tabsWrap = document.getElementById("lib-tabs");
+    const body = document.getElementById("lib-body");
+    const stage = document.getElementById("lib-stage");
+    const list = document.getElementById("lib-list");
+    const modes = asList(SITE.modes);
+    if (!section) return;
+    if (!modes.length || !works.length) return section.remove();
+
+    const mobile = window.matchMedia("(max-width: 899px)");
+    const groups = modes.map((m) => ({ mode: m, works: works.filter((w) => modeOfWork(w) === m.id) }));
+    let openId = null;
+    let selected = null;
+
+    const tabs = groups.map((g) => {
+      const n = g.works.length;
+      const b = makeFolder(g.mode, { cls: "lib-tab", count: n });
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", "false");
+      b.addEventListener("click", () => (openId === g.mode.id ? close() : open(g.mode.id)));
+      tabsWrap.appendChild(b);
+      return b;
     });
 
-    // ตัวกรอง: หมวดที่มีงาน + tag เด่น (ซ่อนอันที่ว่าง)
-    const list = [{ type: "all", name: ALL }];
-    categories.forEach((c) => {
-      if (rest.some((w) => w.cats.indexOf(c.name) !== -1)) list.push({ type: "cat", name: c.name, item: c });
-    });
-    rest.forEach((w) => w.cats.forEach((n) => {
-      if (!list.some((f) => f.type === "cat" && f.name === n)) list.push({ type: "cat", name: n });
-    }));
-    (SITE.filterTags || []).forEach((t) => {
-      const tag = typeof t === "string" ? { name: t } : t;
-      if (rest.some((w) => w.tagList.indexOf(tag.name) !== -1)) list.push({ type: "tag", name: tag.name, item: tag });
-    });
-    // ปุ่มกรองที่กดแล้วได้ผลเหมือน "All" ไม่ต้องแสดง
-    const useful = [list[0]].concat(list.slice(1).filter((f) => {
-      const n = rest.filter((w) => matches(w, f)).length;
-      return n > 0 && n < rest.length;
-    }));
-    list.length = 0;
-    useful.forEach((f) => list.push(f));
-    if (list.length < 3) {
-      filters.remove();
-      return;
+    function placeStage() {
+      if (!selected) {
+        stage.hidden = true;
+        return;
+      }
+      stage.hidden = false;
+      const row = list.querySelector('[data-id="' + selected.id + '"]');
+      if (mobile.matches && row) row.appendChild(stage); // มือถือ: คลิปกางออกใต้ชื่อที่กด
+      else body.insertBefore(stage, list); // คอม: คลิปอยู่ซ้าย รายชื่ออยู่ขวา
     }
-    list.forEach((f) => {
-      const b = el("button", { type: "button", class: "filter" + (f.type === "tag" ? " filter-tag" : ""), "aria-pressed": "false" }, [
-        f.type !== "all" ? iconFor(f.item || { sprite: f.type === "tag" ? "gamepad" : "sparkle" }) : null,
-        el("span", { text: f.type === "tag" ? "#" + f.name : f.name }),
-      ]);
-      b._filter = f;
-      b.addEventListener("click", () => setFilter(f, true));
-      chipButtons.push(b);
-      filters.appendChild(b);
+
+    function select(w) {
+      selected = w;
+      list.querySelectorAll(".lib-row").forEach((r) => {
+        const on = r.dataset.id === w.id;
+        r.classList.toggle("is-current", on);
+        r.firstChild.setAttribute("aria-expanded", String(on));
+      });
+      const media = mediaBlock(w);
+      stage.replaceChildren(
+        el("div", { class: "lib-media" + (media.vertical ? " is-vertical" : "") }, [media.node]),
+        el("div", { class: "lib-info" }, [el("h3", { class: "lib-info-title", text: w.title })].concat(workInfo(w, { showTags: true }).slice(1)))
+      );
+      placeStage();
+      popNow(stage, 0);
+    }
+
+    function deselect() {
+      selected = null;
+      stage.replaceChildren();
+      list.querySelectorAll(".lib-row").forEach((r) => {
+        r.classList.remove("is-current");
+        r.firstChild.setAttribute("aria-expanded", "false");
+      });
+      placeStage();
+    }
+
+    function open(id) {
+      const g = groups.find((x) => x.mode.id === id);
+      if (!g) return;
+      openId = id;
+      lib.classList.add("is-open");
+      lib.style.setProperty("--lib-accent", (g.mode.colors && g.mode.colors.accent) || "var(--yellow)");
+      tabs.forEach((t, i) => t.setAttribute("aria-selected", String(groups[i] === g)));
+      body.hidden = false;
+      selected = null;
+      stage.replaceChildren();
+      list.replaceChildren();
+      if (!g.works.length) {
+        list.appendChild(el("li", { class: "lib-empty" }, [
+          el("span", { text: "Samples are on the way. " }),
+          el("a", { href: "#contact", text: "Ask me for them →" }),
+        ]));
+        placeStage();
+        return;
+      }
+      g.works.forEach((w, i) => {
+        const meta = [w.client, w.year, w.clipList.length > 1 ? w.clipList.length + " clips" : ""].filter(Boolean).join(" · ");
+        const btn = el("button", { type: "button", class: "lib-row-btn", "aria-expanded": "false" }, [
+          el("span", { class: "lib-num", text: String(i + 1).padStart(2, "0") }),
+          el("span", { class: "lib-row-main" }, [
+            el("span", { class: "lib-row-title", text: w.title }),
+            el("span", { class: "lib-row-meta", text: meta }),
+          ]),
+          el("span", { class: "lib-row-go", "aria-hidden": "true", text: "▶" }),
+        ]);
+        const row = el("li", { class: "lib-row", "data-id": w.id }, [btn]);
+        btn.addEventListener("click", () => (selected === w && mobile.matches ? deselect() : select(w)));
+        list.appendChild(row);
+      });
+      if (!mobile.matches) select(g.works[0]); // คอม: เปิดงานแรกให้เลย จอไม่ว่าง
+      else placeStage();
+    }
+
+    function close() {
+      openId = null;
+      lib.classList.remove("is-open");
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      body.hidden = true;
+      deselect();
+    }
+
+    mobile.addEventListener("change", placeStage);
+    libApi.open = open;
+    libApi.close = close;
+    libApi.show = (w) => {
+      open(modeOfWork(w));
+      select(w);
+      const row = list.querySelector('[data-id="' + w.id + '"]');
+      const target = mobile.matches && row ? row : section;
+      const header = document.querySelector(".topbar");
+      const y = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 8;
+      smoothScrollTo(Math.max(0, y));
+    };
+  }
+
+  // ---------- SIDE PROJECTS: โฟลเดอร์โปรเจกต์ส่วนตัว (เปิดลิงก์ออกไปข้างนอก ไม่โหลดคลิป) ----------
+  function renderSide() {
+    const section = document.getElementById("side");
+    const tabsWrap = document.getElementById("side-tabs");
+    const panel = document.getElementById("side-panel");
+    const groups = asList(SITE.sideProjects);
+    if (!section) return;
+    if (!groups.length) return section.remove();
+    let openId = null;
+    const tabs = groups.map((g) => {
+      const n = asList(g.items).length;
+      const b = makeFolder({ id: g.id, label: g.label, short: g.label, sprite: g.sprite, icon: g.icon, colors: { accent: g.color } },
+        { cls: "side-tab", countText: n + (n === 1 ? " link" : " links") });
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", "false");
+      b.addEventListener("click", () => (openId === g.id ? close() : open(g)));
+      tabsWrap.appendChild(b);
+      return b;
     });
-    setFilter(list[0], false);
+    function close() {
+      openId = null;
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      panel.hidden = true;
+    }
+    function open(g) {
+      openId = g.id;
+      tabs.forEach((t, i) => t.setAttribute("aria-selected", String(groups[i] === g)));
+      panel.style.setProperty("--side-accent", g.color || "var(--yellow)");
+      const kids = [el("h3", { class: "side-title", text: g.label })];
+      if (g.intro) kids.push(el("p", { class: "side-intro", text: g.intro }));
+      if (asList(g.stats).length) {
+        const stats = el("ul", { class: "side-stats" });
+        g.stats.forEach((st) => stats.appendChild(el("li", {}, [el("strong", { text: st.value }), el("span", { text: st.label })])));
+        kids.push(stats);
+        if (g.asOf) kids.push(el("p", { class: "side-asof", text: "Numbers as of " + g.asOf }));
+      }
+      const list = el("ul", { class: "side-items" });
+      asList(g.items).forEach((it) => {
+        list.appendChild(el("li", {}, [el("a", { href: it.url, target: "_blank", rel: "noopener" }, [
+          el("span", { class: "side-item-title", text: it.title }),
+          it.meta ? el("span", { class: "side-item-meta", text: it.meta }) : null,
+          el("span", { class: "side-item-go", "aria-hidden": "true", text: "↗" }),
+        ])]));
+      });
+      kids.push(list);
+      panel.replaceChildren.apply(panel, kids);
+      panel.hidden = false;
+      popNow(panel, 0);
+    }
   }
 
   function renderServices() {
@@ -1096,7 +1442,9 @@
 
   renderHero();
   renderSelected();
-  renderWorks();
+  renderLibrary();
+  renderSide();
+  renderHost();
   renderServices();
   renderAbout();
   renderContact();
