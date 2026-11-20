@@ -714,16 +714,6 @@ window.WORKS = [
     role: ["Character design", "Animation"],
     highlight: "2D animation starring the AIS × 3BB mascots.",
   },
-  {
-    title: "DNA and Culture Animation",
-    clips: [],   // TODO
-    images: [{ src: "images/work/anim-dna-culture.jpg" }],
-    categories: ["Motion & Animation", "Brand & Corporate"],
-    tags: ["Animation", "Culture"],
-    client: "AIS",
-    role: [],   // TODO
-    highlight: "",   // TODO
-  },
 
   // ↓ งานประเภทอื่นที่จะเพิ่มทีหลัง: ลบ // หน้าบรรทัด แล้วเปลี่ยนลิงก์
   // { title: "Company podcast", clips: ["https://www.youtube.com/watch?v=xxxx"], categories: ["Podcast & Long-form"], role: ["Edit", "Sound"], highlight: "..." },
