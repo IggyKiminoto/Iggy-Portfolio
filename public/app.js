@@ -953,9 +953,9 @@
       if (fromWork) {
         from.textContent = "From: " + fromWork.title + " ↓";
         from.setAttribute("href", "#" + fromWork.id);
-        from.classList.remove("is-off");
+        from.hidden = false;
       } else {
-        from.classList.add("is-off");
+        from.hidden = true;
       }
     }
     function message(big, small) {
@@ -966,7 +966,7 @@
       staticFx();
       count.textContent = "—";
       prev.hidden = next.hidden = true;
-      from.classList.add("is-off");
+      from.hidden = true;
     }
     reelApi.tune = (mode) => {
       const firstTime = !wrap.classList.contains("is-on");
@@ -987,7 +987,7 @@
       label.textContent = title;
       count.textContent = "READY";
       prev.hidden = next.hidden = true;
-      from.classList.add("is-off");
+      from.hidden = true;
       current = -1;
     };
     prev.addEventListener("click", () => render(current - 1, -1));
@@ -1101,7 +1101,7 @@
       return b;
     });
     const reset = el("button", { type: "button", class: "host-reset", text: "↺ " + (cfg.resetLabel || "Show everything") });
-    reset.classList.add("is-off"); // ซ่อนแบบยังจองพื้นที่ไว้ หน้าเว็บจะไม่กระโดด
+    reset.hidden = true;
     reset.addEventListener("click", () => choose(null));
     choiceWrap.appendChild(reset);
     if (!modes.length) choiceWrap.remove();
@@ -1110,7 +1110,7 @@
       active = m;
       if (m) host.classList.add("is-chosen"); // หยุดปุ่มเด้งชวนกด หลังจากคนดูกดแล้ว
       buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(modes[i] === m)));
-      reset.classList.toggle("is-off", !m);
+      reset.hidden = !m;
 
       // สี: พื้น Cover + สีเน้นทั้งเว็บ
       const colors = (m && m.colors) || {};

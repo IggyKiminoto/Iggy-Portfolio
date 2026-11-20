@@ -319,10 +319,7 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
 .folder:focus-visible { outline: 3px dashed var(--cream); outline-offset: 6px; }
 
 /* โฟลเดอร์บน Cover */
-.host-choices { grid-area: choices; display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
-.host-reset.is-off, .reel-from.is-off { visibility: hidden; }
-/* กล่องคำพูดสูงคงที่ (พอสำหรับ 3 บรรทัด) คำพูดเปลี่ยนแล้วหน้าเว็บไม่ขยับ */
-@media (min-width: 900px) { .host-speech { min-height: calc(3 * 1.5em + 24px + 6px); } }
+.host-choices { grid-area: choices; position: relative; display: flex; flex-wrap: nowrap; gap: 14px; align-items: flex-end; }
 .host-choice { flex: 0 0 auto; width: clamp(120px, 10.5vw, 150px); aspect-ratio: 5 / 4; }
 /* ปุ่มเด้งไล่กันเป็นระยะ ชวนให้กด (หยุดเมื่อกดแล้ว) */
 .host:not(.is-chosen) .host-choice { animation: choice-nudge 4.2s steps(1) infinite; }
@@ -335,17 +332,17 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   6% { translate: 0 -4px; }
   9%, 100% { translate: 0 0; }
 }
+/* ปุ่ม Show everything: ลอยอยู่ใต้โฟลเดอร์ ไม่กินพื้นที่ โฟลเดอร์จึงไม่ขยับ */
 .host-reset {
-  flex-basis: 100%; text-align: left; margin-top: 2px;
+  position: absolute; left: 0; top: calc(100% + 10px); white-space: nowrap;
   border: 0; background: none; cursor: pointer; padding: 4px 6px;
   font: 600 15px/1.2 var(--font); color: var(--cream); text-decoration: underline; text-underline-offset: 3px;
 }
 @media (max-width: 899px) {
   .host { grid-template-areas: "char speech" "choices choices"; margin-inline: auto; max-width: 560px; --char-w: 128px; align-items: center; }
   .host-char { align-self: center; aspect-ratio: 1; min-height: 0; }
-  .host-choices { justify-content: center; }
-  .host-reset { text-align: center; }
-  .host-reset.is-off { display: none; } /* มือถือ: จอคลิปโผล่ตอนกดอยู่แล้ว ไม่ต้องจองที่ */
+  .host-choices { justify-content: center; flex-wrap: nowrap; }
+  .host-reset { left: 50%; translate: -50% 0; }
 }
 @media (max-width: 600px) {
   .host { gap: 10px 12px; --char-w: 112px; }
@@ -373,6 +370,8 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   .host .folder-count { font-size: 11px; }
   .host .folder-front .chip-icon { width: 28px; height: 28px; }
   .win-title { font-size: 16px; }
+  .hero .win-screen .player.is-vertical, .hero .win-off { width: calc(min(66vh, 760px) * 9 / 16); }
+  .hero .win-screen .player.is-horizontal { width: min(620px, 32vw); }
 }
 
 /* ---------- จอคลิป: หน้าต่างสไตล์ XP ---------- */
@@ -403,18 +402,6 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
 .win-screen .player.is-vertical, .win-off { width: calc(min(58vh, 620px) * 9 / 16); max-width: calc(100vw - 80px); }
 .win-screen .player.is-horizontal { width: min(560px, calc(100vw - 80px)); }
 @media (min-width: 900px) { .hero .win-screen .player.is-horizontal { width: min(460px, 33vw); } }
-/* จอบน Cover: ขนาดคงที่ 4:5 ไม่ว่าคลิปจะแนวตั้งหรือแนวนอน หน้าเว็บจะไม่ขยับตอนเปลี่ยนประเภทงาน */
-.hero .win-screen {
-  width: min(calc(min(58vh, 620px) * .8), calc(100vw - 80px)); aspect-ratio: 4 / 5;
-  display: grid; place-items: center;
-}
-.hero .win-screen > * { grid-area: 1 / 1; }
-.hero .win-screen .player.is-vertical { height: 100%; width: auto; max-width: 100%; aspect-ratio: 9 / 16; }
-.hero .win-screen .player.is-horizontal { width: 100%; height: auto; }
-.hero .win-screen .win-off { width: 100%; height: 100%; aspect-ratio: auto; }
-.hero .win-screen .reel-image { background: var(--ink); }
-@media (max-width: 899px) { .hero .win-screen { width: min(calc(100vw - 80px), 420px); } }
-@media (min-width: 1400px) { .hero .win-screen { width: calc(min(66vh, 760px) * .8); } }
 .win-off {
   aspect-ratio: 9 / 16; display: grid; place-content: center; gap: 14px;
   padding: 18px; text-align: center; color: var(--cream);
