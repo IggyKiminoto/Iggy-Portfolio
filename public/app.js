@@ -563,14 +563,18 @@
     const clipMeta = asList(w.clips || w.url).map((c, i) =>
       typeof c === "string" ? { url: c, label: labels[i] || "" } : Object.assign({ label: labels[i] || "" }, c)
     );
-    const clipList = clipMeta.map((c) => c.url);
+    const clipList = clipMeta.map((c) => c.url).filter(Boolean);
+    // รูปผลงาน (งานกราฟิก หรือรูปตัวอย่างระหว่างรอลิงก์คลิป): "images/work/x.jpg" หรือ { src, caption }
+    const imageList = asList(w.images).map((x) => (typeof x === "string" ? { src: x } : x)).filter((x) => x && x.src);
     const info = parseVideo(clipList[0] || w.embed);
     const original = originalOf(clipList[0], info);
     return Object.assign({}, w, {
       id: "work-" + (idx + 1),
       url: clipList[0],
       clipList: clipList,
-      clipMeta: clipMeta,
+      clipMeta: clipMeta.filter((c) => c.url),
+      imageList: imageList,
+      linkList: asList(w.links),
       cats: asList(w.categories || w.category),
       tagList: asList(w.tags),
       roles: mergeRoles(w.role, clipMeta[0] && clipMeta[0].role),
@@ -598,6 +602,10 @@
       wrap.appendChild(el("img", { src: item.iconHover, alt: "", class: "ic-hover", loading: "lazy" }));
     }
     return wrap;
+  }
+
+  function extraLinks(w) {
+    return w.linkList.map((l) => el("a", { class: "open-link", href: l.url, target: "_blank", rel: "noopener", text: (l.label || "Open") + " ↗" }));
   }
 
   function openLink(w) {
@@ -654,7 +662,8 @@
   }
 
   function workInfo(w, opts) {
-    const count = w.clipList.length > 1 ? w.clipList.length + " clips" : "";
+    const count = w.clipList.length > 1 ? w.clipList.length + " clips"
+      : !w.clipList.length && w.imageList.length > 1 ? w.imageList.length + " images" : "";
     const meta = [w.client, w.cats.join(" / "), w.year, count].filter(Boolean).join(" · ");
     const children = [
       el("h3", { text: w.title || "Untitled" }),
@@ -684,13 +693,46 @@
       children.push(tags);
     }
     children.push(detailsBlock(w, opts && opts.detailsLabel));
-    const actions = el("div", { class: "work-actions" }, [openLink(w)]);
+    const actions = el("div", { class: "work-actions" }, [openLink(w)].concat(extraLinks(w)));
     if (actions.childNodes.length) children.push(actions);
     return children;
   }
 
   // คลิปในโปรเจกต์: ถ้ามีหลายคลิป จะมีปุ่ม 1 2 3 ให้สลับดู
+  // แกลเลอรีรูป (ใช้เมื่อผลงานไม่มีคลิป)
+  function galleryBlock(w) {
+    const box = el("div", { class: "media-box gallery" });
+    const imgs = w.imageList;
+    const frame = el("a", { class: "gallery-frame", href: imgs[0].src, target: "_blank", rel: "noopener", "aria-label": "Open full image" });
+    const img = el("img", { src: imgs[0].src, alt: imgs[0].caption || w.title || "", loading: "lazy", decoding: "async" });
+    frame.appendChild(img);
+    box.appendChild(frame);
+    const caption = el("span", { class: "clip-caption", text: imgs[0].caption || "" });
+    if (imgs.length > 1) {
+      const tabs = el("div", { class: "clip-tabs", role: "group", "aria-label": "Images in this project" }, [el("span", { class: "clip-tabs-label", text: "IMAGES" })]);
+      const btns = imgs.map((x, i) => {
+        const b = el("button", { type: "button", class: "clip-tab", text: String(i + 1), "aria-pressed": i === 0 ? "true" : "false", "aria-label": "Image " + (i + 1) + (x.caption ? ": " + x.caption : "") });
+        b.addEventListener("click", () => {
+          img.src = x.src;
+          img.alt = x.caption || w.title || "";
+          frame.href = x.src;
+          caption.textContent = x.caption || "";
+          btns.forEach((y, k) => y.setAttribute("aria-pressed", String(k === i)));
+          popNow(frame, 0);
+        });
+        tabs.appendChild(b);
+        return b;
+      });
+      tabs.appendChild(caption);
+      box.appendChild(tabs);
+    } else if (imgs[0].caption) {
+      box.appendChild(caption);
+    }
+    return { node: box, vertical: false };
+  }
+
   function mediaBlock(w) {
+    if (!w.clipList.length && w.imageList.length) return galleryBlock(w);
     const box = el("div", { class: "media-box" });
     let player = makePlayer(w);
     box.appendChild(player.node);
@@ -882,8 +924,8 @@
     const from = document.getElementById("reel-from");
     const prev = document.getElementById("reel-prev");
     const next = document.getElementById("reel-next");
-    const all = asList(SITE.channels).filter((c) => c && c.clip);
-    const findWork = (url) => works.find((w) => w.clipList.indexOf(url) !== -1);
+    const all = asList(SITE.channels).filter((c) => c && (c.clip || c.image));
+    const findWork = (url) => works.find((w) => w.clipList.indexOf(url) !== -1 || w.imageList.some((x) => x.src === url));
     const title = SITE.playerTitle || "Iggy Player";
     let list = [];
     let current = -1;
@@ -899,14 +941,15 @@
       const n = list.length;
       current = (i + n) % n;
       const c = list[current];
-      const player = makePlayer({ url: c.clip, title: c.label, format: c.format });
+      const player = c.clip ? makePlayer({ url: c.clip, title: c.label, format: c.format })
+        : { node: el("div", { class: "player is-horizontal reel-image" }, [el("img", { src: c.image, alt: c.label || "", decoding: "async" })]) };
       if (!reduceMotion) player.node.classList.add(dir < 0 ? "slide-in-left" : "slide-in");
       screen.replaceChildren(player.node);
       staticFx();
       label.textContent = title + " · " + c.label;
       count.textContent = current + 1 + " / " + n;
       prev.hidden = next.hidden = n < 2;
-      fromWork = findWork(c.clip) || null;
+      fromWork = findWork(c.clip || c.image) || null;
       if (fromWork) {
         from.textContent = "From: " + fromWork.title + " ↓";
         from.setAttribute("href", "#" + fromWork.id);
@@ -1201,7 +1244,7 @@
         return;
       }
       g.works.forEach((w, i) => {
-        const meta = [w.client, w.year, w.clipList.length > 1 ? w.clipList.length + " clips" : ""].filter(Boolean).join(" · ");
+        const meta = [w.client, w.year, w.clipList.length > 1 ? w.clipList.length + " clips" : (!w.clipList.length && w.imageList.length > 1 ? w.imageList.length + " images" : "")].filter(Boolean).join(" · ");
         const btn = el("button", { type: "button", class: "lib-row-btn", "aria-expanded": "false" }, [
           el("span", { class: "lib-num", text: String(i + 1).padStart(2, "0") }),
           el("span", { class: "lib-row-main" }, [
