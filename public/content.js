@@ -69,6 +69,48 @@ window.SITE = {
   // แบรนด์ที่เคยทำงานด้วย (ขึ้นเป็นส่วน WORKED WITH ก่อนส่วนติดต่อ)
   workedWith: ["AIS", "Garena RoV Thailand", "Sale Here", "SB Design Square"],
 
+  /* ---------- โปรเจกต์ส่วนตัว (ส่วน SIDE PROJECTS ช่วงล่างของเว็บ) ----------
+     เพิ่มโฟลเดอร์ใหม่ = ก๊อปบล็อก { id, label, ... } ไปวางต่อ แล้วตั้งสี color
+     stats  ตัวเลขเด่น (ใส่ asOf = วันที่เก็บข้อมูลเสมอ)
+     items  รายการ กดแล้วเปิดลิงก์ในแท็บใหม่
+     รูปที่โผล่จากโฟลเดอร์: images/peek/<id>-1.jpg ถึง -3.jpg                      */
+  sideProjects: [
+    {
+      id: "smilenoout", label: "Smilenoout", sprite: "heart", color: "#24E5D2",
+      intro: "My hand-drawn quote and doodle page. I write, draw, edit and post everything myself.",
+      asOf: "Nov 2026",
+      stats: [
+        { value: "252K", label: "Instagram followers" },
+        { value: "4,249", label: "Instagram posts" },
+        { value: "623.8K", label: "TikTok likes" },
+        { value: "2M", label: "views on the top TikTok clip" },
+      ],
+      items: [
+        { title: "Instagram @smilenoout", meta: "252K followers", url: "https://www.instagram.com/smilenoout" },
+        { title: "TikTok @smilenoout_official", meta: "13K followers · 623.8K likes", url: "https://www.tiktok.com/@smilenoout_official" },
+      ],
+    },
+    {
+      id: "fonts", label: "Fonts", sprite: "star", color: "#FFCB77",
+      intro: "Handwritten Thai + English fonts I designed, free to download.",
+      items: [
+        { title: "Smilenoout DEUX", meta: "Handwritten Thai + English · signature font", url: "https://smilenoout.gumroad.com/l/SmilenooutDuex" },
+        { title: "Say So", meta: "Cartoon-outline handwriting, two layers · Thai + English", url: "https://smilenoout.gumroad.com/l/sjnrjd" },
+        { title: "Iggy Hand", meta: "Handwritten Thai + English", url: "https://smilenoout.gumroad.com/l/cpfbpf" },
+      ],
+    },
+    {
+      id: "freebies", label: "Freebies", sprite: "sparkle", color: "#407ADD",
+      intro: "Free tools and templates for other creators.",
+      items: [
+        { title: "Smilenoout Procreate Brush Set", meta: "Procreate brushes", url: "https://smilenoout.gumroad.com/l/smilenooutbrush" },
+        { title: "Minecraft GUI Canvas Presets", meta: "Presets for Aseprite", url: "https://smilenoout.gumroad.com/l/mcgui" },
+        { title: "Goals Challenge Planner", meta: "Printable / digital planner", url: "https://smilenoout.gumroad.com/l/goalsplanner" },
+        { title: "Digital Memo High School Set", meta: "Digital note paper", url: "https://smilenoout.gumroad.com/l/highschoolmemo" },
+      ],
+    },
+  ],
+
   /* ---------- จอคลิปบน Cover: เล่นคลิปของประเภทงานที่คนดูเลือก ----------
      label = ชื่อช่อง / mode = ประเภทงาน (id ใน modes) / clip = ลิงก์คลิป
      กดลูกศรในจอ = เลื่อนดูคลิปอื่นของประเภทเดียวกัน

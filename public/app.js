@@ -859,6 +859,7 @@
     const front = el("span", { class: "folder-front" }, [
       iconFor({ icon: mode.icon, sprite: mode.sprite }),
       el("span", { class: "folder-name", text: mode.short || mode.label }),
+      opts.countText ? el("span", { class: "folder-count", text: opts.countText }) :
       n == null ? null : el("span", { class: "folder-count", text: n ? n + (n > 1 ? " projects" : " project") : "Coming soon" }),
     ]);
     const btn = el("button", { type: "button", class: "folder " + (opts.cls || ""), "aria-label": mode.label }, [
@@ -1239,6 +1240,57 @@
     };
   }
 
+  // ---------- SIDE PROJECTS: โฟลเดอร์โปรเจกต์ส่วนตัว (เปิดลิงก์ออกไปข้างนอก ไม่โหลดคลิป) ----------
+  function renderSide() {
+    const section = document.getElementById("side");
+    const tabsWrap = document.getElementById("side-tabs");
+    const panel = document.getElementById("side-panel");
+    const groups = asList(SITE.sideProjects);
+    if (!section) return;
+    if (!groups.length) return section.remove();
+    let openId = null;
+    const tabs = groups.map((g) => {
+      const n = asList(g.items).length;
+      const b = makeFolder({ id: g.id, label: g.label, short: g.label, sprite: g.sprite, icon: g.icon, colors: { accent: g.color } },
+        { cls: "side-tab", countText: n + (n === 1 ? " link" : " links") });
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", "false");
+      b.addEventListener("click", () => (openId === g.id ? close() : open(g)));
+      tabsWrap.appendChild(b);
+      return b;
+    });
+    function close() {
+      openId = null;
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      panel.hidden = true;
+    }
+    function open(g) {
+      openId = g.id;
+      tabs.forEach((t, i) => t.setAttribute("aria-selected", String(groups[i] === g)));
+      panel.style.setProperty("--side-accent", g.color || "var(--yellow)");
+      const kids = [el("h3", { class: "side-title", text: g.label })];
+      if (g.intro) kids.push(el("p", { class: "side-intro", text: g.intro }));
+      if (asList(g.stats).length) {
+        const stats = el("ul", { class: "side-stats" });
+        g.stats.forEach((st) => stats.appendChild(el("li", {}, [el("strong", { text: st.value }), el("span", { text: st.label })])));
+        kids.push(stats);
+        if (g.asOf) kids.push(el("p", { class: "side-asof", text: "Numbers as of " + g.asOf }));
+      }
+      const list = el("ul", { class: "side-items" });
+      asList(g.items).forEach((it) => {
+        list.appendChild(el("li", {}, [el("a", { href: it.url, target: "_blank", rel: "noopener" }, [
+          el("span", { class: "side-item-title", text: it.title }),
+          it.meta ? el("span", { class: "side-item-meta", text: it.meta }) : null,
+          el("span", { class: "side-item-go", "aria-hidden": "true", text: "↗" }),
+        ])]));
+      });
+      kids.push(list);
+      panel.replaceChildren.apply(panel, kids);
+      panel.hidden = false;
+      popNow(panel, 0);
+    }
+  }
+
   function renderServices() {
     const services = document.getElementById("services-list");
     (SITE.services || []).forEach((s) => {
@@ -1391,6 +1443,7 @@
   renderHero();
   renderSelected();
   renderLibrary();
+  renderSide();
   renderHost();
   renderServices();
   renderAbout();

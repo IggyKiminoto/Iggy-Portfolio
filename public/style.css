@@ -856,6 +856,45 @@ mark {
 .moment img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border: 2px solid var(--ink); background: var(--sand); }
 .moment figcaption { font-size: 14px; font-weight: 600; padding-top: 8px; line-height: 1.4; }
 
+/* ---------- SIDE PROJECTS ---------- */
+.side-tabs { display: flex; gap: 18px; align-items: flex-end; padding-top: 18px; }
+.side-tab { flex: 1 1 0; min-width: 0; height: 150px; }
+.side-tab .folder-name { font-size: 19px; }
+.side-tab .peek-card { width: auto; height: 78%; }
+.side-tab .folder-peek { bottom: 38%; }
+.side-tab .peek-1 { left: 10%; } .side-tab .peek-2 { left: 36%; } .side-tab .peek-3 { left: 62%; }
+.side-panel {
+  margin-top: 26px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px;
+  background: var(--paper); border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink);
+  border-top: 10px solid var(--side-accent, var(--yellow));
+}
+.side-title { font-size: 24px; font-weight: 800; }
+.side-intro { color: var(--ink-2); max-width: 640px; }
+.side-stats { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
+.side-stats li { display: flex; flex-direction: column; padding: 12px 14px; border: 3px solid var(--ink); background: color-mix(in srgb, var(--side-accent) 28%, var(--paper)); }
+.side-stats strong { font-family: var(--pixel); font-size: clamp(24px, 3vw, 34px); line-height: 1.1; }
+.side-stats span { font-size: 14px; font-weight: 600; }
+.side-asof { font-size: 13px; color: var(--ink-2); margin-top: -6px; }
+.side-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+.side-items a {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center;
+  padding: 12px 14px; text-decoration: none; color: var(--ink);
+  background: var(--paper); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+  transition: background-color .15s;
+}
+.side-items a:hover { background: color-mix(in srgb, var(--side-accent) 35%, var(--paper)); }
+.side-items a:focus-visible { outline: 3px dashed var(--ink); outline-offset: 4px; }
+.side-item-title { font-weight: 700; grid-column: 1; }
+.side-item-meta { font-size: 13px; color: var(--ink-2); grid-column: 1; }
+.side-item-go { grid-column: 2; grid-row: 1 / span 2; font-weight: 700; }
+@media (max-width: 899px) {
+  .side-tabs { gap: 10px; }
+  .side-tab { height: 108px; }
+  .side-tab .folder-name { font-size: 13px; overflow-wrap: normal; padding-right: 16px; }
+  .side-tab .folder-count { font-size: 9px; }
+  .side-panel { padding: 14px; box-shadow: 5px 5px 0 var(--ink); }
+}
+
 /* ---------- เคยทำงานกับ ---------- */
 .client-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px 18px; }
 .client {
