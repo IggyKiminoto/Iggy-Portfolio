@@ -225,6 +225,7 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   .hero-line { white-space: nowrap; }
   .hero-grid .hero-clients { justify-content: flex-start; }
   .hero-grid .reel { margin: 0; }
+  .hero { padding-bottom: clamp(56px, 6vw, 88px); }
 }
 
 /* ---------- ตัวละครบน Cover ---------- */
@@ -354,6 +355,22 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
 /* ปุ่มหลักกะพริบสีเป็นระยะ (ไม่ขยาย จะได้ไม่หน่วงเว็บ) */
 #hero-cta, .topbar .px-chip-hot, .contact-link:first-child { animation: cta-blink 5s steps(1) infinite; }
 @keyframes cta-blink { 0%, 88% { background-color: var(--yellow); } 90%, 94% { background-color: var(--cream); } 92%, 96% { background-color: var(--yellow); } }
+
+/* ---------- จอกว้าง (1400px ขึ้นไป): ขยาย Cover ให้เต็มพื้นที่ ---------- */
+@media (min-width: 1400px) {
+  .hero-grid { max-width: min(1600px, 90vw); }
+  .hero-title { font-size: clamp(62px, 5vw, 104px); }
+  .label-sticker { font-size: clamp(15px, 1vw, 19px); }
+  .host { --char-w: clamp(250px, 18vw, 360px); }
+  .host-speech { font-size: clamp(17px, 1.25vw, 24px); padding: 16px 24px; }
+  .host-choice { width: clamp(150px, 11.5vw, 230px); }
+  .host .folder-name { font-size: clamp(16px, 1.25vw, 24px); }
+  .host .folder-count { font-size: 11px; }
+  .host .folder-front .chip-icon { width: 28px; height: 28px; }
+  .win-title { font-size: 16px; }
+  .hero .win-screen .player.is-vertical, .hero .win-off { width: calc(min(66vh, 760px) * 9 / 16); }
+  .hero .win-screen .player.is-horizontal { width: min(620px, 32vw); }
+}
 
 /* ---------- จอคลิป: หน้าต่างสไตล์ XP ---------- */
 .win {

@@ -11,8 +11,8 @@
 
 window.SITE = {
   name: "Iggy",
-  role: "Short-form Video Editor & Creator",
-  pageTitle: "Iggy | Short-form Video Editor & Creator",   // ชื่อบนแท็บเบราว์เซอร์และผลค้นหา
+  role: "End-to-End Creator · Design | Production | Animation",
+  pageTitle: "Iggy | End-to-End Creator",   // ชื่อบนแท็บเบราว์เซอร์และผลค้นหา
 
   // สโลแกนตัวใหญ่บน Cover (1 ข้อความ = 1 บรรทัด)
   headline: ["PLAN. SHOOT.", "EDIT. POST."],
