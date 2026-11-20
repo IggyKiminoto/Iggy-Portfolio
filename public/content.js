@@ -39,9 +39,9 @@ window.SITE = {
   modes: [
     {
       id: "graphic", label: "Graphic Design", short: "Graphic", sprite: "sparkle", icon: "",
-      line: "Key visuals, characters and stickers. Samples are on the way, so ask me for them!",
+      line: "Characters, key visuals, infographics and stickers. Pick one below!",
       colors: { accent: "#FE6D73" },   // Grapefruit
-      filter: ["Graphic Design"],
+      filter: ["Graphic Design", "Character & Illustration", "Presentation & Teaching"],
     },
     {
       id: "video", label: "Video Editing & Production", short: "Video", sprite: "clapper", icon: "",
@@ -109,6 +109,20 @@ window.SITE = {
         { title: "Digital Memo High School Set", meta: "Digital note paper", url: "https://smilenoout.gumroad.com/l/highschoolmemo" },
       ],
     },
+    {
+      id: "personal", label: "Personal", sprite: "phone", color: "#DD88C1",
+      intro: "My personal account, where I test formats and talk to camera.",
+      asOf: "",   // TODO: ใส่ช่วงเวลาที่เก็บตัวเลข เช่น "2025" (ตัวเลขมาจากพอร์ต Canva เก่า)
+      stats: [
+        { value: "880K+", label: "reach" },
+        { value: "1.2M", label: "views on the top clip" },
+      ],
+      items: [
+        { title: "Instagram @ikkyoxd", meta: "Personal account", url: "https://www.instagram.com/ikkyoxd" },
+      ],
+    },
+    // TODO: พอร์ตเก่ามีตัวเลข Smilenoout เพิ่ม (3.7M+ reach, 2.4M+ reach, 3.5M+ views) แต่ไม่มีวันที่
+    //       ถ้ารู้ช่วงเวลา ค่อยเพิ่มใน stats ของโฟลเดอร์ smilenoout
   ],
 
   /* ---------- จอคลิปบน Cover: เล่นคลิปของประเภทงานที่คนดูเลือก ----------
@@ -121,6 +135,11 @@ window.SITE = {
     { label: "CREATOR", mode: "video", sprite: "gamepad", clip: "https://www.tiktok.com/@iggylengame/video/7658989879522626836" },
     { label: "EVENTS", mode: "video", sprite: "camera", clip: "https://www.tiktok.com/@ais_club/video/7683364721118039313" },
     { label: "MOTION", mode: "animation", sprite: "sparkle", clip: "https://www.tiktok.com/@ais_club/video/7538425611467902216" },
+    { label: "MASCOT", mode: "animation", image: "images/work/anim-ais3bb-1.jpg" },
+    // ช่องที่เป็นรูป (ใช้ image แทน clip)
+    { label: "CHARACTER", mode: "graphic", image: "images/work/char-ais3bb-1.jpg" },
+    { label: "STICKERS", mode: "graphic", image: "images/work/illus-stickers-1.jpg" },
+    { label: "INFOGRAPHIC", mode: "graphic", image: "images/work/gfx-infographic-1.jpg" },
   ],
   showreel: "",
 
@@ -132,6 +151,9 @@ window.SITE = {
      iconHover  (ไม่ใส่ก็ได้) ไอคอนตอนเอาเมาส์ชี้ เช่นไฟล์ GIF ที่ขยับได้ "icons/short.gif"
      หมวดที่ยังไม่มีงาน จะถูกซ่อนเอง                                                */
   categories: [
+    { name: "Graphic Design", icon: "", sprite: "sparkle" },
+    { name: "Character & Illustration", icon: "", sprite: "heart" },
+    { name: "Presentation & Teaching", icon: "", sprite: "star" },
     { name: "Short-form & Social", icon: "", sprite: "phone" },
     { name: "Brand & Corporate", icon: "", sprite: "clapper" },
     { name: "Event & Creator Content", icon: "", sprite: "camera" },
@@ -447,6 +469,260 @@ window.WORKS = [
     highlight: "Two years on set for RoV's Songkran music video, in front of the camera and behind it.",
     ongoing: true,
     details: { platform: "TikTok · vertical · 1:11 (2026)" },
+  },
+
+  // ================= งานจากพอร์ต Canva เก่า (รูปอยู่ใน public/images/work) =================
+  // ช่องที่เขียน TODO = ยังไม่มีข้อมูล เติมทีหลังได้ / ถ้าได้ลิงก์คลิป ใส่ใน clips: ["..."] แล้วรูปจะถูกแทนด้วยคลิป
+
+  // ---------- Graphic ----------
+  {
+    title: "AIS × 3BB Mascot",
+    images: [
+      { src: "images/work/char-ais3bb-1.jpg", caption: "From sketch to final character" },
+      { src: "images/work/char-ais3bb-2.jpg", caption: "Standee and bag tag at the Mini Town Hall" },
+    ],
+    categories: ["Character & Illustration", "Brand & Corporate"],
+    tags: ["Character", "Mascot", "Merchandise"],
+    client: "AIS",
+    year: "",   // TODO
+    role: ["Concept", "Character design", "Illustration"],
+    highlight: "A mascot for the AIS and 3BB merger, taken from first idea to animation, decorations and merchandise.",
+    details: { tools: ["Procreate", "Adobe Illustrator"] },
+  },
+  {
+    title: "Character Design Proposals",
+    images: [
+      { src: "images/work/char-proposal-1.jpg", caption: "Proposal sketches" },
+      { src: "images/work/char-proposal-2.jpg", caption: "Three directions, each tied to a brand value" },
+      { src: "images/work/char-proposal-3.jpg", caption: "From proposal to final" },
+      { src: "images/work/char-proposal-4.jpg", caption: "More sketch ideas" },
+    ],
+    categories: ["Character & Illustration"],
+    tags: ["Character", "Proposal"],
+    client: "",   // TODO
+    role: ["Concept", "Character design"],
+    highlight: "Characters designed to match a brand's core concept and goals, from sketch to final.",
+    details: { tools: ["Procreate", "Adobe Photoshop", "Adobe Illustrator"] },
+  },
+  {
+    title: "Sticker Sheets & LINE Stickers",
+    images: [
+      { src: "images/work/illus-stickers-1.jpg" },
+      { src: "images/work/illus-stickers-2.jpg" },
+      { src: "images/work/illus-stickers-3.jpg" },
+      { src: "images/work/illus-stickers-4.jpg" },
+      { src: "images/work/illus-stickers-5.jpg" },
+      { src: "images/work/illus-line-sticker.jpg", caption: "LINE sticker set" },
+      { src: "images/work/illus-brand-collab.jpg", caption: "Brand collaboration" },
+    ],
+    categories: ["Character & Illustration"],
+    tags: ["Illustration", "Stickers", "LINE"],
+    client: "",   // TODO: ชื่อแบรนด์ (ในรูปมี IG: Bliszart)
+    role: ["Illustration", "Design"],
+    highlight: "Die-cut PVC sticker sheets, a LINE sticker set and a brand collaboration.",
+    details: { tools: ["Procreate", "Adobe Photoshop"] },
+  },
+  {
+    title: "Internal Comms Infographics",
+    images: [
+      { src: "images/work/gfx-infographic-1.jpg", caption: "Internal communication" },
+      { src: "images/work/gfx-infographic-2.jpg", caption: "Internal event" },
+      { src: "images/work/gfx-infographic-3.jpg", caption: "Internal activity" },
+      { src: "images/work/gfx-infographic-4.jpg", caption: "Internal activity" },
+      { src: "images/work/gfx-infographic-5.jpg", caption: "Internal activity" },
+    ],
+    categories: ["Graphic Design", "Brand & Corporate"],
+    tags: ["Infographic", "Internal Comms"],
+    client: "AIS",
+    role: ["Design"],
+    highlight: "Infographics that make safety tips, benefits and staff events easy to read at a glance.",
+    details: { tools: ["Canva", "Adobe Photoshop"] },
+  },
+  {
+    title: "Staff Party TikTok Challenge",
+    images: [{ src: "images/work/gfx-tiktok-challenge.jpg" }],
+    categories: ["Graphic Design", "Brand & Corporate"],
+    tags: ["Campaign", "TikTok", "Engagement"],
+    client: "AIS",
+    year: "2026",
+    role: ["Concept", "Design"],
+    highlight: "Turned the staff TikTok contest into optional missions so more people joined in.",
+    details: {
+      results: "697 videos under #aisstaffparty2026 and 594 under #ม่วนฟันมันส์แฟร์",
+      resultsSource: "TikTok hashtag counts shown in my portfolio deck",   // TODO: วันที่เก็บข้อมูล
+    },
+  },
+  {
+    title: "Social Posts for AIS Club",
+    images: [
+      { src: "images/work/gfx-social-posts-1.jpg", caption: "Activity recap and executive quotes" },
+      { src: "images/work/gfx-social-posts-2.jpg", caption: "Staff party recap and Songkran event" },
+    ],
+    links: [
+      { label: "Activity recap", url: "https://www.facebook.com/share/p/1DseW6jCqz/" },
+      { label: "Executive's quotes", url: "https://www.facebook.com/share/p/1BJoRyqCSD/" },
+      { label: "Staff party recap", url: "https://www.facebook.com/share/p/1R8phXSvxq/" },
+      { label: "Songkran event", url: "https://www.facebook.com/share/p/17a1dhpMTq/" },
+    ],
+    categories: ["Graphic Design", "Brand & Corporate"],
+    tags: ["Social Media", "Facebook"],
+    client: "AIS Club",
+    role: ["Design"],
+    highlight: "Facebook post sets for event recaps, executive quotes and staff activities.",
+  },
+  {
+    title: "Podcast Summary Infographics",
+    images: [
+      { src: "images/work/gfx-podcast-summary-1.jpg" },
+      { src: "images/work/gfx-podcast-summary-2.jpg" },
+    ],
+    categories: ["Graphic Design"],
+    tags: ["Infographic", "Podcast"],
+    client: "AIS",
+    role: ["Design"],
+    highlight: "Episode takeaways turned into shareable infographics.",
+    details: { tools: ["Canva", "Adobe Photoshop"] },
+  },
+  {
+    title: "Rebranding: Visual Identity",
+    images: [{ src: "images/work/gfx-rebranding.jpg", caption: "Before and after" }],
+    categories: ["Graphic Design"],
+    tags: ["Branding"],
+    client: "",   // TODO
+    role: ["Design"],
+    highlight: "A rebrand for a more consistent visual identity and brand presence.",
+    details: { tools: ["Canva", "Adobe Photoshop", "Procreate"] },
+  },
+  {
+    title: "Festival E-card",
+    images: [{ src: "images/work/gfx-ecard-songkran.jpg" }],
+    categories: ["Graphic Design", "Brand & Corporate"],
+    tags: ["E-card", "Songkran"],
+    client: "AIS",
+    role: ["Design"],
+    highlight: "Songkran e-card from the executives, sent by internal email.",
+    details: { tools: ["Adobe Photoshop", "Canva"] },
+  },
+  {
+    title: "Instagram Filters",
+    images: [{ src: "images/work/gfx-ig-filters.jpg" }],
+    categories: ["Graphic Design"],
+    tags: ["AR", "Instagram"],
+    client: "",   // TODO
+    role: ["Design"],
+    highlight: "A set of Instagram face filters.",
+    // links: [{ label: "Try the filters", url: "TODO" }],
+  },
+  {
+    title: "NFT Game Characters",
+    images: [{ src: "images/work/char-nft.jpg" }],
+    categories: ["Character & Illustration"],
+    tags: ["Character", "Game"],
+    client: "",   // TODO
+    role: ["Character design", "Illustration"],
+    highlight: "Character art for an NFT game.",
+  },
+  {
+    title: "Competition Entries",
+    images: [
+      { src: "images/work/gfx-comp-fastwork.jpg", caption: "#FastChallenge by Fastwork" },
+      { src: "images/work/gfx-comp-australian-embassy.jpg", caption: "Australian Embassy's 2023 Rabbit Card Competition" },
+    ],
+    categories: ["Character & Illustration"],
+    tags: ["Competition"],
+    role: ["Illustration"],
+    highlight: "Entries for Fastwork's #FastChallenge and the Australian Embassy's 2023 Rabbit Card Competition.",
+    details: { tools: ["Procreate", "Adobe Photoshop"] },
+  },
+  {
+    title: "Better Content with Generative AI",
+    images: [
+      { src: "images/work/ld-ai-class-1.jpg", caption: "Don't tell AI everything" },
+      { src: "images/work/ld-ai-class-2.jpg", caption: "Class 1: AI as a thinking partner" },
+      { src: "images/work/ld-ai-class-3.jpg", caption: "Class 2: AI as a reflection tool" },
+      { src: "images/work/ld-ai-class-4.jpg", caption: "Writing an action plan with AI" },
+    ],
+    categories: ["Presentation & Teaching", "Brand & Corporate"],
+    tags: ["AI", "Workshop"],
+    client: "AIS",
+    year: "2026",
+    role: ["Concept", "Slide design", "Teaching"],
+    highlight: "Workshops that teach non-tech staff to use AI as a thinking partner, not a replacement.",
+  },
+
+  // ---------- Video (มีแต่รูปก่อน รอลิงก์คลิป) ----------
+  {
+    title: "Internal Podcast (Video Series)",
+    clips: [],   // TODO: ลิงก์ตอนที่เปิดเผยได้
+    images: [
+      { src: "images/work/video-podcast-1.jpg" },
+      { src: "images/work/video-podcast-2.jpg" },
+    ],
+    categories: ["Podcast & Long-form", "Brand & Corporate"],
+    tags: ["Podcast", "Multicam", "Green Screen"],
+    client: "AIS",
+    year: "2026",
+    role: ["Content writing", "Design", "Shoot", "Edit", "Publish"],
+    highlight: "Turned an internal podcast into a video show and published a 6-episode series.",
+    details: {
+      responsibility: "Edited and published all 6 episodes, shot some of them, and designed the graphics.",
+      duration: "Edit time went from about 1–2 days to about half a day per episode",
+    },
+  },
+  {
+    title: "SB Design Square: Mattress Expo",
+    clips: [],   // TODO
+    images: [{ src: "images/work/video-sb-design-square.jpg" }],
+    categories: ["Short-form & Social"],
+    tags: ["Review", "Product"],
+    client: "SB Design Square",
+    role: [],   // TODO
+    highlight: "",   // TODO
+  },
+  {
+    title: "Songkran Greeting: Before / After",
+    clips: [],   // TODO
+    images: [{ src: "images/work/video-songkran-ecard-before-after.jpg" }],
+    categories: ["Short-form & Social", "Brand & Corporate"],
+    tags: ["Before / After", "Songkran"],
+    client: "AIS",
+    role: [],   // TODO
+    highlight: "",   // TODO
+  },
+  {
+    title: "Project VTR",
+    clips: [],   // TODO
+    images: [{ src: "images/work/video-project-vtr.jpg" }],
+    categories: ["Brand & Corporate"],
+    tags: ["VTR"],
+    client: "",   // TODO
+    role: [],   // TODO
+    highlight: "",   // TODO
+  },
+
+  // ---------- Animation ----------
+  {
+    title: "AIS × 3BB Mascot Animation",
+    clips: [],   // TODO: ลิงก์คลิป (ในสไลด์เป็น QR "scan to watch")
+    images: [
+      { src: "images/work/anim-ais3bb-1.jpg" },
+      { src: "images/work/anim-ais3bb-2.jpg" },
+    ],
+    categories: ["Motion & Animation", "Brand & Corporate"],
+    tags: ["2D Animation", "Character"],
+    client: "AIS",
+    role: ["Character design", "Animation"],
+    highlight: "2D animation starring the AIS × 3BB mascots.",
+  },
+  {
+    title: "DNA and Culture Animation",
+    clips: [],   // TODO
+    images: [{ src: "images/work/anim-dna-culture.jpg" }],
+    categories: ["Motion & Animation", "Brand & Corporate"],
+    tags: ["Animation", "Culture"],
+    client: "AIS",
+    role: [],   // TODO
+    highlight: "",   // TODO
   },
 
   // ↓ งานประเภทอื่นที่จะเพิ่มทีหลัง: ลบ // หน้าบรรทัด แล้วเปลี่ยนลิงก์

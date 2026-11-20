@@ -4,5 +4,7 @@
   "compatibility_date": "2025-06-01",
   "assets": {
     "directory": "./public"
-  }
+  },
+  // ให้ Cloudflare สร้างลิงก์พรีวิวใน Pull Request ได้ (ไม่กระทบเว็บจริง)
+  "previews": {}
 }
