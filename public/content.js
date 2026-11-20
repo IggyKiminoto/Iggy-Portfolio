@@ -23,6 +23,7 @@ window.SITE = {
      รูปตัวละครอยู่ในโฟลเดอร์ public/character (ดูวิธีตั้งชื่อไฟล์ใน README.md ในโฟลเดอร์นั้น)       */
   host: {
     greeting: "Hi, I'm Iggy! I plan, shoot, edit and post. What would you like to see?",
+    hint: "(pick one below ↓)",   // ข้อความเล็ก ๆ ชวนกดปุ่ม
     resetLabel: "Show everything",
   },
 
@@ -30,30 +31,28 @@ window.SITE = {
      id       ชื่อโฟลเดอร์ชุดตัวละคร เช่น "video" = public/character/video/
      label    ข้อความบนปุ่ม
      line     ตัวละครพูดอะไรหลังกด
-     colors   hero = สีพื้น Cover และส่วนติดต่อ / accent = สีเน้น (ปุ่ม หัวข้อ ไฮไลต์)
-     channel  ช่องทีวีที่จะเปิด (ตรงกับ label ใน channels ด้านล่าง)
+     short    ชื่อสั้นบนปุ่มสี่เหลี่ยม
+     colors   accent = สีเน้น (ปุ่ม หัวข้อ ไฮไลต์) — พื้นยังเป็นน้ำเงินของเว็บทุกแบบ
+              (ใส่ hero: "#xxxxxx" ได้ถ้าอยากเปลี่ยนสีพื้นด้วย)
      filter   หมวดงานที่นับเป็นประเภทนี้ (ดูจากหมวดแรกของแต่ละผลงาน)
      icon     ไอคอนบนปุ่มที่วาดเอง เช่น "character/icons/video.png" (ปล่อยว่าง = ไอคอนพิกเซล)    */
   modes: [
     {
-      id: "graphic", label: "Graphic Design", sprite: "sparkle", icon: "",
+      id: "graphic", label: "Graphic Design", short: "Graphic Design", sprite: "sparkle", icon: "",
       line: "Key visuals, characters and stickers. Samples are on the way, so ask me for them!",
-      colors: { hero: "#EA8818", accent: "#FFFBE0" },
-      channel: "",
+      colors: { accent: "#FE6D73" },   // Grapefruit
       filter: ["Graphic Design"],
     },
     {
-      id: "video", label: "Video Editing & Production", sprite: "clapper", icon: "",
+      id: "video", label: "Video Editing & Production", short: "Video", sprite: "clapper", icon: "",
       line: "Video it is! From the shot list to the final cut. Here's one I made.",
-      colors: { hero: "#2994B2", accent: "#FFB400" },
-      channel: "BRAND",
+      colors: { accent: "#FFB400" },   // Sunburst Gold
       filter: ["Short-form & Social", "Brand & Corporate", "Event & Creator Content", "Podcast & Long-form"],
     },
     {
-      id: "animation", label: "Animation", sprite: "play", icon: "",
+      id: "animation", label: "Animation", short: "Animation", sprite: "play", icon: "",
       line: "Hand-drawn, frame by frame. This one is my favourite.",
-      colors: { hero: "#284C5F", accent: "#EA8818" },
-      channel: "MOTION",
+      colors: { accent: "#DD88C1" },   // Daisy
       filter: ["Motion & Animation"],
     },
   ],
@@ -70,15 +69,16 @@ window.SITE = {
   // แบรนด์ที่เคยทำงานด้วย (ขึ้นใต้ปุ่มบน Cover)
   workedWith: ["AIS", "Garena RoV Thailand"],
 
-  /* ---------- ทีวีบน Cover: แต่ละช่อง = งาน 1 ประเภท ----------
-     label = ชื่อช่อง / clip = ลิงก์คลิป / sprite = ไอคอนพิกเซล
+  /* ---------- จอคลิปบน Cover: เล่นคลิปของประเภทงานที่คนดูเลือก ----------
+     label = ชื่อช่อง / mode = ประเภทงาน (id ใน modes) / clip = ลิงก์คลิป
+     กดลูกศรในจอ = เลื่อนดูคลิปอื่นของประเภทเดียวกัน
      กรอบทีวีจะปรับตามสัดส่วนคลิปเอง (แนวตั้ง / แนวนอน)
      ถ้าไม่มีช่องเลย จะใช้ showreel หรืองานเด่นชิ้นแรกแทน                          */
   channels: [
-    { label: "BRAND", sprite: "clapper", clip: "https://www.tiktok.com/@ais_club/video/7701369408421154068" },
-    { label: "CREATOR", sprite: "gamepad", clip: "https://www.tiktok.com/@iggylengame/video/7658989879522626836" },
-    { label: "EVENTS", sprite: "camera", clip: "https://www.tiktok.com/@ais_club/video/7683364721118039313" },
-    { label: "MOTION", sprite: "sparkle", clip: "https://www.tiktok.com/@ais_club/video/7538425611467902216" },
+    { label: "BRAND", mode: "video", sprite: "clapper", clip: "https://www.tiktok.com/@ais_club/video/7701369408421154068" },
+    { label: "CREATOR", mode: "video", sprite: "gamepad", clip: "https://www.tiktok.com/@iggylengame/video/7658989879522626836" },
+    { label: "EVENTS", mode: "video", sprite: "camera", clip: "https://www.tiktok.com/@ais_club/video/7683364721118039313" },
+    { label: "MOTION", mode: "animation", sprite: "sparkle", clip: "https://www.tiktok.com/@ais_club/video/7538425611467902216" },
   ],
   showreel: "",
 

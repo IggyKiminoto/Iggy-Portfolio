@@ -168,7 +168,7 @@
   reveal(document.querySelector(".hero-clients"), "up", { now: true, delay: 760 });
   document.querySelectorAll(".offer-list li").forEach((li, i) => reveal(li, "up", { now: true, delay: 520 + i * 60 }));
   document.querySelectorAll(".hero-actions .px-btn").forEach((b, i) => reveal(b, "up", { now: true, delay: 640 + i * 60 }));
-  reveal(document.querySelector(".hero .tv"), "right", { now: true, delay: 260 });
+  reveal(document.querySelector(".hero .win"), "right", { now: true, delay: 260 });
 
   // ---------------------------------------------------------------
   // 3) กระดาษฉีก: งานเด่นถูกปิดด้วยกระดาษ แล้วฉีกออกตอนเลื่อนมาถึง
@@ -239,6 +239,7 @@
   // ของอื่น ๆ ที่เลื่อนเข้ามา
   // ---------------------------------------------------------------
   document.querySelectorAll(".card").forEach((n) => reveal(n, "up"));
+  document.querySelectorAll(".lib-tab").forEach((n, i) => reveal(n, "pop", { delay: i * 80 }));
   document.querySelectorAll(".filters .filter").forEach((n, i) => reveal(n, "pop", { delay: i * 40 }));
   document.querySelectorAll(".service").forEach((n) => reveal(n, "up"));
   document.querySelectorAll(".step").forEach((n) => reveal(n, "left"));

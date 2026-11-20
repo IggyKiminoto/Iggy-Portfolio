@@ -48,23 +48,26 @@
           <p class="hero-clients" id="hero-clients"><span class="mini-label">WORKED WITH</span></p>
         </div>
 
-        <!-- ทีวีเปลี่ยนช่อง: กรอบปรับตามสัดส่วนคลิป -->
-        <div class="reel" id="reel-wrap" aria-roledescription="carousel" aria-label="Video channels">
-          <div class="tv">
-            <div class="tv-top">
-              <span class="tv-label" id="reel-label" aria-live="polite">▶ SHOWREEL</span>
-              <span class="tv-rec"><i></i>REC</span>
+        <!-- จอคลิป (หน้าต่างสไตล์ XP): ปิดอยู่จนกว่าจะเลือกประเภทงาน -->
+        <div class="reel" id="reel-wrap" aria-label="Video player">
+          <div class="win">
+            <div class="win-bar">
+              <span class="win-icon" data-sprite="clapper"></span>
+              <span class="win-title" id="reel-label" aria-live="polite">Iggy Player</span>
+              <span class="win-ctrls" aria-hidden="true"><i class="w-min"></i><i class="w-max"></i><i class="w-close"></i></span>
             </div>
-            <div class="tv-screen" id="reel"></div>
-            <div class="tv-bottom">
-              <button class="tv-arrow" type="button" id="reel-prev" aria-label="Previous channel"><span data-sprite="arrowL"></span></button>
-              <span class="tv-grill"></span>
-              <span class="tv-count" id="reel-count"></span>
-              <span class="tv-grill"></span>
-              <button class="tv-arrow" type="button" id="reel-next" aria-label="Next channel"><span data-sprite="arrowR"></span></button>
+            <div class="win-screen" id="reel">
+              <div class="win-off" id="reel-off">
+                <span class="win-off-big">NO SIGNAL</span>
+                <span class="win-off-hint"><span class="hint-arrow">◀</span> Pick a type of work to tune in</span>
+              </div>
+            </div>
+            <div class="win-status">
+              <button class="tv-arrow" type="button" id="reel-prev" aria-label="Previous clip" hidden><span data-sprite="arrowL"></span></button>
+              <span class="tv-count" id="reel-count">READY</span>
+              <button class="tv-arrow" type="button" id="reel-next" aria-label="Next clip" hidden><span data-sprite="arrowR"></span></button>
             </div>
           </div>
-          <div class="reel-channels" id="reel-channels" role="group" aria-label="Choose a type of work"></div>
           <a class="reel-from" id="reel-from" href="#selected" hidden></a>
         </div>
       </div>
@@ -81,15 +84,19 @@
       <div id="selected-list" class="selected-list"></div>
     </section>
 
-    <!-- ===== 04 ผลงานเพิ่มเติม ===== -->
+    <!-- ===== 04 ผลงานทั้งหมด: โฟลเดอร์ตามประเภทงาน ===== -->
     <section id="works" class="section">
       <div class="section-head">
-        <h2 class="px-title">MORE WORK</h2>
-        <p class="section-sub"><mark>More clips and campaigns</mark></p>
+        <h2 class="px-title">ALL WORK</h2>
+        <p class="section-sub"><mark>Open a folder, then pick a project</mark></p>
       </div>
-      <div id="filters" class="filters" role="toolbar" aria-label="Filter work"></div>
-      <div id="works-grid" class="works-grid"></div>
-      <p id="works-empty" class="empty" hidden>Nothing in this category yet.</p>
+      <div class="lib" id="lib">
+        <div class="lib-tabs" id="lib-tabs" role="tablist" aria-label="Types of work"></div>
+        <div class="lib-body" id="lib-body" hidden>
+          <div class="lib-stage" id="lib-stage"></div>
+          <ol class="lib-list" id="lib-list"></ol>
+        </div>
+      </div>
     </section>
 
     <!-- ===== 05 บริการและวิธีทำงาน ===== -->

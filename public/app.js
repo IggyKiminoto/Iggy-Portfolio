@@ -810,74 +810,100 @@
     }
   }
 
-  // ทีวีบน Cover: แต่ละ "ช่อง" = งาน 1 ประเภท กดเลือกช่อง หรือกดลูกศรเลื่อนดูได้
+  // ประเภทงานของแต่ละผลงาน (ดูจากหมวดแรก) — ใช้ทั้งจอคลิปและโฟลเดอร์ผลงาน
+  function modeOfWork(w) {
+    const ms = asList(SITE.modes);
+    const m = ms.find((x) => asList(x.filter).indexOf(w.cats[0]) !== -1);
+    return m ? m.id : ((ms.find((x) => x.id === "video") || ms[0] || {}).id);
+  }
+
+  // ---------- จอคลิปบน Cover (หน้าต่างสไตล์ XP): ปิดอยู่จนกว่าจะเลือกประเภทงาน ----------
+  const reelApi = { tune: () => {}, off: () => {} };
   function renderReel() {
     const wrap = document.getElementById("reel-wrap");
     const screen = document.getElementById("reel");
+    const offScreen = document.getElementById("reel-off");
     const label = document.getElementById("reel-label");
     const count = document.getElementById("reel-count");
-    const chips = document.getElementById("reel-channels");
     const from = document.getElementById("reel-from");
     const prev = document.getElementById("reel-prev");
     const next = document.getElementById("reel-next");
-
-    let channels = asList(SITE.channels).filter((c) => c && c.clip);
-    if (!channels.length && SITE.showreel) channels = [{ label: SITE.reelLabel || "SHOWREEL", clip: SITE.showreel }];
-    if (!channels.length && featured[0]) channels = [{ label: SITE.reelLabel || "LATEST WORK", clip: featured[0].url }];
-    if (!channels.length) return wrap.remove();
-
+    const all = asList(SITE.channels).filter((c) => c && c.clip);
     const findWork = (url) => works.find((w) => w.clipList.indexOf(url) !== -1);
+    const title = SITE.playerTitle || "Iggy Player";
+    let list = [];
     let current = -1;
-    const buttons = channels.map((c, i) => {
-      const b = el("button", { type: "button", class: "filter", "aria-pressed": "false" }, [
-        c.sprite ? iconFor({ sprite: c.sprite }) : null,
-        el("span", { text: c.label }),
-      ]);
-      b.addEventListener("click", () => show(i));
-      chips.appendChild(b);
-      return b;
-    });
-    if (channels.length < 2) {
-      chips.remove();
-      prev.hidden = true;
-      next.hidden = true;
-    }
+    let fromWork = null;
 
-    function show(i) {
-      const n = channels.length;
-      i = (i + n) % n;
-      if (i === current) return;
-      const first = current === -1;
-      current = i;
-      const c = channels[i];
-      const work = findWork(c.clip);
+    function staticFx() {
+      if (reduceMotion) return;
+      screen.classList.remove("is-static");
+      void screen.offsetWidth;
+      screen.classList.add("is-static");
+    }
+    function render(i, dir) {
+      const n = list.length;
+      current = (i + n) % n;
+      const c = list[current];
       const player = makePlayer({ url: c.clip, title: c.label, format: c.format });
+      if (!reduceMotion) player.node.classList.add(dir < 0 ? "slide-in-left" : "slide-in");
       screen.replaceChildren(player.node);
-      if (!first && !reduceMotion) {
-        screen.classList.remove("is-static");
-        void screen.offsetWidth;
-        screen.classList.add("is-static");
-      }
-      label.textContent = "▶ " + (n > 1 ? "CH " + (i + 1) + " · " : "") + c.label;
-      count.textContent = n > 1 ? i + 1 + " / " + n : "";
-      buttons.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i)));
-      if (work) {
-        from.textContent = "From: " + work.title + " ↓";
-        from.setAttribute("href", "#" + work.id);
+      staticFx();
+      label.textContent = title + " · " + c.label;
+      count.textContent = current + 1 + " / " + n;
+      prev.hidden = next.hidden = n < 2;
+      fromWork = findWork(c.clip) || null;
+      if (fromWork) {
+        from.textContent = "From: " + fromWork.title + " ↓";
+        from.setAttribute("href", "#" + fromWork.id);
         from.hidden = false;
       } else {
         from.hidden = true;
       }
     }
-    prev.addEventListener("click", () => show(current - 1));
-    next.addEventListener("click", () => show(current + 1));
-    show(0);
-    reelApi.show = (labelText) => {
-      const i = channels.findIndex((c) => String(c.label).toLowerCase() === String(labelText || "").toLowerCase());
-      if (i !== -1) show(i);
+    function message(big, small) {
+      screen.replaceChildren(el("div", { class: "win-off is-msg" }, [
+        el("span", { class: "win-off-big", text: big }),
+        el("span", { class: "win-off-hint", text: small }),
+      ]));
+      staticFx();
+      count.textContent = "—";
+      prev.hidden = next.hidden = true;
+      from.hidden = true;
+    }
+    reelApi.tune = (mode) => {
+      const firstTime = !wrap.classList.contains("is-on");
+      wrap.classList.add("is-on");
+      if (firstTime && !reduceMotion) {
+        wrap.classList.remove("slide-up");
+        void wrap.offsetWidth;
+        wrap.classList.add("slide-up");
+      }
+      list = all.filter((c) => !c.mode || c.mode === mode.id);
+      label.textContent = title + " · " + (mode.short || mode.label);
+      if (!list.length) return message("COMING SOON", "Samples for this one are on the way");
+      render(0, 1);
     };
+    reelApi.off = () => {
+      wrap.classList.remove("is-on", "slide-up");
+      screen.replaceChildren(offScreen);
+      label.textContent = title;
+      count.textContent = "READY";
+      prev.hidden = next.hidden = true;
+      from.hidden = true;
+      current = -1;
+    };
+    prev.addEventListener("click", () => render(current - 1, -1));
+    next.addEventListener("click", () => render(current + 1, 1));
+    // "From:" ของงานที่อยู่ในโฟลเดอร์ (ไม่ใช่งานเด่น) → เปิดโฟลเดอร์แล้วเลือกงานนั้นให้
+    from.addEventListener("click", (e) => {
+      if (!fromWork || document.getElementById(fromWork.id)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      libApi.show(fromWork);
+    });
+    reelApi.off();
   }
-  const reelApi = { show: () => {} };
 
   // ---------- ตัวละครบน Cover: เลือกประเภทงาน แล้วสี + ชุด + ทีวี + ผลงาน เปลี่ยนตาม ----------
   function renderHost() {
@@ -896,7 +922,11 @@
       accent: getComputedStyle(root).getPropertyValue("--yellow").trim(),
     };
 
-    speech.textContent = cfg.greeting || "Hi! What would you like to see?";
+    function greet() {
+      speech.replaceChildren(document.createTextNode((cfg.greeting || "Hi! What would you like to see?") + " "));
+      if (cfg.hint) speech.appendChild(el("span", { class: "host-hint", text: cfg.hint }));
+    }
+    greet();
 
     // ชั้นของตัวละคร: base (+ เฟรมกะพริบตา base-2) แล้วชุดซ้อนด้านบน
     const baseLayer = el("div", { class: "host-layer host-base" });
@@ -967,10 +997,11 @@
     const primaryCat = (w) => w.cats[0];
     let active = null;
     const buttons = modes.map((m) => {
-      const b = el("button", { type: "button", class: "host-choice", "aria-pressed": "false" }, [
+      const b = el("button", { type: "button", class: "host-choice", "aria-pressed": "false", "aria-label": m.label }, [
         iconFor({ icon: m.icon, sprite: m.sprite }),
-        el("span", { text: m.label }),
+        el("span", { class: "host-choice-label", text: m.short || m.label }),
       ]);
+      b.style.setProperty("--choice-accent", (m.colors && m.colors.accent) || defaults.accent);
       b.addEventListener("click", () => choose(active === m ? null : m));
       choiceWrap.appendChild(b);
       return b;
@@ -983,35 +1014,36 @@
 
     function choose(m) {
       active = m;
+      if (m) host.classList.add("is-chosen"); // หยุดปุ่มเด้งชวนกด หลังจากคนดูกดแล้ว
       buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(modes[i] === m)));
       reset.hidden = !m;
 
       // สี: พื้น Cover + สีเน้นทั้งเว็บ
       const colors = (m && m.colors) || {};
-      root.style.setProperty("--blue", colors.hero || defaults.hero);
+      root.style.setProperty("--blue", colors.hero || defaults.hero); // พื้นยังเป็นน้ำเงินเดิม ถ้าไม่ได้ตั้ง hero
       root.style.setProperty("--yellow", colors.accent || defaults.accent);
       const meta = document.querySelector('meta[name="theme-color"]');
       if (meta) meta.setAttribute("content", colors.hero || defaults.hero);
 
-      speech.textContent = m ? m.line || m.label : cfg.greeting || "";
+      if (m) speech.textContent = m.line || m.label;
+      else greet();
       popNow(speech, 0);
       dressUp(m ? m.id : null);
-      if (m && m.channel) reelApi.show(m.channel);
 
-      // ผลงาน + ปุ่มหลัก
+      // จอคลิป + โฟลเดอร์ผลงาน + ปุ่มหลัก
       if (!m) {
-        setFilter({ type: "all", name: ALL }, true);
-        chipButtons.forEach((b) => b._filter.type === "all" && b.setAttribute("aria-pressed", "true"));
+        reelApi.off();
+        libApi.close();
         cta.textContent = ctaDefault.text;
         cta.setAttribute("href", ctaDefault.href);
         return;
       }
-      const names = asList(m.filter);
-      setFilter({ type: "mode", names: names }, true);
-      const first = featured.concat(rest).find((w) => names.indexOf(primaryCat(w)) !== -1);
-      if (first) {
-        cta.textContent = "See " + m.label.split(" ")[0].toLowerCase() + " work ↓";
-        cta.setAttribute("href", "#" + first.id);
+      reelApi.tune(m);
+      libApi.open(m.id);
+      const hasWork = works.some((w) => modeOfWork(w) === m.id);
+      if (hasWork) {
+        cta.textContent = "See " + String(m.short || m.label).toLowerCase() + " work ↓";
+        cta.setAttribute("href", "#works");
       } else {
         cta.textContent = "Ask me for samples →";
         cta.setAttribute("href", "#contact");
@@ -1033,54 +1065,131 @@
     });
   }
 
-  function renderWorks() {
-    const grid = document.getElementById("works-grid");
-    const filters = document.getElementById("filters");
-    if (!rest.length) {
-      document.getElementById("works").remove();
-      return;
-    }
-    cards = rest.map((w, i) => {
-      const card = workCard(w, i);
-      grid.appendChild(card);
-      popOnScroll(card);
-      return card;
+  // ---------- ผลงานทั้งหมด: โฟลเดอร์ตามประเภทงาน (กดแล้วค่อยโหลดคลิป = หน้าเว็บเบาและสั้น) ----------
+  const libApi = { open: () => {}, close: () => {}, show: () => {} };
+  function renderLibrary() {
+    const section = document.getElementById("works");
+    const lib = document.getElementById("lib");
+    const tabsWrap = document.getElementById("lib-tabs");
+    const body = document.getElementById("lib-body");
+    const stage = document.getElementById("lib-stage");
+    const list = document.getElementById("lib-list");
+    const modes = asList(SITE.modes);
+    if (!section) return;
+    if (!modes.length || !works.length) return section.remove();
+
+    const mobile = window.matchMedia("(max-width: 899px)");
+    const groups = modes.map((m) => ({ mode: m, works: works.filter((w) => modeOfWork(w) === m.id) }));
+    let openId = null;
+    let selected = null;
+
+    const tabs = groups.map((g) => {
+      const n = g.works.length;
+      const b = el("button", { type: "button", class: "lib-tab", role: "tab", "aria-selected": "false" }, [
+        iconFor({ icon: g.mode.icon, sprite: g.mode.sprite }),
+        el("span", { class: "lib-tab-name", text: g.mode.short || g.mode.label }),
+        el("span", { class: "lib-tab-count", text: n ? n + (n > 1 ? " projects" : " project") : "Coming soon" }),
+      ]);
+      b.style.setProperty("--tab-accent", (g.mode.colors && g.mode.colors.accent) || "var(--yellow)");
+      b.addEventListener("click", () => (openId === g.mode.id ? close() : open(g.mode.id)));
+      tabsWrap.appendChild(b);
+      return b;
     });
 
-    // ตัวกรอง: หมวดที่มีงาน + tag เด่น (ซ่อนอันที่ว่าง)
-    const list = [{ type: "all", name: ALL }];
-    categories.forEach((c) => {
-      if (rest.some((w) => w.cats.indexOf(c.name) !== -1)) list.push({ type: "cat", name: c.name, item: c });
-    });
-    rest.forEach((w) => w.cats.forEach((n) => {
-      if (!list.some((f) => f.type === "cat" && f.name === n)) list.push({ type: "cat", name: n });
-    }));
-    (SITE.filterTags || []).forEach((t) => {
-      const tag = typeof t === "string" ? { name: t } : t;
-      if (rest.some((w) => w.tagList.indexOf(tag.name) !== -1)) list.push({ type: "tag", name: tag.name, item: tag });
-    });
-    // ปุ่มกรองที่กดแล้วได้ผลเหมือน "All" ไม่ต้องแสดง
-    const useful = [list[0]].concat(list.slice(1).filter((f) => {
-      const n = rest.filter((w) => matches(w, f)).length;
-      return n > 0 && n < rest.length;
-    }));
-    list.length = 0;
-    useful.forEach((f) => list.push(f));
-    if (list.length < 3) {
-      filters.remove();
-      return;
+    function placeStage() {
+      if (!selected) {
+        stage.hidden = true;
+        return;
+      }
+      stage.hidden = false;
+      const row = list.querySelector('[data-id="' + selected.id + '"]');
+      if (mobile.matches && row) row.appendChild(stage); // มือถือ: คลิปกางออกใต้ชื่อที่กด
+      else body.insertBefore(stage, list); // คอม: คลิปอยู่ซ้าย รายชื่ออยู่ขวา
     }
-    list.forEach((f) => {
-      const b = el("button", { type: "button", class: "filter" + (f.type === "tag" ? " filter-tag" : ""), "aria-pressed": "false" }, [
-        f.type !== "all" ? iconFor(f.item || { sprite: f.type === "tag" ? "gamepad" : "sparkle" }) : null,
-        el("span", { text: f.type === "tag" ? "#" + f.name : f.name }),
-      ]);
-      b._filter = f;
-      b.addEventListener("click", () => setFilter(f, true));
-      chipButtons.push(b);
-      filters.appendChild(b);
-    });
-    setFilter(list[0], false);
+
+    function select(w) {
+      selected = w;
+      list.querySelectorAll(".lib-row").forEach((r) => {
+        const on = r.dataset.id === w.id;
+        r.classList.toggle("is-current", on);
+        r.firstChild.setAttribute("aria-expanded", String(on));
+      });
+      const media = mediaBlock(w);
+      stage.replaceChildren(
+        el("div", { class: "lib-media" + (media.vertical ? " is-vertical" : "") }, [media.node]),
+        el("div", { class: "lib-info" }, [el("h3", { class: "lib-info-title", text: w.title })].concat(workInfo(w, { showTags: true }).slice(1)))
+      );
+      placeStage();
+      popNow(stage, 0);
+    }
+
+    function deselect() {
+      selected = null;
+      stage.replaceChildren();
+      list.querySelectorAll(".lib-row").forEach((r) => {
+        r.classList.remove("is-current");
+        r.firstChild.setAttribute("aria-expanded", "false");
+      });
+      placeStage();
+    }
+
+    function open(id) {
+      const g = groups.find((x) => x.mode.id === id);
+      if (!g) return;
+      openId = id;
+      lib.classList.add("is-open");
+      lib.style.setProperty("--lib-accent", (g.mode.colors && g.mode.colors.accent) || "var(--yellow)");
+      tabs.forEach((t, i) => t.setAttribute("aria-selected", String(groups[i] === g)));
+      body.hidden = false;
+      selected = null;
+      stage.replaceChildren();
+      list.replaceChildren();
+      if (!g.works.length) {
+        list.appendChild(el("li", { class: "lib-empty" }, [
+          el("span", { text: "Samples are on the way. " }),
+          el("a", { href: "#contact", text: "Ask me for them →" }),
+        ]));
+        placeStage();
+        return;
+      }
+      g.works.forEach((w, i) => {
+        const meta = [w.client, w.year, w.clipList.length > 1 ? w.clipList.length + " clips" : ""].filter(Boolean).join(" · ");
+        const btn = el("button", { type: "button", class: "lib-row-btn", "aria-expanded": "false" }, [
+          el("span", { class: "lib-num", text: String(i + 1).padStart(2, "0") }),
+          el("span", { class: "lib-row-main" }, [
+            el("span", { class: "lib-row-title", text: w.title }),
+            el("span", { class: "lib-row-meta", text: meta }),
+          ]),
+          el("span", { class: "lib-row-go", "aria-hidden": "true", text: "▶" }),
+        ]);
+        const row = el("li", { class: "lib-row", "data-id": w.id }, [btn]);
+        btn.addEventListener("click", () => (selected === w && mobile.matches ? deselect() : select(w)));
+        list.appendChild(row);
+      });
+      if (!mobile.matches) select(g.works[0]); // คอม: เปิดงานแรกให้เลย จอไม่ว่าง
+      else placeStage();
+    }
+
+    function close() {
+      openId = null;
+      lib.classList.remove("is-open");
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      body.hidden = true;
+      deselect();
+    }
+
+    mobile.addEventListener("change", placeStage);
+    libApi.open = open;
+    libApi.close = close;
+    libApi.show = (w) => {
+      open(modeOfWork(w));
+      select(w);
+      const row = list.querySelector('[data-id="' + w.id + '"]');
+      const target = mobile.matches && row ? row : section;
+      const header = document.querySelector(".topbar");
+      const y = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 8;
+      smoothScrollTo(Math.max(0, y));
+    };
   }
 
   function renderServices() {
@@ -1234,7 +1343,7 @@
 
   renderHero();
   renderSelected();
-  renderWorks();
+  renderLibrary();
   renderHost();
   renderServices();
   renderAbout();
