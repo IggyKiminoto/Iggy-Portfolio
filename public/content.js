@@ -38,7 +38,7 @@ window.SITE = {
      icon     ไอคอนบนปุ่มที่วาดเอง เช่น "character/icons/video.png" (ปล่อยว่าง = ไอคอนพิกเซล)    */
   modes: [
     {
-      id: "graphic", label: "Graphic Design", short: "Graphic Design", sprite: "sparkle", icon: "",
+      id: "graphic", label: "Graphic Design", short: "Graphic", sprite: "sparkle", icon: "",
       line: "Key visuals, characters and stickers. Samples are on the way, so ask me for them!",
       colors: { accent: "#FE6D73" },   // Grapefruit
       filter: ["Graphic Design"],
@@ -66,8 +66,8 @@ window.SITE = {
     { name: "Key visuals & print", sprite: "star" },
   ],
 
-  // แบรนด์ที่เคยทำงานด้วย (ขึ้นใต้ปุ่มบน Cover)
-  workedWith: ["AIS", "Garena RoV Thailand"],
+  // แบรนด์ที่เคยทำงานด้วย (ขึ้นเป็นส่วน WORKED WITH ก่อนส่วนติดต่อ)
+  workedWith: ["AIS", "Garena RoV Thailand", "Sale Here", "SB Design Square"],
 
   /* ---------- จอคลิปบน Cover: เล่นคลิปของประเภทงานที่คนดูเลือก ----------
      label = ชื่อช่อง / mode = ประเภทงาน (id ใน modes) / clip = ลิงก์คลิป

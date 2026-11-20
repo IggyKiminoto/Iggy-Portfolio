@@ -782,10 +782,15 @@
     h1.setAttribute("aria-label", asList(SITE.headline).join(" ") || SITE.name || "");
     if (!h1.children.length) h1.appendChild(el("span", { class: "hero-line", text: SITE.name || "" }));
 
-    const clients = document.getElementById("hero-clients");
+    // ส่วน WORKED WITH ท้ายเว็บ
+    const clientList = document.getElementById("client-list");
     const names = asList(SITE.workedWith);
-    if (names.length) clients.appendChild(el("span", { text: names.join(" · ") }));
-    else clients.remove();
+    names.forEach((n, i) => {
+      const li = el("li", { class: "client", text: n });
+      li.style.setProperty("--r", [-2, 1.5, -1, 2.5, -1.5][i % 5] + "deg");
+      clientList.appendChild(li);
+    });
+    if (!names.length) document.getElementById("clients").remove();
     setText("[data-site=name]", SITE.name);
     setText("[data-site=role]", SITE.role);
     setText("[data-site=tagline]", SITE.tagline);
@@ -815,6 +820,54 @@
     const ms = asList(SITE.modes);
     const m = ms.find((x) => asList(x.filter).indexOf(w.cats[0]) !== -1);
     return m ? m.id : ((ms.find((x) => x.id === "video") || ms[0] || {}).id);
+  }
+
+  // ---------- ปุ่มโฟลเดอร์ (ใช้ทั้งบน Cover และในส่วนผลงาน) ----------
+  // รูปปกที่ "โผล่" ออกจากโฟลเดอร์: วางไฟล์ images/peek/<id>-1.jpg ถึง -3.jpg (ไม่มีก็ใช้การ์ดพิกเซลแทน)
+  const peekCache = {};
+  function peekImages(id, done) {
+    if (peekCache[id]) return peekCache[id].then(done);
+    peekCache[id] = new Promise((resolve) => {
+      const found = [];
+      let pending = 3;
+      for (let i = 1; i <= 3; i++) {
+        loadFirst(["jpg", "png", "webp"].map((ext) => "images/peek/" + id + "-" + i + "." + ext), (img) => {
+          found[i - 1] = img.src;
+          if (--pending === 0) resolve(found);
+        }, () => {
+          if (--pending === 0) resolve(found);
+        });
+      }
+    });
+    peekCache[id].then(done);
+  }
+  function makeFolder(mode, opts) {
+    const accent = (mode.colors && mode.colors.accent) || "var(--yellow)";
+    const peek = el("span", { class: "folder-peek", "aria-hidden": "true" });
+    const cards = [1, 2, 3].map((i) => {
+      const card = el("span", { class: "peek-card peek-" + i });
+      card.appendChild(spriteNode(mode.sprite || "sparkle"));
+      peek.appendChild(card);
+      return card;
+    });
+    peekImages(mode.id, (srcs) => srcs.forEach((src, i) => {
+      if (!src) return;
+      cards[i].replaceChildren(el("img", { src: src, alt: "" }));
+      cards[i].classList.add("has-img");
+    }));
+    const n = opts.count;
+    const front = el("span", { class: "folder-front" }, [
+      iconFor({ icon: mode.icon, sprite: mode.sprite }),
+      el("span", { class: "folder-name", text: mode.short || mode.label }),
+      n == null ? null : el("span", { class: "folder-count", text: n ? n + (n > 1 ? " projects" : " project") : "Coming soon" }),
+    ]);
+    const btn = el("button", { type: "button", class: "folder " + (opts.cls || ""), "aria-label": mode.label }, [
+      el("span", { class: "folder-back", "aria-hidden": "true" }),
+      peek,
+      front,
+    ]);
+    btn.style.setProperty("--folder", accent);
+    return btn;
   }
 
   // ---------- จอคลิปบน Cover (หน้าต่างสไตล์ XP): ปิดอยู่จนกว่าจะเลือกประเภทงาน ----------
@@ -912,7 +965,7 @@
     const stage = document.getElementById("host-char");
     const speech = document.getElementById("host-speech");
     const choiceWrap = document.getElementById("host-choices");
-    const cta = document.getElementById("hero-cta");
+    const cta = document.getElementById("hero-cta") || el("a", { href: "#works" }); // ปุ่มนี้ถูกเอาออกจาก Cover แล้ว (ยังรองรับถ้าใส่กลับ)
     const cfg = SITE.host || {};
     const modes = asList(SITE.modes);
     const ctaDefault = { text: cta.textContent, href: cta.getAttribute("href") };
@@ -933,7 +986,7 @@
     const outfitLayer = el("div", { class: "host-layer host-outfit" });
     stage.appendChild(baseLayer);
     stage.appendChild(outfitLayer);
-    const pngs = (base) => [base + ".png", base + ".webp"];
+    const pngs = (base) => [base + ".gif", base + ".png", base + ".webp"]; // GIF ขยับได้ มาก่อน
 
     function setBase(srcBase, fallbackBase) {
       loadFirst(pngs(srcBase), (img) => {
@@ -997,11 +1050,8 @@
     const primaryCat = (w) => w.cats[0];
     let active = null;
     const buttons = modes.map((m) => {
-      const b = el("button", { type: "button", class: "host-choice", "aria-pressed": "false", "aria-label": m.label }, [
-        iconFor({ icon: m.icon, sprite: m.sprite }),
-        el("span", { class: "host-choice-label", text: m.short || m.label }),
-      ]);
-      b.style.setProperty("--choice-accent", (m.colors && m.colors.accent) || defaults.accent);
+      const b = makeFolder(m, { cls: "host-choice", count: works.filter((w) => modeOfWork(w) === m.id).length });
+      b.setAttribute("aria-pressed", "false");
       b.addEventListener("click", () => choose(active === m ? null : m));
       choiceWrap.appendChild(b);
       return b;
@@ -1085,12 +1135,9 @@
 
     const tabs = groups.map((g) => {
       const n = g.works.length;
-      const b = el("button", { type: "button", class: "lib-tab", role: "tab", "aria-selected": "false" }, [
-        iconFor({ icon: g.mode.icon, sprite: g.mode.sprite }),
-        el("span", { class: "lib-tab-name", text: g.mode.short || g.mode.label }),
-        el("span", { class: "lib-tab-count", text: n ? n + (n > 1 ? " projects" : " project") : "Coming soon" }),
-      ]);
-      b.style.setProperty("--tab-accent", (g.mode.colors && g.mode.colors.accent) || "var(--yellow)");
+      const b = makeFolder(g.mode, { cls: "lib-tab", count: n });
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", "false");
       b.addEventListener("click", () => (openId === g.mode.id ? close() : open(g.mode.id)));
       tabsWrap.appendChild(b);
       return b;

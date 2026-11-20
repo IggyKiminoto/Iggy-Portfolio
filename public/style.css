@@ -55,7 +55,7 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   font-family: var(--pixel);
   font-weight: 700;
   text-transform: uppercase;
-  line-height: 1.05;
+  line-height: 1.2;
   letter-spacing: .02em;
   color: var(--yellow);
   font-size: clamp(34px, 6.4vw, 64px);
@@ -271,26 +271,55 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   border-style: solid; border-width: 6px 10px 6px 0;
   border-color: transparent var(--cream) transparent transparent;
 }
-/* ปุ่มเลือก: สี่เหลี่ยม 1:1 เรียงซ้ายไปขวา ตัวใหญ่กว่าเนื้อหา */
-.host-choices { grid-area: choices; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: flex-start; }
-.host-choice {
-  --c: var(--ink);
-  flex: 0 0 auto; width: clamp(108px, 9.6vw, 134px); aspect-ratio: 1;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-  margin: 4px 8px 8px 4px; padding: 10px 8px;
-  border: 0; cursor: pointer; text-align: center;
-  font: 700 17px/1.15 var(--font); color: var(--ink);
-  background: var(--paper);
-  box-shadow:
-    0 -4px var(--c), 0 4px var(--c), -4px 0 var(--c), 4px 0 var(--c),
-    4px 4px var(--c), 4px 8px var(--c), 8px 4px var(--c);
-  transition: background-color .15s;
+/* ---------- ปุ่มโฟลเดอร์ (ม็อคไว้ก่อน รอวาดเอง) ---------- */
+.folder {
+  --folder: var(--yellow);
+  position: relative; display: block; padding: 0; border: 0; background: none;
+  cursor: pointer; font: inherit; color: var(--ink); text-align: left;
 }
-.host-choice .chip-icon { width: 38px; height: 38px; }
-.host-choice:hover { background: color-mix(in srgb, var(--choice-accent, var(--yellow)) 45%, var(--paper)); }
-.host-choice:active { transform: translate(4px, 4px); box-shadow: 0 -4px var(--c), 0 4px var(--c), -4px 0 var(--c), 4px 0 var(--c); }
-.host-choice[aria-pressed="true"] { background: var(--choice-accent, var(--yellow)); }
-.host-choice:focus-visible, .host-reset:focus-visible { outline: 3px dashed var(--cream); outline-offset: 6px; }
+.folder-back {
+  position: absolute; left: 0; right: 0; top: 12%; bottom: 0;
+  background: color-mix(in srgb, var(--folder) 72%, var(--ink));
+  border: 3px solid var(--ink); border-radius: 3px 8px 6px 6px;
+}
+.folder-back::before { /* แถบหูโฟลเดอร์ */
+  content: ""; position: absolute; left: -3px; top: -15px; width: 46%; height: 15px;
+  background: inherit; border: 3px solid var(--ink); border-bottom: 0; border-radius: 6px 12px 0 0;
+}
+.folder-peek { position: absolute; left: 8%; right: 8%; top: 0; bottom: 34%; }
+.peek-card {
+  position: absolute; top: 10%; width: 44%; aspect-ratio: 3 / 4;
+  display: grid; place-items: center; overflow: hidden;
+  background: var(--paper); border: 2px solid var(--ink);
+  transition: translate .25s ease, rotate .25s ease;
+}
+.peek-card .sprite { width: 52%; height: 52%; }
+.peek-card img { width: 100%; height: 100%; object-fit: cover; }
+.peek-1 { left: 2%; rotate: -9deg; }
+.peek-2 { left: 28%; top: 2%; rotate: 3deg; background: var(--cream); }
+.peek-3 { left: 54%; rotate: 10deg; }
+.folder-front {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 62%; z-index: 1;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 2px;
+  padding: 8px 10px 9px;
+  background: var(--folder); border: 3px solid var(--ink); border-radius: 3px 3px 6px 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  transition: translate .2s ease, box-shadow .2s ease;
+}
+.folder-front .chip-icon { position: absolute; top: 7px; right: 8px; width: 22px; height: 22px; }
+.folder-name { font-weight: 800; font-size: 16px; line-height: 1.15; padding-right: 22px; overflow-wrap: anywhere; }
+.folder-count { font-family: var(--pixel); font-size: 10px; letter-spacing: .04em; opacity: .8; }
+/* เอาเมาส์ชี้ / เลือกแล้ว: งานโผล่ออกมามากขึ้น (spoiler) */
+.folder:hover .peek-card, .folder[aria-pressed="true"] .peek-card, .folder[aria-selected="true"] .peek-card { translate: 0 -22%; }
+.folder:hover .peek-1, .folder[aria-pressed="true"] .peek-1, .folder[aria-selected="true"] .peek-1 { rotate: -14deg; }
+.folder:hover .peek-3, .folder[aria-pressed="true"] .peek-3, .folder[aria-selected="true"] .peek-3 { rotate: 15deg; }
+.folder[aria-pressed="true"] .folder-front, .folder[aria-selected="true"] .folder-front { translate: -3px -3px; box-shadow: 8px 8px 0 var(--ink); }
+.folder:active .folder-front { translate: 3px 3px; box-shadow: 2px 2px 0 var(--ink); }
+.folder:focus-visible { outline: 3px dashed var(--cream); outline-offset: 6px; }
+
+/* โฟลเดอร์บน Cover */
+.host-choices { grid-area: choices; display: flex; flex-wrap: nowrap; gap: 14px; align-items: flex-end; }
+.host-choice { flex: 0 0 auto; width: clamp(120px, 10.5vw, 150px); aspect-ratio: 5 / 4; }
 /* ปุ่มเด้งไล่กันเป็นระยะ ชวนให้กด (หยุดเมื่อกดแล้ว) */
 .host:not(.is-chosen) .host-choice { animation: choice-nudge 4.2s steps(1) infinite; }
 .host:not(.is-chosen) .host-choice:nth-child(2) { animation-delay: .35s; }
@@ -315,8 +344,12 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
 @media (max-width: 600px) {
   .host { gap: 10px 12px; --char-w: 112px; }
   .host-speech { padding: 10px 14px; font-size: 14px; }
-  .host-choice { width: calc((100vw - 32px - 3 * 12px - 36px) / 3); max-width: 120px; font-size: 15px; gap: 8px; }
-  .host-choice .chip-icon { width: 30px; height: 30px; }
+  .host-choices { gap: 10px; }
+  .host-choice { width: calc((100vw - 32px - 2 * 10px - 12px) / 3); max-width: 130px; }
+  .folder-name { font-size: 13px; }
+  .host-choice .folder-count { font-size: 8px; }
+  .folder-front { padding: 6px 7px 7px; }
+  .folder-front .chip-icon { width: 16px; height: 16px; top: 5px; right: 5px; }
 }
 /* ปุ่มหลักกะพริบสีเป็นระยะ (ไม่ขยาย จะได้ไม่หน่วงเว็บ) */
 #hero-cta, .topbar .px-chip-hot, .contact-link:first-child { animation: cta-blink 5s steps(1) infinite; }
@@ -605,28 +638,19 @@ mark {
 .open-link:hover { background: var(--yellow); }
 
 /* ---------- ผลงานทั้งหมด: โฟลเดอร์ ---------- */
-.lib-tabs { display: flex; gap: 14px; align-items: stretch; }
-.lib-tab {
-  --c: var(--ink);
-  flex: 1 1 0; min-width: 0; min-height: 150px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-  margin: 4px 8px 8px 4px; padding: 20px 12px;
-  border: 0; cursor: pointer; text-align: center;
-  font: inherit; color: var(--ink); background: var(--paper);
-  box-shadow:
-    0 -4px var(--c), 0 4px var(--c), -4px 0 var(--c), 4px 0 var(--c),
-    4px 4px var(--c), 4px 8px var(--c), 8px 4px var(--c);
-  transition: flex-grow .3s ease, background-color .15s, min-height .3s ease;
-}
-.lib-tab .chip-icon { width: 46px; height: 46px; }
-.lib-tab-name { font-weight: 700; font-size: 20px; line-height: 1.2; }
-.lib-tab-count { font-family: var(--pixel); font-size: 12px; letter-spacing: .04em; color: var(--ink-2); }
-.lib-tab:hover { background: color-mix(in srgb, var(--tab-accent) 35%, var(--paper)); }
-.lib-tab:focus-visible { outline: 3px dashed var(--ink); outline-offset: 8px; }
-.lib-tab[aria-selected="true"] { background: var(--tab-accent); flex-grow: 3; }
-.lib.is-open .lib-tab:not([aria-selected="true"]) { min-height: 96px; padding: 12px 8px; }
-.lib.is-open .lib-tab:not([aria-selected="true"]) .lib-tab-count { display: none; }
-.lib.is-open .lib-tab:not([aria-selected="true"]) .lib-tab-name { font-size: 15px; }
+.lib-tabs { display: flex; gap: 18px; align-items: flex-end; padding-top: 18px; }
+.lib-tab { flex: 1 1 0; min-width: 0; height: 170px; transition: flex-grow .3s ease, height .3s ease; }
+.lib-tab .folder-name { font-size: 20px; }
+.lib-tab .folder-count { font-size: 11px; }
+.lib-tab .folder-front .chip-icon { width: 28px; height: 28px; }
+.lib-tab .peek-card { width: auto; height: 78%; }
+.lib-tab .folder-peek { bottom: 38%; }
+.lib-tab .peek-1 { left: 8%; } .lib-tab .peek-2 { left: 35%; } .lib-tab .peek-3 { left: 62%; }
+.lib-tab[aria-selected="true"] { flex-grow: 2.4; }
+.lib.is-open .lib-tab:not([aria-selected="true"]) { height: 128px; }
+.lib.is-open .lib-tab:not([aria-selected="true"]) .folder-count { display: none; }
+.lib.is-open .lib-tab:not([aria-selected="true"]) .folder-name { font-size: 15px; }
+.lib { --lib-accent: var(--yellow); }
 
 .lib-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); gap: 28px; margin-top: 26px; align-items: start; }
 .lib-stage {
@@ -655,12 +679,12 @@ mark {
 .lib-row.is-current .lib-row-go { rotate: 90deg; }
 .lib-empty { padding: 16px; background: var(--paper); border: 3px dashed var(--ink); font-weight: 600; }
 @media (max-width: 899px) {
-  .lib-tabs { gap: 8px; }
-  .lib-tab { aspect-ratio: 1; min-height: 0; padding: 8px 4px; gap: 6px; }
-  .lib-tab .chip-icon { width: 30px; height: 30px; }
-  .lib-tab-name { font-size: 15px; }
-  .lib-tab-count { font-size: 10px; }
-  .lib.is-open .lib-tab { aspect-ratio: auto; min-height: 92px; }
+  .lib-tabs { gap: 10px; }
+  .lib-tab { height: 108px; }
+  .lib-tab .folder-name { font-size: 14px; }
+  .lib-tab .folder-count { font-size: 9px; }
+  .lib-tab .folder-front .chip-icon { width: 16px; height: 16px; }
+  .lib.is-open .lib-tab:not([aria-selected="true"]) { height: 92px; }
   .lib.is-open .lib-tab[aria-selected="true"] { flex-grow: 1.8; }
   .lib-body { grid-template-columns: minmax(0, 1fr); margin-top: 16px; }
   .lib-stage { grid-template-columns: minmax(0, 1fr); padding: 10px; box-shadow: 5px 5px 0 var(--ink); margin-bottom: 6px; }
@@ -831,6 +855,15 @@ mark {
 }
 .moment img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border: 2px solid var(--ink); background: var(--sand); }
 .moment figcaption { font-size: 14px; font-weight: 600; padding-top: 8px; line-height: 1.4; }
+
+/* ---------- เคยทำงานกับ ---------- */
+.client-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px 18px; }
+.client {
+  font-weight: 700; font-size: clamp(16px, 1.8vw, 20px);
+  background: var(--paper); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+  padding: 8px 16px; rotate: var(--r, 0deg);
+}
+.client:nth-child(3n+2) { background: var(--cream); }
 
 /* ---------- ติดต่อ ---------- */
 .contact {
