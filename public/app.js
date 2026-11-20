@@ -755,6 +755,7 @@
 
   function matches(w, f) {
     if (f.type === "all") return true;
+    if (f.type === "mode") return f.names.indexOf(w.cats[0]) !== -1; // ดูจากหมวดแรกของผลงาน
     if (f.type === "cat") return w.cats.indexOf(f.name) !== -1;
     return w.tagList.indexOf(f.name) !== -1;
   }
@@ -792,14 +793,6 @@
     setText("[data-site=year]", String(new Date().getFullYear()));
     document.querySelectorAll("[data-sprite]").forEach((n) => (n.innerHTML = sprite(n.dataset.sprite)));
 
-    // รับงานอะไร: ใช้ SITE.offer ถ้ามี ไม่งั้นใช้หมวดงาน
-    const offer = document.getElementById("offer-list");
-    const offered = asList(SITE.offer).length ? asList(SITE.offer) : categories;
-    offered.forEach((c) => {
-      const li = el("li", {}, [iconFor(c), el("span", { text: c.name })]);
-      offer.appendChild(li);
-    });
-    if (!offer.children.length) offer.parentNode.remove();
 
     renderReel();
 
@@ -879,6 +872,151 @@
     prev.addEventListener("click", () => show(current - 1));
     next.addEventListener("click", () => show(current + 1));
     show(0);
+    reelApi.show = (labelText) => {
+      const i = channels.findIndex((c) => String(c.label).toLowerCase() === String(labelText || "").toLowerCase());
+      if (i !== -1) show(i);
+    };
+  }
+  const reelApi = { show: () => {} };
+
+  // ---------- ตัวละครบน Cover: เลือกประเภทงาน แล้วสี + ชุด + ทีวี + ผลงาน เปลี่ยนตาม ----------
+  function renderHost() {
+    const host = document.getElementById("host");
+    if (!host) return;
+    const stage = document.getElementById("host-char");
+    const speech = document.getElementById("host-speech");
+    const choiceWrap = document.getElementById("host-choices");
+    const cta = document.getElementById("hero-cta");
+    const cfg = SITE.host || {};
+    const modes = asList(SITE.modes);
+    const ctaDefault = { text: cta.textContent, href: cta.getAttribute("href") };
+    const root = document.documentElement;
+    const defaults = {
+      hero: getComputedStyle(root).getPropertyValue("--blue").trim(),
+      accent: getComputedStyle(root).getPropertyValue("--yellow").trim(),
+    };
+
+    speech.textContent = cfg.greeting || "Hi! What would you like to see?";
+
+    // ชั้นของตัวละคร: base (+ เฟรมกะพริบตา base-2) แล้วชุดซ้อนด้านบน
+    const baseLayer = el("div", { class: "host-layer host-base" });
+    const outfitLayer = el("div", { class: "host-layer host-outfit" });
+    stage.appendChild(baseLayer);
+    stage.appendChild(outfitLayer);
+    const pngs = (base) => [base + ".png", base + ".webp"];
+
+    function setBase(srcBase, fallbackBase) {
+      loadFirst(pngs(srcBase), (img) => {
+        img.className = "host-img";
+        img.alt = "";
+        baseLayer.replaceChildren(img);
+        stage.classList.add("has-art");
+        // เฟรมกะพริบตา (ไม่มีก็ข้าม)
+        loadFirst(pngs(srcBase + "-2"), (img2) => {
+          img2.className = "host-img host-frame-2";
+          img2.alt = "";
+          baseLayer.appendChild(img2);
+        });
+      }, () => {
+        if (fallbackBase) return setBase(fallbackBase);
+        if (!stage.classList.contains("has-art")) baseLayer.replaceChildren(spriteNode("heart"));
+      });
+    }
+    setBase("character/base");
+
+    // ชิ้นส่วนชุด 1.png ... 6.png บินมาแปะทีละชิ้นแบบ collage
+    const pieceCache = {};
+    function loadPieces(id, done) {
+      if (pieceCache[id]) return done(pieceCache[id]);
+      const found = [];
+      let pending = 6;
+      for (let i = 1; i <= 6; i++) {
+        loadFirst(pngs("character/" + id + "/" + i), (img) => {
+          found[i] = img.src;
+          if (--pending === 0) finish();
+        }, () => {
+          if (--pending === 0) finish();
+        });
+      }
+      function finish() {
+        pieceCache[id] = found.filter(Boolean);
+        done(pieceCache[id]);
+      }
+    }
+
+    let token = 0;
+    function dressUp(id) {
+      const my = ++token;
+      outfitLayer.replaceChildren();
+      if (!id) return setBase("character/base");
+      setBase("character/" + id + "/base", "character/base");
+      loadPieces(id, (srcs) => {
+        if (my !== token) return;
+        srcs.forEach((src, i) => {
+          const img = el("img", { class: "host-img host-piece", src: src, alt: "" });
+          const angle = (i * 137) % 360 * (Math.PI / 180);
+          img.style.setProperty("--pc-x", Math.round(Math.cos(angle) * 140) + "px");
+          img.style.setProperty("--pc-y", Math.round(Math.sin(angle) * 90 - 60) + "px");
+          img.style.setProperty("--pc-r", ((i % 2 ? 1 : -1) * (14 + i * 5)) + "deg");
+          img.style.animationDelay = i * 110 + "ms";
+          outfitLayer.appendChild(img);
+        });
+      });
+    }
+
+    const primaryCat = (w) => w.cats[0];
+    let active = null;
+    const buttons = modes.map((m) => {
+      const b = el("button", { type: "button", class: "host-choice", "aria-pressed": "false" }, [
+        iconFor({ icon: m.icon, sprite: m.sprite }),
+        el("span", { text: m.label }),
+      ]);
+      b.addEventListener("click", () => choose(active === m ? null : m));
+      choiceWrap.appendChild(b);
+      return b;
+    });
+    const reset = el("button", { type: "button", class: "host-reset", text: "↺ " + (cfg.resetLabel || "Show everything") });
+    reset.hidden = true;
+    reset.addEventListener("click", () => choose(null));
+    choiceWrap.appendChild(reset);
+    if (!modes.length) choiceWrap.remove();
+
+    function choose(m) {
+      active = m;
+      buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(modes[i] === m)));
+      reset.hidden = !m;
+
+      // สี: พื้น Cover + สีเน้นทั้งเว็บ
+      const colors = (m && m.colors) || {};
+      root.style.setProperty("--blue", colors.hero || defaults.hero);
+      root.style.setProperty("--yellow", colors.accent || defaults.accent);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", colors.hero || defaults.hero);
+
+      speech.textContent = m ? m.line || m.label : cfg.greeting || "";
+      popNow(speech, 0);
+      dressUp(m ? m.id : null);
+      if (m && m.channel) reelApi.show(m.channel);
+
+      // ผลงาน + ปุ่มหลัก
+      if (!m) {
+        setFilter({ type: "all", name: ALL }, true);
+        chipButtons.forEach((b) => b._filter.type === "all" && b.setAttribute("aria-pressed", "true"));
+        cta.textContent = ctaDefault.text;
+        cta.setAttribute("href", ctaDefault.href);
+        return;
+      }
+      const names = asList(m.filter);
+      setFilter({ type: "mode", names: names }, true);
+      const first = featured.concat(rest).find((w) => names.indexOf(primaryCat(w)) !== -1);
+      if (first) {
+        cta.textContent = "See " + m.label.split(" ")[0].toLowerCase() + " work ↓";
+        cta.setAttribute("href", "#" + first.id);
+      } else {
+        cta.textContent = "Ask me for samples →";
+        cta.setAttribute("href", "#contact");
+      }
+    }
   }
 
   function renderSelected() {
@@ -1097,6 +1235,7 @@
   renderHero();
   renderSelected();
   renderWorks();
+  renderHost();
   renderServices();
   renderAbout();
   renderContact();

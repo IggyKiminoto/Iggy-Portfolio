@@ -35,13 +35,14 @@
         <div class="hero-inner">
           <p class="label-sticker" data-site="role"></p>
           <h1 class="px-title hero-title" id="hero-title"></h1>
-          <p class="speech" data-site="tagline"></p>
-          <div class="hero-offer">
-            <span class="mini-label">I DO</span>
-            <ul id="offer-list" class="offer-list"></ul>
+          <!-- ตัวละครถามคนดู: รูปอยู่ในโฟลเดอร์ public/character -->
+          <div class="host" id="host">
+            <div class="host-char" id="host-char" aria-hidden="true"></div>
+            <p class="host-speech" id="host-speech" aria-live="polite"></p>
+            <div class="host-choices" id="host-choices" role="group" aria-label="Choose a type of work"></div>
           </div>
           <div class="hero-actions">
-            <a class="px-btn" href="#selected">See my work</a>
+            <a class="px-btn" href="#selected" id="hero-cta">See my work</a>
             <a class="px-btn px-btn-cream" href="#contact">Let's talk</a>
           </div>
           <p class="hero-clients" id="hero-clients"><span class="mini-label">WORKED WITH</span></p>

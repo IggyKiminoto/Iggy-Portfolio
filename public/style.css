@@ -227,6 +227,81 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   .hero-grid .reel { margin: 0; }
 }
 
+/* ---------- ตัวละครบน Cover ---------- */
+.host {
+  display: grid; text-align: left;
+  grid-template-columns: clamp(96px, 15vw, 216px) minmax(0, 1fr);
+  grid-template-areas: "char speech" "char choices";
+  gap: 12px 18px; align-items: end;
+  margin: 20px 0 6px;
+}
+.host-char { grid-area: char; position: relative; aspect-ratio: 1; align-self: center; animation: host-bob calc(14s / var(--fps)) steps(1) infinite; }
+.host-layer { position: absolute; inset: 0; }
+.host-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.host-char > .host-base > .sprite { width: 70%; height: 70%; margin: 15%; }
+/* กะพริบตา: สลับไปเฟรม 2 สั้น ๆ ทุก ~3 วินาที */
+.host-frame-2 { opacity: 0; animation: host-blink 3.2s steps(1) infinite; }
+@keyframes host-blink { 0%, 93% { opacity: 0; } 94%, 98% { opacity: 1; } }
+@keyframes host-bob { 0% { translate: 0 0; } 50% { translate: 0 -3px; } }
+/* ชิ้นส่วนชุด: บินมาแปะแบบ collage 4 เฟรม */
+.host-piece { animation: host-piece calc(5s / var(--fps)) steps(1) backwards; }
+@keyframes host-piece {
+  0%   { translate: var(--pc-x) var(--pc-y); rotate: var(--pc-r); scale: 1.25; opacity: 0; }
+  25%  { translate: calc(var(--pc-x) * .4) calc(var(--pc-y) * .4); rotate: calc(var(--pc-r) * .5); scale: 1.1; opacity: 1; }
+  50%  { translate: calc(var(--pc-x) * -.08) calc(var(--pc-y) * -.08); rotate: calc(var(--pc-r) * -.2); scale: .97; }
+  75%, 100% { translate: 0 0; rotate: 0deg; scale: 1; opacity: 1; }
+}
+.host-speech {
+  grid-area: speech; position: relative; margin: 0;
+  background: var(--cream); color: var(--ink);
+  border: 3px solid var(--ink); border-radius: 18px;
+  padding: 12px 18px; box-shadow: 5px 5px 0 var(--ink);
+  font-size: clamp(15px, 1.5vw, 18px); font-weight: 500; line-height: 1.5;
+}
+.host-speech::before { /* หางลูกโป่งคำพูด ชี้ไปที่ตัวละคร */
+  content: ""; position: absolute; left: -15px; bottom: 16px;
+  border-style: solid; border-width: 9px 15px 9px 0;
+  border-color: transparent var(--ink) transparent transparent;
+}
+.host-speech::after {
+  content: ""; position: absolute; left: -9px; bottom: 19px;
+  border-style: solid; border-width: 6px 10px 6px 0;
+  border-color: transparent var(--cream) transparent transparent;
+}
+.host-choices { grid-area: choices; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.host-choice {
+  --c: var(--ink);
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 4px 8px 8px 4px; padding: 8px 14px;
+  border: 0; cursor: pointer;
+  font: 600 15px/1.2 var(--font); color: var(--ink);
+  background: var(--paper);
+  box-shadow:
+    0 -4px var(--c), 0 4px var(--c), -4px 0 var(--c), 4px 0 var(--c),
+    4px 4px var(--c), 4px 8px var(--c), 8px 4px var(--c);
+}
+.host-choice .chip-icon { width: 22px; height: 22px; }
+.host-choice:hover { background: var(--yellow); }
+.host-choice:active { transform: translate(4px, 4px); box-shadow: 0 -4px var(--c), 0 4px var(--c), -4px 0 var(--c), 4px 0 var(--c); }
+.host-choice[aria-pressed="true"] { background: var(--yellow); }
+.host-choice:focus-visible, .host-reset:focus-visible { outline: 3px dashed var(--cream); outline-offset: 6px; }
+.host-reset {
+  border: 0; background: none; cursor: pointer; padding: 4px 6px;
+  font: 600 14px/1.2 var(--font); color: var(--cream); text-decoration: underline; text-underline-offset: 3px;
+}
+@media (max-width: 899px) {
+  .host { grid-template-areas: "char speech" "choices choices"; margin-inline: auto; max-width: 560px; }
+  .host-choices { justify-content: center; }
+}
+@media (max-width: 600px) {
+  .host { gap: 8px 12px; }
+  .host-speech { padding: 10px 14px; font-size: 14px; }
+  .host-choice { font-size: 13px; padding: 6px 10px; gap: 6px; margin: 4px 7px 7px 4px; }
+  .host-choice .chip-icon { width: 16px; height: 16px; }
+}
+/* เปลี่ยนสีแบบเฟรมต่ำ */
+.hero, .contact { transition: background-color calc(5s / var(--fps)) steps(4); }
+
 /* สโลแกน: แต่ละบรรทัดสลับสี */
 .hero-line { display: block; }
 .hero-line:nth-child(even) { color: var(--cream); }

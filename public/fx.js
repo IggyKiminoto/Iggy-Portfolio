@@ -162,7 +162,9 @@
     heroDelay += letters.length * 55 + 60;
   });
   reveal(document.querySelector(".hero .label-sticker"), "drop", { now: true });
-  reveal(document.querySelector(".hero .speech"), "pop", { now: true, delay: 520 });
+  reveal(document.querySelector(".host-char"), "drop", { now: true, delay: 420 });
+  reveal(document.querySelector(".host-speech"), "pop", { now: true, delay: 560 });
+  document.querySelectorAll(".host-choice").forEach((b, i) => reveal(b, "up", { now: true, delay: 640 + i * 70 }));
   reveal(document.querySelector(".hero-clients"), "up", { now: true, delay: 760 });
   document.querySelectorAll(".offer-list li").forEach((li, i) => reveal(li, "up", { now: true, delay: 520 + i * 60 }));
   document.querySelectorAll(".hero-actions .px-btn").forEach((b, i) => reveal(b, "up", { now: true, delay: 640 + i * 60 }));
