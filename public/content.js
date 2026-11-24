@@ -31,7 +31,8 @@ window.SITE = {
      id       ชื่อโฟลเดอร์ชุดตัวละคร เช่น "video" = public/character/video/
      label    ข้อความบนปุ่ม
      line     ตัวละครพูดอะไรหลังกด
-     short    ชื่อสั้นบนปุ่มสี่เหลี่ยม
+     short    ชื่อสั้นบนปุ่มโฟลเดอร์
+     desc     คำบรรยายสั้น ๆ ข้างหัวข้อประเภทงานในส่วน WORK
      colors   accent = สีเน้น (ปุ่ม หัวข้อ ไฮไลต์) — พื้นยังเป็นน้ำเงินของเว็บทุกแบบ
               (ใส่ hero: "#xxxxxx" ได้ถ้าอยากเปลี่ยนสีพื้นด้วย)
      filter   หมวดงานที่นับเป็นประเภทนี้ (ดูจากหมวดแรกของแต่ละผลงาน)
@@ -39,18 +40,21 @@ window.SITE = {
   modes: [
     {
       id: "graphic", label: "Graphic Design", short: "Graphic", sprite: "sparkle", icon: "",
+      desc: "Characters, key visuals, infographics, stickers and slides for brands and internal comms.",
       line: "Characters, key visuals, infographics and stickers. Pick one below!",
       colors: { accent: "#FE6D73" },   // Grapefruit
       filter: ["Graphic Design", "Character & Illustration", "Presentation & Teaching"],
     },
     {
       id: "video", label: "Video Editing & Production", short: "Video", sprite: "clapper", icon: "",
+      desc: "Short-form, events, podcasts and brand video. I plan, shoot, edit and post.",
       line: "Video it is! From the shot list to the final cut. Here's one I made.",
       colors: { accent: "#FFB400" },   // Sunburst Gold
       filter: ["Short-form & Social", "Brand & Corporate", "Event & Creator Content", "Podcast & Long-form"],
     },
     {
       id: "animation", label: "Animation", short: "Animation", sprite: "play", icon: "",
+      desc: "Hand-drawn 2D animation and motion for launches and mascots.",
       line: "Hand-drawn, frame by frame. This one is my favourite.",
       colors: { accent: "#DD88C1" },   // Daisy
       filter: ["Motion & Animation"],
@@ -229,7 +233,7 @@ window.SITE = {
       ],
     },
     { title: "\"Iggy Will Play Games\" (TikTok @iggylengame)", detail: "My own gaming channel. I plan, shoot, edit and post everything myself." },
-    { title: "Event and campaign content for RoV Thailand", detail: "On-site event coverage, campaign clips and music video behind-the-scenes, 2025 to 2026." },
+    { title: "Event and campaign content for Garena RoV Thailand", detail: "On-site event coverage, campaign clips and music video behind-the-scenes, 2025 to 2026." },
   ],
 
   /* ---------- รูป (อัปโหลดเองจากมือถือได้) ----------
@@ -312,7 +316,7 @@ window.WORKS = [
     ],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Offline Promo"],
-    client: "RoV Thailand",
+    client: "Garena RoV Thailand",
     year: "2026",
     role: ["Concept", "On-site shoot", "Edit", "Post"],
     highlight: "Offline event promo. With only a mystery box to film, I shot it from 68 angles to make a small setup feel big.",
@@ -410,7 +414,7 @@ window.WORKS = [
     clips: ["https://www.tiktok.com/@iggylengame/video/7693598745371495700"],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Paid Partnership"],
-    client: "RoV Thailand",
+    client: "Garena RoV Thailand",
     year: "2026",
     role: ["Concept", "On-site shoot", "Edit", "Post"],
     highlight: "A 3-minute event walkthrough, shot on site and cut so a long vertical video keeps moving.",
@@ -430,7 +434,7 @@ window.WORKS = [
     ],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Community"],
-    client: "RoV Thailand",
+    client: "Garena RoV Thailand",
     year: "2026",
     role: ["Concept", "On-site shoot", "Edit", "Post"],
     highlight: "Five clips from one community night: the recap, the funny moments and a skins vs. iPhone 17 bit.",
@@ -449,7 +453,7 @@ window.WORKS = [
     ],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Campaign", "Comedy"],
-    client: "RoV Thailand",
+    client: "Garena RoV Thailand",
     year: "2026",
     role: ["Concept", "On-site shoot", "Edit", "Post"],
     highlight: "Short, joke-led clips that pushed the 4 April in-game Songkran event.",
