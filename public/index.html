@@ -21,7 +21,7 @@
   <header class="topbar">
     <a class="brand" href="#top"><span data-sprite="heart" class="brand-icon"></span><span data-site="name"></span></a>
     <nav>
-      <a class="px-chip" href="#selected">Work</a>
+      <a class="px-chip" href="#work">Work</a>
       <a class="px-chip hide-sm" href="#services">Services</a>
       <a class="px-chip hide-sm" href="#about">About</a>
       <a class="px-chip px-chip-hot" href="#contact">Let's talk</a>
@@ -52,50 +52,38 @@
           <div class="win">
             <div class="win-bar">
               <span class="win-icon" data-sprite="clapper"></span>
-              <span class="win-title" id="reel-label" aria-live="polite">Iggy Player</span>
+              <span class="win-title" id="reel-label" aria-live="polite">Iggy Explorer</span>
               <span class="win-ctrls" aria-hidden="true"><i class="w-min"></i><i class="w-max"></i><i class="w-close"></i></span>
             </div>
             <div class="win-screen" id="reel">
               <div class="win-off" id="reel-off">
                 <span class="win-off-big">NO SIGNAL</span>
-                <span class="win-off-hint"><span class="hint-arrow">◀</span> Pick a type of work to tune in</span>
+                <span class="win-off-hint"><span class="hint-arrow">◀</span> Pick a folder to see the work</span>
               </div>
             </div>
             <div class="win-status">
-              <button class="tv-arrow" type="button" id="reel-prev" aria-label="Previous clip" hidden><span data-sprite="arrowL"></span></button>
               <span class="tv-count" id="reel-count">READY</span>
-              <button class="tv-arrow" type="button" id="reel-next" aria-label="Next clip" hidden><span data-sprite="arrowR"></span></button>
             </div>
           </div>
-          <a class="reel-from" id="reel-from" href="#selected" hidden></a>
         </div>
       </div>
     </section>
 
     <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
 
-    <!-- ===== 03 งานเด่น ===== -->
-    <section id="selected" class="section">
-      <div class="section-head">
-        <h2 class="px-title">SELECTED WORK</h2>
-        <p class="section-sub"><mark>Projects I'd love to do again</mark></p>
-      </div>
-      <div id="selected-list" class="selected-list"></div>
-    </section>
-
-    <!-- ===== 04 ผลงานทั้งหมด: โฟลเดอร์ตามประเภทงาน ===== -->
-    <section id="works" class="section">
-      <div class="section-head">
-        <h2 class="px-title">ALL WORK</h2>
-        <p class="section-sub"><mark>Open a folder, then pick a project</mark></p>
-      </div>
-      <div class="lib" id="lib">
-        <div class="lib-tabs" id="lib-tabs" role="tablist" aria-label="Types of work"></div>
-        <div class="lib-body" id="lib-body" hidden>
-          <div class="lib-stage" id="lib-stage"></div>
-          <ol class="lib-list" id="lib-list"></ol>
+    <!-- ===== 03 ผลงาน: แยกตามประเภท (ซ้าย = หัวข้อ, ขวา = grid) ===== -->
+    <section id="work" class="section work">
+      <div class="section-head work-head">
+        <div>
+          <h2 class="px-title">WORK</h2>
+          <p class="section-sub"><mark>Pick a type, then open a project</mark></p>
         </div>
+        <label class="work-filter">
+          <span class="mini-label">SHOW</span>
+          <select id="work-filter" aria-label="Filter work by type"></select>
+        </label>
       </div>
+      <div id="work-types" class="work-types"></div>
     </section>
 
     <!-- ===== 05 บริการและวิธีทำงาน ===== -->
