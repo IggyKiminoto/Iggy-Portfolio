@@ -780,6 +780,9 @@
   }
 
   // ---------- 9) เติมหน้าเว็บ ----------
+  // สวิตช์หน้าตาการ์ด (SITE.cardStyle)
+  document.documentElement.classList.add("cards-" + (SITE.cardStyle === "overlay" ? "overlay" : "polaroid"));
+
   function renderHero() {
     document.title = SITE.pageTitle || (SITE.name || "Portfolio") + " | " + (SITE.role || "Video Editor");
 
@@ -908,7 +911,7 @@
     const fallbackIcon = () => media.replaceChildren(spriteNode((modeById(modeOfWork(w)) || {}).sprite || "sparkle"));
     const auto = thumbOf(w);
     // ลำดับปก: cover ใน content.js > images/covers/<ชื่องาน>.jpg > ปกอัตโนมัติ
-    const tries = [w.cover, "images/covers/" + slugOf(w) + ".jpg", auto].filter(Boolean);
+    const tries = [w.cover, "images/covers/" + slugOf(w) + ".jpg", auto, w.imageList[0] && w.imageList[0].src].filter(Boolean);
     const img = el("img", { alt: "", loading: "lazy", decoding: "async" });
     if (w.coverFocus) img.style.objectPosition = FOCUS[w.coverFocus] || w.coverFocus;
     let k = 0;

@@ -958,6 +958,26 @@ html.is-locked { overflow: hidden; }
 }
 .tile:focus-visible { outline: 3px dashed var(--ink); outline-offset: 3px; }
 
+/* ---------- สวิตช์ cardStyle: "overlay" = ชื่องานทับรูปพร้อมแถบไล่สี ----------
+   ใช้กับหน้าต่างบน Cover ทุกจอ และส่วน WORK บนคอม (มือถือ ส่วน WORK เป็นรายการเสมอ) */
+.cards-overlay .tile-grid.in-win .tile { position: relative; overflow: hidden; padding: 0; }
+.cards-overlay .tile-grid.in-win .tile-frame { border: 0; }
+.cards-overlay .tile-grid.in-win .tile-cap {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 26px 9px 8px;
+  color: var(--paper); background: linear-gradient(transparent, rgb(17 63 89 / .92) 55%);
+}
+.cards-overlay .tile-grid.in-win .tile-title { min-height: 0; }
+@media (min-width: 900px) {
+  .cards-overlay .work .tile { position: relative; overflow: hidden; padding: 0; }
+  .cards-overlay .work .tile-frame { border: 0; }
+  .cards-overlay .work .tile-cap {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 26px 9px 8px;
+    color: var(--paper); background: linear-gradient(transparent, rgb(17 63 89 / .92) 55%);
+  }
+  .cards-overlay .work .tile-title { min-height: 0; }
+  .cards-overlay .work .tile-meta { color: var(--paper); opacity: .85; }
+}
+
 /* ---------- มือถือ: ส่วน WORK เป็นรายการ (A) กดแล้วยืดออก (B) ---------- */
 @media (max-width: 899px) {
   .work .tile-grid { grid-template-columns: 1fr; gap: 10px; }
