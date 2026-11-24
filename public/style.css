@@ -920,34 +920,64 @@ mark {
    ===================================================================== */
 html.is-locked { overflow: hidden; }
 
-/* ---------- กล่องผลงาน (grid แบบ IG) ---------- */
-.tile-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+/* ---------- การ์ดผลงานแบบโพลารอยด์: รูป 1:1 + ชื่องานข้างล่าง (ไม่ทับรูป) ---------- */
+.tile-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
 .tile {
-  position: relative; display: block; padding: 0; margin: 0; cursor: pointer; overflow: hidden;
-  aspect-ratio: 1; border: 2px solid var(--ink); background: var(--ink); color: var(--paper); text-align: left;
-  font: inherit;
+  display: flex; flex-direction: column; gap: 0; padding: 7px; margin: 0; cursor: pointer; text-align: left;
+  font: inherit; color: var(--ink); background: var(--paper);
+  border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
+  transition: rotate .18s ease, translate .18s ease, box-shadow .18s ease;
 }
-.tile-media { position: absolute; inset: 0; display: grid; place-items: center; background: var(--sand); }
-.tile-media img { width: 100%; height: 100%; object-fit: cover; transition: scale .3s ease; }
+.tile-frame { position: relative; display: block; aspect-ratio: 1; overflow: hidden; border: 1.5px solid var(--ink); background: var(--sand); }
+.tile-media { position: absolute; inset: 0; display: grid; place-items: center; }
+.tile-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
 .tile-media .sprite { width: 40%; height: 40%; }
+/* ป้ายไอคอนพิกเซลมุมบนของรูป */
 .tile-kind {
   position: absolute; top: 6px; right: 6px; z-index: 1;
-  font: 700 11px/1 var(--font); padding: 4px 6px; background: rgb(17 63 89 / .78); color: var(--paper);
+  display: flex; align-items: center; gap: 3px; padding: 4px;
+  background: var(--paper); border: 1.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
 }
-.tile-cap {
-  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-  display: flex; flex-direction: column; gap: 1px; padding: 22px 8px 7px;
-  background: linear-gradient(transparent, rgb(17 63 89 / .92) 55%);
+.tile-kind .sprite { width: 14px; height: 14px; }
+.tile-kind b { font-family: var(--pixel); font-size: 11px; line-height: 1; padding-right: 1px; }
+.tile-cap { display: flex; flex-direction: column; gap: 2px; padding: 8px 2px 1px; }
+.tile-title {
+  font-weight: 700; font-size: 15px; line-height: 1.3; min-height: 2.6em;
+  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
-.tile-title { font-weight: 700; font-size: 14px; line-height: 1.25; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.tile-meta { font-size: 11px; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tile:hover .tile-media img, .tile:focus-visible .tile-media img { scale: 1.05; }
-.tile:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
-@media (max-width: 600px) {
-  .tile-grid { gap: 6px; }
-  .tile-title { font-size: 12px; }
-  .tile-meta { display: none; }
-  .tile-kind { font-size: 9px; padding: 3px 4px; }
+.tile-meta { font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* ตรงเป็นปกติ เอียงนิดเดียวตอนเอาเมาส์ชี้ */
+@media (hover: hover) {
+  .tile:hover { rotate: -1.2deg; translate: 0 -3px; box-shadow: 5px 5px 0 var(--ink); }
+  .tile:nth-child(even):hover { rotate: 1.2deg; }
+}
+.tile:focus-visible { outline: 3px dashed var(--ink); outline-offset: 3px; }
+
+/* ---------- มือถือ: ส่วน WORK เป็นรายการ (A) กดแล้วยืดออก (B) ---------- */
+@media (max-width: 899px) {
+  .work .tile-grid { grid-template-columns: 1fr; gap: 10px; }
+  .work .tile { flex-direction: row; align-items: center; gap: 12px; padding: 6px; }
+  .work .tile-frame { flex: none; width: 76px; }
+  .work .tile-kind { top: 3px; right: 3px; padding: 2px; box-shadow: none; }
+  .work .tile-kind .sprite { width: 11px; height: 11px; }
+  .work .tile-kind b { font-size: 9px; }
+  .work .tile-cap { flex: 1; min-width: 0; padding: 0 28px 0 0; position: relative; }
+  .work .tile-cap::after { content: "▸"; position: absolute; right: 6px; top: 50%; translate: 0 -50%; font-size: 14px; }
+  .work .tile.is-open .tile-cap::after { content: "▾"; }
+  .work .tile-title { min-height: 0; font-size: 15px; }
+  .work .tile.is-open { background: var(--type-accent, var(--yellow)); box-shadow: none; }
+  .tile-panel {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start;
+    margin-top: -6px; padding: 12px; background: var(--paper);
+    border: 2px solid var(--ink); border-top: 0; box-shadow: 3px 3px 0 var(--ink);
+  }
+  .tile-panel-media:not(.is-vertical) { grid-column: 1 / -1; }
+  .tile-panel-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .tile-panel-media:not(.is-vertical) + .tile-panel-side { grid-column: 1 / -1; }
+  .tile-panel-info { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; min-width: 0; font-size: 15px; }
+  .tile-panel .phases { grid-template-columns: 1fr; gap: 3px 0; }
+  .tile-panel .phases .phase-label { margin-top: 6px; }
+  .tile-panel .phase-tasks { font-size: 14px; }
 }
 
 /* ---------- หน้าต่างบน Cover: grid ผลงาน ---------- */
@@ -955,9 +985,14 @@ html.is-locked { overflow: hidden; }
   width: min(440px, 32vw); height: min(58vh, 560px); overflow-y: auto; background: var(--cream);
   scrollbar-width: thin;
 }
-.tile-grid.in-win { gap: 6px; padding: 6px; }
-.tile-grid.in-win .tile-title { font-size: 12px; }
+.tile-grid.in-win { gap: 8px; padding: 8px; }
+.tile-grid.in-win .tile { padding: 4px; box-shadow: 2px 2px 0 var(--ink); }
+.tile-grid.in-win .tile-cap { padding: 5px 1px 1px; }
+.tile-grid.in-win .tile-title { font-size: 12px; min-height: 2.6em; }
 .tile-grid.in-win .tile-meta { display: none; }
+.tile-grid.in-win .tile-kind { top: 3px; right: 3px; padding: 2px; box-shadow: none; }
+.tile-grid.in-win .tile-kind .sprite { width: 11px; height: 11px; }
+.tile-grid.in-win .tile-kind b { font-size: 9px; }
 .hero .win-screen:has(.is-msg) { display: grid; }
 .hero .win-screen .win-off.is-msg { width: 100%; height: 100%; aspect-ratio: auto; }
 @media (min-width: 1400px) {

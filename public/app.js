@@ -279,6 +279,17 @@
       "..nn...",
       "...n...",
     ],
+    images: [
+      "..nnnnnnn",
+      "..ncccccn",
+      "nnnnnnnccn",
+      "nccccccncn",
+      "ncbbbbcncn",
+      "ncbyybcncn",
+      "ncbbbbcnnn",
+      "nccccccn..",
+      "nnnnnnnn..",
+    ].map((r) => (r + "..").slice(0, 10)),
     play: [
       "nn.....",
       "nnnn...",
@@ -882,29 +893,80 @@
   }
 
   // กล่องผลงาน 1 ช่อง (รูปปก + ชื่อ + คำบรรยายสั้น) กดแล้วเปิดหน้าต่างดูผลงาน
-  function makeTile(w, list) {
+  // ---------- ปกการ์ด: ปกที่ทำเอง > ปกอัตโนมัติ, ตั้งจุดโฟกัสได้ ----------
+  function slugOf(w) {
+    return String(w.title || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || w.id;
+  }
+  const FOCUS = { top: "50% 12%", bottom: "50% 88%", left: "12% 50%", right: "88% 50%", center: "50% 50%" };
+  const mobileList = window.matchMedia("(max-width: 899px)");
+
+  function makeTile(w, list, opts) {
+    opts = opts || {};
     const n = w.clipList.length || w.imageList.length;
-    const kind = w.clipList.length ? (n > 1 ? n + " clips" : "Video") : (n > 1 ? n + " images" : "Image");
+    const isVideo = !!w.clipList.length;
     const media = el("span", { class: "tile-media" });
-    const src = thumbOf(w);
-    if (src) {
-      const img = el("img", { src: src, alt: "", loading: "lazy", decoding: "async" });
-      img.addEventListener("error", () => media.replaceChildren(spriteNode((modeById(modeOfWork(w)) || {}).sprite || "sparkle")), { once: true });
-      media.appendChild(img);
-    } else {
-      media.appendChild(spriteNode((modeById(modeOfWork(w)) || {}).sprite || "sparkle"));
-    }
-    const btn = el("button", { type: "button", class: "tile", "aria-label": "Open " + w.title }, [
-      media,
-      el("span", { class: "tile-kind", text: (w.clipList.length ? "▶ " : "▦ ") + kind }),
+    const fallbackIcon = () => media.replaceChildren(spriteNode((modeById(modeOfWork(w)) || {}).sprite || "sparkle"));
+    const auto = thumbOf(w);
+    // ลำดับปก: cover ใน content.js > images/covers/<ชื่องาน>.jpg > ปกอัตโนมัติ
+    const tries = [w.cover, "images/covers/" + slugOf(w) + ".jpg", auto].filter(Boolean);
+    const img = el("img", { alt: "", loading: "lazy", decoding: "async" });
+    if (w.coverFocus) img.style.objectPosition = FOCUS[w.coverFocus] || w.coverFocus;
+    let k = 0;
+    img.addEventListener("error", () => (++k < tries.length ? (img.src = tries[k]) : fallbackIcon()));
+    if (tries.length) { img.src = tries[0]; media.appendChild(img); } else fallbackIcon();
+
+    // ป้ายไอคอนพิกเซลมุมบนของรูป: ▶ = คลิป, รูปซ้อน = แกลเลอรี (+ จำนวน ถ้ามีหลายชิ้น)
+    const badge = el("span", { class: "tile-kind", "aria-hidden": "true" }, [spriteNode(isVideo ? "play" : "images")]);
+    if (n > 1) badge.appendChild(el("b", { text: String(n) }));
+    const kindText = isVideo ? (n > 1 ? n + " clips" : "video") : (n > 1 ? n + " images" : "image");
+
+    const btn = el("button", { type: "button", class: "tile", "aria-label": w.title + ", " + kindText, "aria-expanded": opts.inline ? "false" : null }, [
+      el("span", { class: "tile-frame" }, [media, badge]),
       el("span", { class: "tile-cap" }, [
         el("span", { class: "tile-title", text: w.title }),
-        el("span", { class: "tile-meta", text: [w.client, w.year].filter(Boolean).join(" · ") }),
+        el("span", { class: "tile-meta", text: [w.client, w.year].filter(Boolean).join(" · ") || "\u00a0" }),
       ]),
     ]);
-    btn.addEventListener("click", () => viewer.open(w, list, btn));
+    if (!opts.inline) btn.removeAttribute("aria-expanded");
+    btn.addEventListener("click", () => {
+      if (opts.inline && mobileList.matches) inline.toggle(w, btn);
+      else viewer.open(w, list, btn);
+    });
     return btn;
   }
+
+  // ---------- มือถือ: กดแถวแล้ว "ยืด" ออกในที่ (A → B) เปิดได้ทีละแถว ----------
+  const inline = (function () {
+    let openBtn = null, panel = null;
+    function close() {
+      if (panel) panel.remove();
+      if (openBtn) { openBtn.classList.remove("is-open"); openBtn.setAttribute("aria-expanded", "false"); }
+      panel = openBtn = null;
+    }
+    function toggle(w, btn) {
+      if (openBtn === btn) return close();
+      close();
+      const media = mediaBlock(w);
+      // ชื่องานกับลูกค้า/ปี อยู่ในแถวแล้ว ไม่ต้องซ้ำ
+      const info = workInfo(w, { showTags: true, detailsLabel: "Behind the work" }).filter((n) => n && !/^H3$/.test(n.tagName) && !(n.classList && n.classList.contains("work-meta")));
+      const side = info.filter((n) => n.classList && (n.classList.contains("phases") || n.classList.contains("roles")));
+      const rest = info.filter((n) => side.indexOf(n) === -1);
+      panel = el("div", { class: "tile-panel" }, [
+        el("div", { class: "tile-panel-media" + (media.vertical ? " is-vertical" : "") }, [media.node]),
+        el("div", { class: "tile-panel-side" }, side),
+        el("div", { class: "tile-panel-info" }, rest),
+      ]);
+      btn.after(panel);
+      btn.classList.add("is-open");
+      btn.setAttribute("aria-expanded", "true");
+      openBtn = btn;
+      const header = document.querySelector(".topbar");
+      const y = btn.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 8;
+      smoothScrollTo(Math.max(0, y));
+    }
+    mobileList.addEventListener("change", close);
+    return { toggle: toggle, close: close };
+  })();
 
   // ---------- หน้าต่างดูผลงาน (เปิดจากกล่องไหนก็ได้) ----------
   const viewer = (function () {
@@ -1038,12 +1100,13 @@
       const list = worksOfMode(m.id);
       const grid = el("div", { class: "tile-grid" });
       list.forEach((w, i) => {
-        const t = makeTile(w, list);
+        const t = makeTile(w, list, { inline: true });
         if (i >= SHOW) t.classList.add("is-extra");
         grid.appendChild(t);
       });
       const more = list.length > SHOW ? el("button", { type: "button", class: "px-btn px-btn-cream work-more-btn", text: "Show all " + list.length + " ↓" }) : null;
       if (more) more.addEventListener("click", () => {
+        inline.close();
         const open = grid.classList.toggle("show-all");
         more.textContent = open ? "Show less ↑" : "Show all " + list.length + " ↓";
         if (open) grid.querySelectorAll(".is-extra").forEach((t, i) => popNow(t, i * 40));
@@ -1063,6 +1126,7 @@
     select.appendChild(el("option", { value: "all", text: "All types (" + works.length + ")" }));
     modes.forEach((m) => select.appendChild(el("option", { value: m.id, text: m.label + " (" + worksOfMode(m.id).length + ")" })));
     function setType(id) {
+      inline.close();
       if (!modes.some((m) => m.id === id)) id = "all";
       select.value = id;
       blocks.forEach((b) => (b.hidden = id !== "all" && b.dataset.mode !== id));
