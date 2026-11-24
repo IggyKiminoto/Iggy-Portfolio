@@ -321,6 +321,11 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
 /* โฟลเดอร์บน Cover */
 .host-choices { grid-area: choices; position: relative; display: flex; flex-wrap: nowrap; gap: 14px; align-items: flex-end; }
 .host-choice { flex: 0 0 auto; width: clamp(120px, 10.5vw, 150px); aspect-ratio: 5 / 4; }
+/* คอม: โฟลเดอร์หดตามพื้นที่ฝั่งซ้าย ไม่ล้นไปทับหน้าต่าง (จอกว้างมาก) */
+@media (min-width: 900px) {
+  .host-choices { min-width: 0; }
+  .host-choice { flex: 1 1 0; min-width: 0; width: auto; max-width: clamp(120px, 10.5vw, 150px); }
+}
 /* ปุ่มเด้งไล่กันเป็นระยะ ชวนให้กด (หยุดเมื่อกดแล้ว) */
 .host:not(.is-chosen) .host-choice { animation: choice-nudge 4.2s steps(1) infinite; }
 .host:not(.is-chosen) .host-choice:nth-child(2) { animation-delay: .35s; }
@@ -365,7 +370,7 @@ main { overflow-x: clip; } /* กันแถบวิ่งเอียงล�
   .label-sticker { font-size: clamp(15px, 1vw, 19px); }
   .host { --char-w: clamp(250px, 18vw, 360px); }
   .host-speech { font-size: clamp(17px, 1.25vw, 24px); padding: 16px 24px; }
-  .host-choice { width: clamp(150px, 11.5vw, 230px); }
+  .host-choice { width: auto; max-width: clamp(150px, 11.5vw, 230px); }
   .host .folder-name { font-size: clamp(16px, 1.25vw, 24px); }
   .host .folder-count { font-size: 11px; }
   .host .folder-front .chip-icon { width: 28px; height: 28px; }
