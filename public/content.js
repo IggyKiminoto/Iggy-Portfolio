@@ -11,6 +11,9 @@
 
 window.SITE = {
   name: "Iggy",
+
+  // หน้าตาการ์ดผลงาน: "overlay" = ชื่องานทับบนรูป (มีแถบไล่สี) / "polaroid" = ชื่องานอยู่ใต้รูป
+  cardStyle: "polaroid",
   role: "End-to-End Creator · Design | Production | Animation",
   pageTitle: "Iggy | End-to-End Creator",   // ชื่อบนแท็บเบราว์เซอร์และผลค้นหา
 
@@ -59,15 +62,6 @@ window.SITE = {
       colors: { accent: "#DD88C1" },   // Daisy
       filter: ["Motion & Animation"],
     },
-  ],
-
-  // ป้าย "I DO" (ไม่ได้แสดงบน Cover แล้ว ตัวละครกับปุ่มเลือกประเภทงานทำหน้าที่แทน)
-  offer: [
-    { name: "Short-form editing", sprite: "phone" },
-    { name: "On-site shoots", sprite: "camera" },
-    { name: "Podcast & long-form", sprite: "mic" },
-    { name: "Motion graphics", sprite: "sparkle" },
-    { name: "Key visuals & print", sprite: "star" },
   ],
 
   // แบรนด์ที่เคยทำงานด้วย (ขึ้นเป็นส่วน WORKED WITH ก่อนส่วนติดต่อ)
@@ -129,31 +123,12 @@ window.SITE = {
     //       ถ้ารู้ช่วงเวลา ค่อยเพิ่มใน stats ของโฟลเดอร์ smilenoout
   ],
 
-  /* ---------- จอคลิปบน Cover: เล่นคลิปของประเภทงานที่คนดูเลือก ----------
-     label = ชื่อช่อง / mode = ประเภทงาน (id ใน modes) / clip = ลิงก์คลิป
-     กดลูกศรในจอ = เลื่อนดูคลิปอื่นของประเภทเดียวกัน
-     กรอบทีวีจะปรับตามสัดส่วนคลิปเอง (แนวตั้ง / แนวนอน)
-     ถ้าไม่มีช่องเลย จะใช้ showreel หรืองานเด่นชิ้นแรกแทน                          */
-  channels: [
-    { label: "BRAND", mode: "video", sprite: "clapper", clip: "https://www.tiktok.com/@ais_club/video/7701369408421154068" },
-    { label: "CREATOR", mode: "video", sprite: "gamepad", clip: "https://www.tiktok.com/@iggylengame/video/7658989879522626836" },
-    { label: "EVENTS", mode: "video", sprite: "camera", clip: "https://www.tiktok.com/@ais_club/video/7683364721118039313" },
-    { label: "MOTION", mode: "animation", sprite: "sparkle", clip: "https://www.tiktok.com/@ais_club/video/7538425611467902216" },
-    { label: "MASCOT", mode: "animation", image: "images/work/anim-ais3bb-1.jpg" },
-    // ช่องที่เป็นรูป (ใช้ image แทน clip)
-    { label: "CHARACTER", mode: "graphic", image: "images/work/char-ais3bb-1.jpg" },
-    { label: "STICKERS", mode: "graphic", image: "images/work/illus-stickers-1.jpg" },
-    { label: "INFOGRAPHIC", mode: "graphic", image: "images/work/gfx-infographic-1.jpg" },
-  ],
-  showreel: "",
-
-  marquee: ["PLAN", "SHOOT", "EDIT", "POST", "SHORT-FORM", "EVENT CONTENT", "OPEN FOR WORK"],
-
-  /* ---------- หมวดงาน (ตัวกรองผลงาน) ----------
+  /* ---------- หมวดงานย่อย ----------
      name       ชื่อหมวด ต้องสะกดตรงกับ categories ของผลงานด้านล่าง
+                หมวดแรกของผลงาน ใช้ตัดสินว่างานไปอยู่โฟลเดอร์ไหน (ดู filter ใน modes)
      icon       ไอคอนที่วาดเอง เช่น "icons/short.png" (ปล่อยว่าง = ใช้ไอคอนพิกเซลในตัว)
      iconHover  (ไม่ใส่ก็ได้) ไอคอนตอนเอาเมาส์ชี้ เช่นไฟล์ GIF ที่ขยับได้ "icons/short.gif"
-     หมวดที่ยังไม่มีงาน จะถูกซ่อนเอง                                                */
+     sprite     ไอคอนพิกเซลในตัว (ใช้กับหัวการ์ดบริการ)                               */
   categories: [
     { name: "Graphic Design", icon: "", sprite: "sparkle" },
     { name: "Character & Illustration", icon: "", sprite: "heart" },
@@ -164,12 +139,8 @@ window.SITE = {
     { name: "Podcast & Long-form", icon: "", sprite: "mic" },
     { name: "Motion & Animation", icon: "", sprite: "sparkle" },
   ],
-  // Tag ที่กดกรองได้ด้วย (ต้องสะกดตรงกับ tags ของผลงาน)
-  filterTags: [
-    { name: "Gaming", sprite: "gamepad" },
-    { name: "AI", sprite: "sparkle" },
-    { name: "Behind the Scenes", sprite: "clapper" },
-  ],
+
+  marquee: ["PLAN", "SHOOT", "EDIT", "POST", "SHORT-FORM", "EVENT CONTENT", "OPEN FOR WORK"],
 
   services: [
     {

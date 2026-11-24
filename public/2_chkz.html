@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ตรวจข้อมูลเว็บ</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&family=Silkscreen&display=swap" rel="stylesheet">
+  <style>
+    /* หน้าตรวจข้อมูล (ใช้เอง ไม่มีลิงก์จากหน้าเว็บหลัก) */
+    :root { --bg: #FFFBE0; --paper: #FFFEF6; --ink: #113F59; --ink2: #3B5F72; --ok: #2E8B57; --warn: #C77700; --bad: #C0392B; --line: #D8D2B4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 "Prompt", system-ui, sans-serif; padding: 24px max(16px, 3vw) 64px; }
+    h1 { font-family: "Silkscreen", monospace; font-size: 26px; margin: 0 0 4px; }
+    h2 { font-size: 20px; margin: 36px 0 10px; display: flex; gap: 10px; align-items: baseline; }
+    h2 small { font-size: 13px; font-weight: 400; color: var(--ink2); }
+    .sub { color: var(--ink2); margin: 0 0 18px; }
+    .cards { display: flex; flex-wrap: wrap; gap: 10px; }
+    .card { background: var(--paper); border: 2px solid var(--ink); padding: 10px 14px; min-width: 130px; }
+    .card b { display: block; font-family: "Silkscreen", monospace; font-size: 24px; line-height: 1.2; }
+    .card span { font-size: 13px; color: var(--ink2); }
+    .banner { padding: 12px 16px; border: 2px solid var(--ink); font-weight: 600; }
+    .banner.ok { background: #E3F4E8; } .banner.bad { background: #FBE3E0; }
+    pre { background: var(--paper); border: 1px solid var(--line); padding: 10px; overflow-x: auto; font-size: 13px; }
+    pre mark { background: #FFD5CF; display: block; }
+    .table-wrap { overflow-x: auto; border: 2px solid var(--ink); background: var(--paper); }
+    table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 14px; }
+    th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--ink); color: var(--paper); font-weight: 600; position: sticky; top: 0; }
+    tr:hover td { background: #FFF6CC; }
+    code { font-size: 12.5px; background: #F3EEDA; padding: 1px 5px; word-break: break-all; }
+    .ok { color: var(--ok); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+    .pill { display: inline-block; font-size: 12px; padding: 0 7px; border: 1px solid currentColor; margin: 1px 3px 1px 0; white-space: nowrap; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
+    .filters button { font: 600 13px "Prompt", sans-serif; padding: 5px 12px; border: 2px solid var(--ink); background: var(--paper); cursor: pointer; }
+    .filters button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    ul.flat { margin: 0; padding-left: 18px; }
+    .muted { color: var(--ink2); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>CHECK</h1>
+  <p class="sub">หน้าตรวจข้อมูลของเว็บ อ่านจาก <code>content.js</code> และไฟล์รูปจริงทุกครั้งที่เปิด (ไม่ต้องอัปเดตเอง) · คู่มือการแก้ไขอยู่ที่ <code>HOW-TO.md</code> ใน GitHub</p>
+
+  <div id="status"></div>
+
+  <h2>สรุป</h2>
+  <div class="cards" id="summary"></div>
+
+  <h2>ผลงานทั้งหมด <small>กดหัวข้อตัวกรองเพื่อดูเฉพาะงานที่ต้องเติม</small></h2>
+  <div class="filters" id="filters"></div>
+  <div class="table-wrap"><table id="works"><thead><tr>
+    <th>#</th><th>ชื่องาน</th><th>ประเภท</th><th>ปก</th><th>เนื้อหา</th><th>ยังขาด</th>
+  </tr></thead><tbody></tbody></table></div>
+
+  <h2>รูปในโฟลเดอร์ <small>มี = เว็บใช้ไฟล์นี้อยู่</small></h2>
+  <div class="table-wrap"><table id="files"><thead><tr><th>ส่วน</th><th>ไฟล์</th><th>สถานะ</th></tr></thead><tbody></tbody></table></div>
+
+  <h2>TODO ที่ค้างใน content.js <small>เลขบรรทัด = เปิดไฟล์บน GitHub แล้วเลื่อนไปบรรทัดนั้น</small></h2>
+  <div id="todos"></div>
+
+<script>
+(async function () {
+  const $ = (s) => document.querySelector(s);
+  const h = (tag, attrs, kids) => {
+    const n = document.createElement(tag);
+    for (const k in attrs || {}) k === "text" ? (n.textContent = attrs[k]) : k === "html" ? (n.innerHTML = attrs[k]) : n.setAttribute(k, attrs[k]);
+    (kids || []).forEach((c) => c != null && n.appendChild(typeof c === "string" ? document.createTextNode(c) : c));
+    return n;
+  };
+  const asList = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]).filter(Boolean);
+  const exists = (url) => fetch(url, { method: "HEAD", cache: "no-store" }).then((r) => r.ok).catch(() => false);
+  const firstExisting = async (urls) => { for (const u of urls) if (await exists(u)) return u; return ""; };
+
+  // ---------- 1) โหลด content.js และจับ error พร้อมเลขบรรทัด ----------
+  const src = await fetch("content.js?t=" + Date.now(), { cache: "no-store" }).then((r) => r.text());
+  const lines = src.split("\n");
+  let loadError = null;
+  window.addEventListener("error", (e) => { if (/content\.js/.test(e.filename || "")) loadError = e; });
+  await new Promise((res) => {
+    const s = document.createElement("script");
+    s.src = "content.js?t=" + Date.now();
+    s.onload = s.onerror = res;
+    document.head.appendChild(s);
+  });
+  const status = $("#status");
+  if (loadError || !window.SITE || !window.WORKS) {
+    const ln = loadError ? loadError.lineno : 0;
+    status.appendChild(h("div", { class: "banner bad", text: "⚠️ content.js มีจุดพิมพ์ผิด เว็บจะขึ้นหน้าขาว" + (ln ? " · ดูบรรทัด " + ln : "") + (loadError ? " · " + loadError.message : "") }));
+    if (ln) {
+      const pre = h("pre");
+      for (let i = Math.max(1, ln - 4); i <= Math.min(lines.length, ln + 3); i++) {
+        const row = h(i === ln ? "mark" : "span", { text: String(i).padStart(4) + " │ " + lines[i - 1] + "\n" });
+        pre.appendChild(row);
+      }
+      status.appendChild(pre);
+      status.appendChild(h("p", { class: "muted", text: "ส่วนใหญ่มาจาก: ลืม , ท้ายบรรทัด · ลืมปิด \" · ใช้ \" ในข้อความโดยไม่ใส่ \\ ข้างหน้า · วงเล็บ { } [ ] ไม่ครบคู่ (บางครั้งจุดที่ผิดจริงอยู่บรรทัดก่อนหน้า)" }));
+    }
+    return;
+  }
+  status.appendChild(h("div", { class: "banner ok", text: "✓ content.js อ่านได้ปกติ ไม่มีจุดพิมพ์ผิด" }));
+
+  const SITE = window.SITE, WORKS = window.WORKS;
+  const modes = asList(SITE.modes);
+  const modeOf = (w) => { const c = asList(w.categories || w.category)[0]; const m = modes.find((x) => asList(x.filter).indexOf(c) !== -1); return m ? m.id : "video"; };
+  const slugOf = (w) => String(w.title || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const ttId = (u) => ((String(u).match(/tiktok\.com\/.*?(\d{15,})/) || [])[1]);
+  const clipsOf = (w) => asList(w.clips || w.url).map((c) => (typeof c === "string" ? c : c.url)).filter(Boolean);
+  const imagesOf = (w) => asList(w.images).map((x) => (typeof x === "string" ? x : x.src)).filter(Boolean);
+
+  // ---------- 2) สรุป ----------
+  const live = WORKS.filter((w) => !w.wip);
+  const sum = $("#summary");
+  const card = (n, label) => sum.appendChild(h("div", { class: "card" }, [h("b", { text: String(n) }), h("span", { text: label })]));
+  card(live.length, "ผลงานที่แสดง");
+  modes.forEach((m) => card(live.filter((w) => modeOf(w) === m.id).length, m.short || m.label));
+  card(live.reduce((a, w) => a + clipsOf(w).length, 0), "คลิปทั้งหมด");
+  card(live.reduce((a, w) => a + imagesOf(w).length, 0), "รูปทั้งหมด");
+  if (WORKS.length !== live.length) card(WORKS.length - live.length, "ซ่อนไว้ (wip)");
+
+  // ---------- 3) ตารางผลงาน ----------
+  const tbody = $("#works tbody");
+  const rows = [];
+  await Promise.all(live.map(async (w, i) => {
+    const slug = slugOf(w);
+    const own = w.cover ? ((await exists(w.cover)) ? w.cover : "") : await firstExisting(["images/covers/" + slug + ".jpg"]);
+    const clips = clipsOf(w), imgs = imagesOf(w);
+    let auto = "";
+    if (clips.length && ttId(clips[0])) auto = "images/thumbs/tt-" + ttId(clips[0]) + ".jpg";
+    else if (imgs.length) auto = imgs[0].replace(/^images\/work\//, "images/thumbs/");
+    const autoOk = auto ? await exists(auto) : false;
+    const missingImgs = (await Promise.all(imgs.map(async (u) => ((await exists(u)) ? "" : u)))).filter(Boolean);
+    const need = [];
+    if (!clips.length && !imgs.length) need.push("ไม่มีคลิปหรือรูป");
+    if (!clips.length && imgs.length && /video|animation/.test(modeOf(w))) need.push("ลิงก์คลิป");
+    if (!w.client) need.push("ลูกค้า (client)");
+    if (!w.year) need.push("ปี (year)");
+    if (!asList(w.role).length && !asList(w.clips).some((c) => c && c.role)) need.push("หน้าที่ (role)");
+    if (!w.highlight) need.push("จุดเด่น (highlight)");
+    if (!own) need.push("ปกที่ทำเอง");
+    missingImgs.forEach((u) => need.push("รูปหาย: " + u));
+    rows[i] = { w, slug, own, auto, autoOk, clips, imgs, need };
+  }));
+  const typeLabel = (id) => (modes.find((m) => m.id === id) || {}).short || id;
+  function draw(filter) {
+    tbody.replaceChildren();
+    rows.forEach((r, i) => {
+      if (filter === "cover" && r.own) return;
+      if (filter === "todo" && !r.need.some((x) => x !== "ปกที่ทำเอง")) return;
+      if (filter && filter.startsWith("m:") && modeOf(r.w) !== filter.slice(2)) return;
+      const cover = r.own
+        ? h("span", { class: "ok", text: "✓ ทำเองแล้ว" })
+        : h("span", {}, [h("span", { class: r.autoOk ? "warn" : "bad", text: r.autoOk ? "ใช้ปกอัตโนมัติ" : "ไม่มีปก" }), h("br"), h("code", { text: "images/covers/" + r.slug + ".jpg" })]);
+      const content = (r.clips.length ? r.clips.length + " คลิป" : "") + (r.clips.length && r.imgs.length ? " · " : "") + (r.imgs.length ? r.imgs.length + " รูป" : "");
+      const need = r.need.filter((x) => x !== "ปกที่ทำเอง");
+      tbody.appendChild(h("tr", {}, [
+        h("td", { text: String(i + 1) }),
+        h("td", {}, [h("b", { text: r.w.title || "(ไม่มีชื่อ)" }), r.w.featured ? h("span", { class: "pill ok", text: "งานเด่น" }) : null, r.w.ongoing ? h("span", { class: "pill", text: "ongoing" }) : null]),
+        h("td", { text: typeLabel(modeOf(r.w)) }),
+        h("td", {}, [cover]),
+        h("td", { text: content || "—" }),
+        h("td", {}, need.length ? need.map((x) => h("span", { class: "pill " + (/หาย|ไม่มีคลิปหรือรูป/.test(x) ? "bad" : "warn"), text: x })) : [h("span", { class: "ok", text: "ครบ" })]),
+      ]));
+    });
+  }
+  const fWrap = $("#filters");
+  const opts = [["", "ทั้งหมด"], ["todo", "ข้อมูลยังไม่ครบ"], ["cover", "ยังไม่มีปกทำเอง"]].concat(modes.map((m) => ["m:" + m.id, m.short || m.label]));
+  const btns = opts.map(([v, t]) => {
+    const b = h("button", { type: "button", text: t, "aria-pressed": v === "" ? "true" : "false" });
+    b.onclick = () => { btns.forEach((x) => x.setAttribute("aria-pressed", String(x === b))); draw(v); };
+    fWrap.appendChild(b);
+    return b;
+  });
+  draw("");
+
+  // ---------- 4) รูปในโฟลเดอร์ ----------
+  const fbody = $("#files tbody");
+  const fileRow = (part, file, ok, note) => fbody.appendChild(h("tr", {}, [h("td", { text: part }), h("td", {}, [h("code", { text: file })]), h("td", {}, [h("span", { class: ok ? "ok" : "warn", text: ok ? "✓ มี" : "— ยังไม่มี" + (note ? " (" + note + ")" : "") })])]));
+  const img = (base) => ["jpg", "jpeg", "png", "webp"].map((e) => base + "." + e);
+  const p = await firstExisting(img("images/profile"));
+  fileRow("รูปโปรไฟล์", p || "images/profile.jpg", !!p);
+  let moments = 0;
+  for (let i = 1; i <= 12; i++) if (await firstExisting(img("images/about-" + i))) moments++;
+  fileRow("รูปกิจกรรม (MOMENTS)", "images/about-1 … about-12", moments > 0, moments ? "" : "ใส่ได้ 12 รูป");
+  if (moments) fbody.lastChild.lastChild.firstChild.textContent = "✓ มี " + moments + " รูป";
+  const base = await firstExisting(["character/base.gif", "character/base.png", "character/base.webp"]);
+  fileRow("ตัวละครหลัก", base || "character/base.gif", !!base);
+  for (const m of modes) {
+    let pieces = 0;
+    for (let i = 1; i <= 6; i++) if (await firstExisting(["gif", "png", "webp"].map((e) => "character/" + m.id + "/" + i + "." + e))) pieces++;
+    fileRow("ชุดตัวละคร: " + (m.short || m.label), "character/" + m.id + "/1 … 6", pieces > 0, "ยังไม่ได้วาด");
+    if (pieces) fbody.lastChild.lastChild.firstChild.textContent = "✓ มี " + pieces + " ชิ้น";
+  }
+  const peekIds = modes.map((m) => m.id).concat(asList(SITE.sideProjects).map((s) => s.id));
+  for (const id of peekIds) {
+    let n = 0;
+    for (let i = 1; i <= 3; i++) if (await firstExisting(["jpg", "png", "webp"].map((e) => "images/peek/" + id + "-" + i + "." + e))) n++;
+    fileRow("รูปโผล่จากโฟลเดอร์: " + id, "images/peek/" + id + "-1 … 3", n > 0, "ใช้ไอคอนพิกเซลแทน");
+    if (n) fbody.lastChild.lastChild.firstChild.textContent = "✓ มี " + n + "/3";
+  }
+  if (SITE.resume) fileRow("Resume", SITE.resume, true);
+  else fileRow("Resume", "resume ใน content.js", false, "ปุ่ม Resume ยังไม่ขึ้น");
+
+  // ---------- 5) TODO ----------
+  const todos = lines.map((l, i) => [i + 1, l]).filter(([, l]) => /TODO/.test(l));
+  const tWrap = $("#todos");
+  if (!todos.length) tWrap.appendChild(h("p", { class: "ok", text: "ไม่มี TODO ค้าง 🎉" }));
+  else {
+    const pre = h("pre");
+    todos.forEach(([n, l]) => pre.appendChild(document.createTextNode(String(n).padStart(4) + " │ " + l.trim() + "\n")));
+    tWrap.appendChild(h("p", { class: "muted", text: todos.length + " จุด" }));
+    tWrap.appendChild(pre);
+  }
+})();
+</script>
+</body>
+</html>
