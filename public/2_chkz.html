@@ -127,9 +127,12 @@
     const own = w.cover ? ((await exists(w.cover)) ? w.cover : "") : await firstExisting(["images/covers/" + slug + ".jpg"]);
     const clips = clipsOf(w), imgs = imagesOf(w);
     let auto = "";
-    if (clips.length && ttId(clips[0])) auto = "images/thumbs/tt-" + ttId(clips[0]) + ".jpg";
+    if (w.thumbnail) auto = w.thumbnail;
+    else if (clips.length && ttId(clips[0])) auto = "images/thumbs/tt-" + ttId(clips[0]) + ".jpg";
     else if (imgs.length) auto = imgs[0].replace(/^images\/work\//, "images/thumbs/");
-    const autoOk = auto ? await exists(auto) : false;
+    // YouTube มีปกอัตโนมัติจาก YouTube เสมอ
+    const isYouTube = clips.length && /youtube\.com|youtu\.be/.test(clips[0]);
+    const autoOk = auto ? await exists(auto) : !!isYouTube;
     const missingImgs = (await Promise.all(imgs.map(async (u) => ((await exists(u)) ? "" : u)))).filter(Boolean);
     const need = [];
     if (!clips.length && !imgs.length) need.push("ไม่มีคลิปหรือรูป");

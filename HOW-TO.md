@@ -113,7 +113,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 | ช่อง | ต้องมีไหม | ใส่อะไร |
 |---|---|---|
 | `title` | ✅ | ชื่องาน (ใช้ตั้งชื่อไฟล์ปกด้วย) |
-| `clips` | อย่างใดอย่างหนึ่ง | ลิงก์คลิป ใส่ได้หลายอัน (มีปุ่ม 1 2 3) · ถ้าแต่ละคลิปทำหน้าที่ต่างกัน: `{ url: "…", label: "ชื่อคลิป", role: ["Edit"] }` |
+| `clips` | อย่างใดอย่างหนึ่ง | ลิงก์คลิป ใส่ได้หลายอัน (มีปุ่ม 1 2 3) · ถ้าแต่ละคลิปทำหน้าที่ต่างกัน: `{ url: "…", label: "ชื่อคลิป", role: ["Edit"] }` · คลิปขึ้นผิดทรง (เช่นลิงก์ Facebook `/videos/` ที่เป็นแนวตั้ง) ใส่ `format: "vertical"` หรือ `"horizontal"` ในคลิปนั้น |
 | `images` | อย่างใดอย่างหนึ่ง | รูปในแกลเลอรี · ใส่คำบรรยายได้: `{ src: "images/work/x.jpg", caption: "…" }` |
 | `categories` | ✅ | หมวด (สะกดตรงกับรายการด้านล่าง) **หมวดแรก = โฟลเดอร์ที่งานไปอยู่** |
 | `tags` | | คำย่อยหลัง # |
@@ -126,6 +126,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 | `ongoing: true` | | ป้าย "Ongoing series" |
 | `wip: true` | | **ซ่อนจากเว็บ** (เก็บไว้ทำต่อ) |
 | `cover` | | ระบุไฟล์ปกเอง: `"images/covers/xxx.jpg"` |
+| `thumbnail` | | ปกสำรองของคลิป (ใช้แทนปกอัตโนมัติ) เช่น `"images/thumbs/yt-<รหัสคลิป>.jpg"` · Claude ดึงจาก YouTube ให้ได้ |
 | `coverFocus` | | เลื่อนจุดโฟกัสปกอัตโนมัติ: `"top"` `"bottom"` `"left"` `"right"` `"center"` หรือ `"50% 30%"` |
 
 ### หมวด (`categories`) → โฟลเดอร์
@@ -145,8 +146,11 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 
 ### ปกผลงาน
 
+**ทำปกเอง:** ทำใน Canva ดีไซน์ `Iggy Portfolio Covers` (เรียงหน้ายังไงก็ได้) แล้วบอก Claude ว่าหน้าไหนเสร็จ ขั้นตอน กติกามุมไอคอน และเช็กลิสต์อยู่ใน [`images/covers/README.md`](public/images/covers/README.md)
+
 ลำดับที่เว็บเลือกปก: `cover` ที่ระบุเอง → `images/covers/<ชื่องาน>.jpg` → ปกอัตโนมัติ → รูปแรกในแกลเลอรี → ไอคอนพิกเซล
 
+- **คลิป YouTube:** ปกอัตโนมัติของ YouTube มีแถบดำบน-ล่าง ให้ Claude ดึง thumbnail แบบชัดมาเก็บไว้ที่ `images/thumbs/yt-<รหัสคลิป>.jpg` แล้วใส่ `thumbnail:` ในงานนั้น
 - **คลิป TikTok ใหม่ไม่มีปกอัตโนมัติ** ต้องทำปกเอง (หรือส่งลิงก์ให้ Claude ดึงปกให้)
 - ชื่อไฟล์ปก = ชื่องาน ตัวเล็ก เว้นวรรค/สัญลักษณ์เป็น `-` เช่น `RoV Day 2026 at Siam` → `rov-day-2026-at-siam.jpg` (หน้าตรวจข้อมูลบอกชื่อไฟล์ทุกงาน)
 
@@ -286,7 +290,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 - [ ] คลิปเป็นสาธารณะ / Unlisted และก๊อปลิงก์เต็มแล้ว
 - [ ] (งานกราฟิก) อัปรูปเข้า `images/work/`
 - [ ] ก๊อปแม่แบบในหัวข้อ 2 ไปวางใน `WORKS` แล้วกรอก `title` `clips`/`images` `categories` `role` `client` `year` `highlight`
-- [ ] ทำปก 800×800 ตั้งชื่อตามชื่องาน อัปเข้า `images/covers/`
+- [ ] ทำปก 800×800 ใน Canva ดีไซน์ `Iggy Portfolio Covers` (1 หน้า = 1 ปก) แล้วบอก Claude ว่าหน้าไหนเสร็จ · ขั้นตอน + เช็กลิสต์อยู่ใน [`images/covers/README.md`](public/images/covers/README.md)
 - [ ] Commit → รอ 2 นาที
 - [ ] เปิด `2_chkz.html` เช็กว่าไม่มีตัวแดง
 - [ ] เปิดเว็บจริงบนคอมและมือถือ กดดูงานนั้น 1 ครั้ง
