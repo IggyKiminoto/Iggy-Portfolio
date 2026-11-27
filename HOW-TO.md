@@ -113,7 +113,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 | ช่อง | ต้องมีไหม | ใส่อะไร |
 |---|---|---|
 | `title` | ✅ | ชื่องาน (ใช้ตั้งชื่อไฟล์ปกด้วย) |
-| `clips` | อย่างใดอย่างหนึ่ง | ลิงก์คลิป ใส่ได้หลายอัน (มีปุ่ม 1 2 3) · ถ้าแต่ละคลิปทำหน้าที่ต่างกัน: `{ url: "…", label: "ชื่อคลิป", role: ["Edit"] }` |
+| `clips` | อย่างใดอย่างหนึ่ง | ลิงก์คลิป ใส่ได้หลายอัน (มีปุ่ม 1 2 3) · ถ้าแต่ละคลิปทำหน้าที่ต่างกัน: `{ url: "…", label: "ชื่อคลิป", role: ["Edit"] }` · คลิปขึ้นผิดทรง (เช่นลิงก์ Facebook `/videos/` ที่เป็นแนวตั้ง) ใส่ `format: "vertical"` หรือ `"horizontal"` ในคลิปนั้น |
 | `images` | อย่างใดอย่างหนึ่ง | รูปในแกลเลอรี · ใส่คำบรรยายได้: `{ src: "images/work/x.jpg", caption: "…" }` |
 | `categories` | ✅ | หมวด (สะกดตรงกับรายการด้านล่าง) **หมวดแรก = โฟลเดอร์ที่งานไปอยู่** |
 | `tags` | | คำย่อยหลัง # |
@@ -146,7 +146,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 
 ### ปกผลงาน
 
-**ทำปกเอง:** ทำใน Canva ดีไซน์ `Iggy Portfolio Covers` แล้วบอก Claude ว่าหน้าไหนเสร็จ ขั้นตอน กติกามุมไอคอน และเช็กลิสต์อยู่ใน [`images/covers/README.md`](public/images/covers/README.md)
+**ทำปกเอง:** ทำใน Canva ดีไซน์ `Iggy Portfolio Covers` (เรียงหน้ายังไงก็ได้) แล้วบอก Claude ว่าหน้าไหนเสร็จ ขั้นตอน กติกามุมไอคอน และเช็กลิสต์อยู่ใน [`images/covers/README.md`](public/images/covers/README.md)
 
 ลำดับที่เว็บเลือกปก: `cover` ที่ระบุเอง → `images/covers/<ชื่องาน>.jpg` → ปกอัตโนมัติ → รูปแรกในแกลเลอรี → ไอคอนพิกเซล
 

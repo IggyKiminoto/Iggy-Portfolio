@@ -466,6 +466,39 @@ window.WORKS = [
     details: { platform: "TikTok · vertical · 1:11 (2026)" },
   },
 
+  {
+    title: "SB Design Square: Mattress Expo",
+    // คลิปจากเพจ Mattress World (เพจที่นอนของ SB Design Square) · format = รูปทรงคลิป (เว็บเดาจากลิงก์ไม่ได้)
+    clips: [
+      { url: "https://www.facebook.com/reel/1368411784467787", label: "Mattress Expo: more deals than ever", format: "horizontal" },
+      { url: "https://www.facebook.com/SBMattressWorld/videos/1226994228963363/", label: "Everything in one place", format: "vertical" },
+      { url: "https://www.facebook.com/SBMattressWorld/videos/3974091859510343/", label: "Home and mattress deals in one trip", format: "vertical" },
+    ],
+    images: [{ src: "images/work/video-sb-design-square.jpg" }],   // ใช้เป็นปกสำรองจนกว่าจะมีปกทำเอง
+    categories: ["Short-form & Social"],
+    tags: ["UGC", "Review", "Product", "Voiceover"],
+    client: "SB Design Square",
+    year: "",   // TODO
+    role: ["Concept", "Shoot", "Voiceover", "Edit"],
+    highlight: "UGC-style promo clips for SB Design Square's Mattress Expo sale, made start to finish by me.",
+    details: {
+      platform: "Facebook · Mattress World page · 0:25 to 0:47 per clip",
+      responsibility: "Came up with the ideas, shot, voiced and edited all three clips.",
+    },
+  },
+  {
+    title: "AIS Sports Day 2024: Team Captains",
+    wip: true,   // ซ่อนไว้ก่อน: รอข้อมูลหน้าที่ (role) แล้วค่อยเอาออก
+    clips: ["https://www.facebook.com/reel/870470888570657"],
+    categories: ["Brand & Corporate", "Event & Creator Content", "Short-form & Social"],
+    tags: ["Event", "Teaser", "Facebook Reels"],
+    client: "AIS Club",
+    year: "2024",
+    role: [],   // TODO
+    highlight: "Pre-event teaser for AIS Sports Day 2024: how ready each colour team's captain is before the big day.",
+    details: { platform: "Facebook Reels · vertical · 1:07" },
+  },
+
   // ================= งานจากพอร์ต Canva เก่า (รูปอยู่ใน public/images/work) =================
   // ช่องที่เขียน TODO = ยังไม่มีข้อมูล เติมทีหลังได้ / ถ้าได้ลิงก์คลิป ใส่ใน clips: ["..."] แล้วรูปจะถูกแทนด้วยคลิป
 
@@ -665,16 +698,6 @@ window.WORKS = [
     },
   },
   {
-    title: "SB Design Square: Mattress Expo",
-    clips: [],   // TODO
-    images: [{ src: "images/work/video-sb-design-square.jpg" }],
-    categories: ["Short-form & Social"],
-    tags: ["Review", "Product"],
-    client: "SB Design Square",
-    role: [],   // TODO
-    highlight: "",   // TODO
-  },
-  {
     title: "Songkran Greeting: Before / After",
     clips: [],   // TODO
     images: [{ src: "images/work/video-songkran-ecard-before-after.jpg" }],
@@ -686,6 +709,7 @@ window.WORKS = [
   },
   {
     title: "Project VTR",
+    wip: true,   // ซ่อน: เป็นงานอีเวนต์ภายใน ยังไม่แน่ใจว่าแชร์คลิปได้
     clips: [],   // TODO
     images: [{ src: "images/work/video-project-vtr.jpg" }],
     categories: ["Brand & Corporate"],

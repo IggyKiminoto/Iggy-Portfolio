@@ -591,6 +591,9 @@
       cats: asList(w.categories || w.category),
       tagList: asList(w.tags),
       roles: mergeRoles(w.role, clipMeta[0] && clipMeta[0].role),
+      // รูปทรงคลิป: format ของคลิปนั้น > format ของทั้งงาน > เดาจากลิงก์
+      projectFormat: w.format,
+      format: (clipMeta[0] && clipMeta[0].format) || w.format,
       highlightText: w.highlight || w.description || "",
       info: info,
       original: original,
@@ -761,8 +764,10 @@
         });
         b.addEventListener("click", () => {
           if (b.getAttribute("aria-pressed") === "true") return;
-          const next = makePlayer(Object.assign({}, w, { url: u, thumbnail: i === 0 ? w.thumbnail : "" }));
+          const next = makePlayer(Object.assign({}, w, { url: u, format: w.clipMeta[i].format || w.projectFormat, thumbnail: i === 0 ? w.thumbnail : "" }));
           box.replaceChild(next.node, player.node);
+          // งานที่มีทั้งคลิปแนวตั้งและแนวนอน: ปรับกรอบให้ตามคลิปที่เลือก
+          if (box.parentNode) box.parentNode.classList.toggle("is-vertical", !!next.vertical);
           player = next;
           btns.forEach((x, k) => x.setAttribute("aria-pressed", String(k === i)));
           caption.textContent = labels[i] || "";
