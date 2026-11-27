@@ -655,9 +655,9 @@
 
   // จัดคำบอกหน้าที่เข้ากลุ่มขั้นตอนงาน (ไม่ต้องแก้ข้อมูลเดิม)
   const PHASES = [
-    { label: "DESIGN", words: ["key visual", "illustration", "design", "character", "artwork", "poster"] },
+    { label: "DESIGN", words: ["key visual", "illustration", "design", "character", "artwork", "poster", "thumbnail", "banner", "thumbnail & banner"] },
     { label: "PRE-PROD", words: ["concept", "idea", "script", "shot list", "storyboard", "brief", "planning", "plan"] },
-    { label: "PRODUCTION", words: ["shoot", "on-site shoot", "filming", "camera", "directing", "animation", "animate"] },
+    { label: "PRODUCTION", words: ["shoot", "on-site shoot", "filming", "camera", "camera setup", "directing", "animation", "animate"] },
     { label: "POST-PROD", words: [] },
     { label: "PUBLISH", words: ["post", "publish", "posting", "upload"] },
   ];

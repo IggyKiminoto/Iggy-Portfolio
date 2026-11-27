@@ -243,6 +243,26 @@ window.SITE = {
 
 window.WORKS = [
   // ---------------- งานเด่น (featured) ----------------
+  // ผลงานล่าสุด: อยู่บนสุด + featured = ขึ้นช่องแรกในโฟลเดอร์ Video
+  {
+    title: "BODY HACK: Work Pain Podcast — EP.1",
+    clips: ["https://www.youtube.com/watch?v=712x-5HYMkE"],
+    // ปกสำรอง = Thumbnail ของคลิปบน YouTube (ไม่มีแถบดำ) · ปกทำเอง: images/covers/body-hack-work-pain-podcast-ep-1.jpg
+    thumbnail: "images/thumbs/yt-712x-5HYMkE.jpg",
+    categories: ["Podcast & Long-form", "Brand & Corporate"],
+    tags: ["Video Podcast", "Wellness", "Multicam", "AI Illustration"],
+    client: "AIS",
+    year: "2026",
+    role: ["Camera setup", "2-camera edit", "Color", "Subtitles", "Dialogue cleanup", "AI illustrations", "On-screen graphics & motion", "Thumbnail & banner"],
+    highlight: "I handled camera setup and post-production for the first episode of AIS's Work Pain Podcast, a wellness video series for office workers.",
+    featured: true,
+    details: {
+      platform: "YouTube · horizontal · video podcast",
+      brief: "EP.1 \"เรื่องปวด ๆ ของมนุษย์ออฟฟิศ ที่ชอบคิดว่า ไม่เป็นไร?!\" (in Thai)",
+      responsibility: "I edited the two-camera footage, cleaned up dialogue, created AI-assisted illustrations and on-screen graphics, and designed the YouTube thumbnail and accompanying banner.",
+      tools: ["Adobe Podcast"],
+    },
+  },
   {
     title: "HR Chatbot Launch Animation",
     clips: ["https://www.tiktok.com/@ais_club/video/7538425611467902216"],

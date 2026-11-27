@@ -126,6 +126,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 | `ongoing: true` | | ป้าย "Ongoing series" |
 | `wip: true` | | **ซ่อนจากเว็บ** (เก็บไว้ทำต่อ) |
 | `cover` | | ระบุไฟล์ปกเอง: `"images/covers/xxx.jpg"` |
+| `thumbnail` | | ปกสำรองของคลิป (ใช้แทนปกอัตโนมัติ) เช่น `"images/thumbs/yt-<รหัสคลิป>.jpg"` · Claude ดึงจาก YouTube ให้ได้ |
 | `coverFocus` | | เลื่อนจุดโฟกัสปกอัตโนมัติ: `"top"` `"bottom"` `"left"` `"right"` `"center"` หรือ `"50% 30%"` |
 
 ### หมวด (`categories`) → โฟลเดอร์
@@ -147,6 +148,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 
 ลำดับที่เว็บเลือกปก: `cover` ที่ระบุเอง → `images/covers/<ชื่องาน>.jpg` → ปกอัตโนมัติ → รูปแรกในแกลเลอรี → ไอคอนพิกเซล
 
+- **คลิป YouTube:** ปกอัตโนมัติของ YouTube มีแถบดำบน-ล่าง ให้ Claude ดึง thumbnail แบบชัดมาเก็บไว้ที่ `images/thumbs/yt-<รหัสคลิป>.jpg` แล้วใส่ `thumbnail:` ในงานนั้น
 - **คลิป TikTok ใหม่ไม่มีปกอัตโนมัติ** ต้องทำปกเอง (หรือส่งลิงก์ให้ Claude ดึงปกให้)
 - ชื่อไฟล์ปก = ชื่องาน ตัวเล็ก เว้นวรรค/สัญลักษณ์เป็น `-` เช่น `RoV Day 2026 at Siam` → `rov-day-2026-at-siam.jpg` (หน้าตรวจข้อมูลบอกชื่อไฟล์ทุกงาน)
 
