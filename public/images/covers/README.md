@@ -64,8 +64,8 @@ Claude อัปเดตตารางนี้ทุกครั้งที�
 | 20 | Podcast Summary Infographics | `podcast-summary-infographics.jpg` |  | ⬜ |
 | 21 | Rebranding: Visual Identity | `rebranding-visual-identity.jpg` |  | ⬜ |
 | 22 | Festival E-card | `festival-e-card.jpg` |  | ⬜ |
-| 23 | Instagram Filters | `instagram-filters.jpg` |  | ⬜ |
-| 24 | NFT Game Characters | `nft-game-characters.jpg` |  | ⬜ |
+| 23 | Instagram Filters | `instagram-filters.jpg` |  | 🙈 |
+| 24 | NFT Game Characters | `nft-game-characters.jpg` |  | 🙈 |
 | 25 | Competition Entries | `competition-entries.jpg` |  | ⬜ |
 | 26 | Better Content with Generative AI | `better-content-with-generative-ai.jpg` |  | ⬜ |
 | 27 | Internal Podcast (Video Series) | `internal-podcast-video-series.jpg` |  | ⬜ |
@@ -73,7 +73,10 @@ Claude อัปเดตตารางนี้ทุกครั้งที�
 | 29 | Songkran Greeting: Before / After | `songkran-greeting-before-after.jpg` |  | ⬜ |
 | 30 | Project VTR | `project-vtr.jpg` |  | 🙈 |
 | 31 | AIS × 3BB Mascot Animation | `ais-3bb-mascot-animation.jpg` |  | ⬜ |
-| 32 | AIS Sports Day 2024: Team Captains | `ais-sports-day-2024-team-captains.jpg` |  | 🙈 |
+| 32 | AIS Sports Day 2024: Team Captains | `ais-sports-day-2024-team-captains.jpg` |  | ⬜ |
+| 33 | iCreator Camp Gen 2: SONY Briefs | `icreator-camp-gen-2-sony-briefs.jpg` |  | ⬜ |
+| 34 | UGC Reviews: Food & Shopping | `ugc-reviews-food-shopping.jpg` |  | ⬜ |
+| 35 | Green Screen: Zero-Budget Movie Scene | `green-screen-zero-budget-movie-scene.jpg` |  | ⬜ |
 
 > ถ้าเปลี่ยนชื่องานใน content.js ชื่อไฟล์ปกก็ต้องเปลี่ยนตาม (ตัวอักษรเล็ก เว้นวรรคเป็น -)
 > หรือจะระบุไฟล์เองก็ได้: ใส่ `cover: "images/covers/ชื่อไฟล์.jpg"` ในผลงานนั้น

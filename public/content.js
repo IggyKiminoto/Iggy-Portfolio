@@ -304,6 +304,7 @@ window.WORKS = [
     clips: [
       { url: "https://www.tiktok.com/@iggylengame/video/7658989879522626836", label: "Mystery Box promo: 68 angles of one box" },
       { url: "https://www.tiktok.com/@iggylengame/video/7664258469968612629", label: "RoV Day, introvert edition" },
+      { url: "https://www.tiktok.com/@iggylengame/video/7657973131671293204", label: "Teaser: an AI shot drops the box from the sky", role: ["AI image-to-video"] },
     ],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Offline Promo"],
@@ -470,33 +471,86 @@ window.WORKS = [
     title: "SB Design Square: Mattress Expo",
     // คลิปจากเพจ Mattress World (เพจที่นอนของ SB Design Square) · format = รูปทรงคลิป (เว็บเดาจากลิงก์ไม่ได้)
     clips: [
-      { url: "https://www.facebook.com/reel/1368411784467787", label: "Mattress Expo: more deals than ever", format: "horizontal" },
-      { url: "https://www.facebook.com/SBMattressWorld/videos/1226994228963363/", label: "Everything in one place", format: "vertical" },
-      { url: "https://www.facebook.com/SBMattressWorld/videos/3974091859510343/", label: "Home and mattress deals in one trip", format: "vertical" },
+      { url: "https://www.facebook.com/reel/1368411784467787", label: "Mattress Expo: more deals than ever", format: "horizontal", role: ["Concept", "Shoot", "Voiceover", "Edit"] },
+      { url: "https://www.instagram.com/reel/DF47eIpPx4c/", label: "The first job: a good mattress is self-care (my Instagram)", role: [] },   // TODO: หน้าที่ในงานแรก
+      { url: "https://www.facebook.com/SBMattressWorld/videos/3974091859510343/", label: "Home and mattress deals in one trip", format: "vertical", role: ["Concept", "Shoot", "Voiceover", "Edit"] },
+      { url: "https://www.facebook.com/SBMattressWorld/videos/1226994228963363/", label: "Everything in one place (bonus clip)", format: "vertical", role: ["Concept", "Shoot", "Voiceover", "Edit"] },
     ],
     images: [{ src: "images/work/video-sb-design-square.jpg" }],   // ใช้เป็นปกสำรองจนกว่าจะมีปกทำเอง
     categories: ["Short-form & Social"],
     tags: ["UGC", "Review", "Product", "Voiceover"],
     client: "SB Design Square",
-    year: "",   // TODO
-    role: ["Concept", "Shoot", "Voiceover", "Edit"],
-    highlight: "UGC-style promo clips for SB Design Square's Mattress Expo sale, made start to finish by me.",
+    year: "2025",
+    highlight: "UGC-style promo clips for SB Design Square's Mattress Expo sale. My first clip for them led to three more jobs.",
     details: {
-      platform: "Facebook · Mattress World page · 0:25 to 0:47 per clip",
-      responsibility: "Came up with the ideas, shot, voiced and edited all three clips.",
+      platform: "Instagram and Facebook (Mattress World page) · 0:25 to 0:47 per clip",
+      responsibility: "Came up with the ideas, shot, voiced and edited the three Mattress World clips myself.",
+      results: "Repeat client: three more jobs followed the first clip",
+      resultsSource: "My project history with SB Design Square, 2025",
     },
   },
   {
     title: "AIS Sports Day 2024: Team Captains",
-    wip: true,   // ซ่อนไว้ก่อน: รอข้อมูลหน้าที่ (role) แล้วค่อยเอาออก
     clips: ["https://www.facebook.com/reel/870470888570657"],
+    thumbnail: "images/thumbs/fb-870470888570657.jpg",   // ปกจาก Facebook (Facebook ไม่มีปกอัตโนมัติ)
     categories: ["Brand & Corporate", "Event & Creator Content", "Short-form & Social"],
     tags: ["Event", "Teaser", "Facebook Reels"],
     client: "AIS Club",
     year: "2024",
-    role: [],   // TODO
+    role: ["Edit", "Story structure", "Sound design", "VFX", "Mood & tone"],
     highlight: "Pre-event teaser for AIS Sports Day 2024: how ready each colour team's captain is before the big day.",
-    details: { platform: "Facebook Reels · vertical · 1:07" },
+    details: {
+      platform: "Facebook Reels · vertical · 1:07",
+      responsibility: "Edit only: I structured the story, built the sound, added the VFX and set the mood and tone.",
+    },
+  },
+
+  {
+    title: "iCreator Camp Gen 2: SONY Briefs",
+    clips: [
+      { url: "https://www.instagram.com/reel/DJu9Cd9z8Fm/", label: "SONY ZV-E10 II review: placed 5th" },
+      { url: "https://www.instagram.com/reel/DJIZD18zAYo/", label: "One room, made exciting with cut-on-action edits" },
+    ],
+    thumbnail: "images/thumbs/ig-DJu9Cd9z8Fm.jpg",
+    categories: ["Short-form & Social", "Event & Creator Content"],
+    tags: ["Creator Program", "Product Review", "Cut on Action"],
+    client: "iCreator Camp Gen 2 × SONY",
+    year: "2025",
+    role: [],   // TODO: หน้าที่ (คิด / ถ่าย / ตัด / พากย์?)
+    highlight: "Two competition briefs: a SONY camera review that placed 5th, and a shoot in one room made exciting with cut-on-action editing.",
+    details: {
+      platform: "Instagram Reels · vertical",
+      results: "Placed 5th in the content competition (Top 5)",
+      resultsSource: "iCreator Camp Gen 2, presented by SONY, 2025",
+    },
+  },
+  {
+    title: "UGC Reviews: Food & Shopping",
+    clips: [
+      { url: "https://www.instagram.com/reel/DFE5inbvAk_/", label: "Index Living Mall haul (barter via Sale Here)" },
+      { url: "https://www.instagram.com/reel/DHSbKQOPv_5/", label: "Jungle Juice flower smoothies (barter via Sale Here)" },
+      { url: "https://www.instagram.com/reel/DEh_RnLygUq/", label: "Gyoza review (barter)" },
+      { url: "https://www.instagram.com/reel/CySKFP3yZSY/", label: "Steak spot in Ari (self-initiated)" },
+    ],
+    thumbnail: "images/thumbs/ig-DFE5inbvAk_.jpg",
+    categories: ["Short-form & Social"],
+    tags: ["UGC", "Review", "Barter", "Food"],
+    client: "Barter collabs and my own reviews",
+    year: "2023–2025",
+    role: [],   // TODO: หน้าที่ (คิด / ถ่าย / ตัด / พากย์?)
+    highlight: "Review reels on my Instagram: barter collabs with brands and places I wanted to share myself.",
+    details: { platform: "Instagram Reels (@ikkyoxd) · vertical" },
+  },
+  {
+    title: "Green Screen: Zero-Budget Movie Scene",
+    clips: ["https://www.tiktok.com/@ikkyoxd/video/7616574995463982357"],
+    categories: ["Short-form & Social", "Motion & Animation"],
+    tags: ["Green Screen", "VFX", "Cinematic", "Personal"],
+    client: "Personal project",
+    year: "2026",
+    role: [],   // TODO: หน้าที่ (คิด / ถ่าย / ตัด?)
+    highlight: "A film-style scene shot against a green screen for zero budget, with the before and after side by side.",
+    details: { platform: "TikTok (@ikkyoxd) · vertical" },
   },
 
   // ================= งานจากพอร์ต Canva เก่า (รูปอยู่ใน public/images/work) =================
@@ -527,7 +581,7 @@ window.WORKS = [
     ],
     categories: ["Character & Illustration"],
     tags: ["Character", "Proposal"],
-    client: "",   // TODO
+    client: "OAZisCare",
     role: ["Concept", "Character design"],
     highlight: "Characters designed to match a brand's core concept and goals, from sketch to final.",
     details: { tools: ["Procreate", "Adobe Photoshop", "Adobe Illustrator"] },
@@ -616,7 +670,8 @@ window.WORKS = [
     images: [{ src: "images/work/gfx-rebranding.jpg", caption: "Before and after" }],
     categories: ["Graphic Design"],
     tags: ["Branding"],
-    client: "",   // TODO
+    client: "Chem by Jaejo",
+    links: [{ label: "Instagram @chem.by.jaejo", url: "https://www.instagram.com/chem.by.jaejo/" }],
     role: ["Design"],
     highlight: "A rebrand for a more consistent visual identity and brand presence.",
     details: { tools: ["Canva", "Adobe Photoshop", "Procreate"] },
@@ -633,6 +688,7 @@ window.WORKS = [
   },
   {
     title: "Instagram Filters",
+    wip: true,   // ซ่อน: Instagram ปิดระบบฟิลเตอร์ของครีเอเตอร์แล้ว ลองใช้ไม่ได้ · มีคลิปอัดหน้าจอตอนใช้ฟิลเตอร์ค่อยเปิดใหม่
     images: [{ src: "images/work/gfx-ig-filters.jpg" }],
     categories: ["Graphic Design"],
     tags: ["AR", "Instagram"],
@@ -643,6 +699,7 @@ window.WORKS = [
   },
   {
     title: "NFT Game Characters",
+    wip: true,   // ซ่อน: เจ้าของบอกให้เอาออก (งานไม่ได้ไปต่อ)
     images: [{ src: "images/work/char-nft.jpg" }],
     categories: ["Character & Illustration"],
     tags: ["Character", "Game"],
@@ -699,13 +756,17 @@ window.WORKS = [
   },
   {
     title: "Songkran Greeting: Before / After",
-    clips: [],   // TODO
+    clips: [
+      { url: "https://www.facebook.com/reel/1726035329111426", label: "2026: retouched executives, opened with an AI shot", format: "horizontal", role: ["Photo retouch (Photoshop + AI)", "AI opening shot", "Motion graphics", "Edit"] },
+      { url: "https://www.facebook.com/reel/1379832099821431", label: "2025: simple motion graphics made in Canva", format: "vertical", role: ["Motion graphics (Canva)"] },
+    ],
     images: [{ src: "images/work/video-songkran-ecard-before-after.jpg" }],
     categories: ["Short-form & Social", "Brand & Corporate"],
     tags: ["Before / After", "Songkran"],
     client: "AIS",
-    role: [],   // TODO
-    highlight: "",   // TODO
+    year: "2025–2026",
+    highlight: "Songkran greetings from the executives to all staff: their photos retouched into Songkran shirts, then animated with a greeting.",
+    details: { platform: "Facebook Reels · AIS Club page" },
   },
   {
     title: "Project VTR",
@@ -722,7 +783,8 @@ window.WORKS = [
   // ---------- Animation ----------
   {
     title: "AIS × 3BB Mascot Animation",
-    clips: [],   // TODO: ลิงก์คลิป (ในสไลด์เป็น QR "scan to watch")
+    clips: [],   // วิดีโออยู่ใน Microsoft Sway (ฝังตรง ๆ ไม่สวย) ถ้าอัปขึ้น YouTube แบบไม่เป็นสาธารณะ ใส่ลิงก์ตรงนี้ได้เลย
+    links: [{ label: "Watch on Microsoft Sway", url: "https://sway.cloud.microsoft/jgscij4XgmxJVDFh?ref=Link" }],
     images: [
       { src: "images/work/anim-ais3bb-1.jpg" },
       { src: "images/work/anim-ais3bb-2.jpg" },
