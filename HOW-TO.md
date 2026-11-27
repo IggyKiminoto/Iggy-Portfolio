@@ -146,6 +146,8 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 
 ### ปกผลงาน
 
+**ทำปกเอง:** ทำใน Canva ดีไซน์ `Iggy Portfolio Covers` แล้วบอก Claude ว่าหน้าไหนเสร็จ ขั้นตอน กติกามุมไอคอน และเช็กลิสต์อยู่ใน [`images/covers/README.md`](public/images/covers/README.md)
+
 ลำดับที่เว็บเลือกปก: `cover` ที่ระบุเอง → `images/covers/<ชื่องาน>.jpg` → ปกอัตโนมัติ → รูปแรกในแกลเลอรี → ไอคอนพิกเซล
 
 - **คลิป YouTube:** ปกอัตโนมัติของ YouTube มีแถบดำบน-ล่าง ให้ Claude ดึง thumbnail แบบชัดมาเก็บไว้ที่ `images/thumbs/yt-<รหัสคลิป>.jpg` แล้วใส่ `thumbnail:` ในงานนั้น
@@ -288,7 +290,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 - [ ] คลิปเป็นสาธารณะ / Unlisted และก๊อปลิงก์เต็มแล้ว
 - [ ] (งานกราฟิก) อัปรูปเข้า `images/work/`
 - [ ] ก๊อปแม่แบบในหัวข้อ 2 ไปวางใน `WORKS` แล้วกรอก `title` `clips`/`images` `categories` `role` `client` `year` `highlight`
-- [ ] ทำปก 800×800 ตั้งชื่อตามชื่องาน อัปเข้า `images/covers/`
+- [ ] ทำปก 800×800 ใน Canva ดีไซน์ `Iggy Portfolio Covers` (1 หน้า = 1 ปก) แล้วบอก Claude ว่าหน้าไหนเสร็จ · ขั้นตอน + เช็กลิสต์อยู่ใน [`images/covers/README.md`](public/images/covers/README.md)
 - [ ] Commit → รอ 2 นาที
 - [ ] เปิด `2_chkz.html` เช็กว่าไม่มีตัวแดง
 - [ ] เปิดเว็บจริงบนคอมและมือถือ กดดูงานนั้น 1 ครั้ง

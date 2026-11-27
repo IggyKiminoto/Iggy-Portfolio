@@ -77,11 +77,12 @@ The owner's editing guide (Thai) is `HOW-TO.md`. Keep both files up to date when
 - **Testing:** `python3 -m http.server 8765` in `public/`, then Playwright (pre-installed) on desktop 1440×900 and mobile 390×844. Check for `pageerror`, look at screenshots, and send them to the owner. `node --check public/app.js` after JS edits.
 - **TikTok covers for new clips:** fetch the oEmbed thumbnail, save it as `images/thumbs/tt-<id>.jpg` at 540px wide. Slide images are cropped square into `images/thumbs/`.
 - **YouTube covers:** YouTube's auto `hqdefault` has black bars that show in square tiles. Save `maxresdefault` at 960×540 as `images/thumbs/yt-<id>.jpg` and set `thumbnail:` on the work (used by the tile and the player facade; the check page counts it as an auto cover).
+- **Custom covers flow:** the owner designs every cover in one Canva design named `Iggy Portfolio Covers` (800×800, one page per cover). Page numbers are fixed in the checklist in `public/images/covers/README.md` (new works get the next number, never inserted). When the owner says which pages are done, find the design with the Canva connector (`search-designs`), `export-design` those pages as JPG, save each as `images/covers/<slug>.jpg` (800×800, ≤150 KB), tick "ขึ้นเว็บ" in the checklist, run the Playwright check, send screenshots and push to the round's PR. Fallback: the owner drops JPGs in chat with page numbers. Don't ask the owner to upload to GitHub. The safe-zone guide is `design/cover-guide-800.png` (outside `public/`, so not deployed): the corner badge covers about 28%×20% of a tile on desktop and up to 45%×30% on mobile.
 - When a change affects how the owner edits (new content.js key, new image folder or size), update `HOW-TO.md`, the folder README, the check page and this file in the same PR.
 
 ## Open items (as of Nov 2026)
 
-- The owner is making custom covers (`images/covers/<slug>.jpg`). Then they pick polaroid or overlay.
+- The owner is redoing **all** covers, a few at a time. Then they pick polaroid or overlay.
 - Fill the TODO fields in content.js (client, year, details, `asOf` for side projects).
 - Character outfits per mode (`character/<mode>/1..6.png`) and the optional hand-drawn folder icons (`modes[].icon`) are not uploaded yet.
 - The owner said more UI feedback may come later.
