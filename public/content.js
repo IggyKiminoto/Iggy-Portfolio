@@ -258,7 +258,7 @@ window.WORKS = [
     featured: true,
     details: {
       platform: "YouTube · horizontal · video podcast",
-      brief: "EP.1 \"เรื่องปวด ๆ ของมนุษย์ออฟฟิศ ที่ชอบคิดว่า ไม่เป็นไร?!\" (in Thai)",
+      brief: "EP.1 \"นั่งติดจอทั้งวัน ไม่อยากปวดคอ บ่า ไหล่ ทำไงดี\" (in Thai)",   // ชื่อตอนตามคลิปบน YouTube
       responsibility: "I edited the two-camera footage, cleaned up dialogue, created AI-assisted illustrations and on-screen graphics, and designed the YouTube thumbnail and accompanying banner.",
       tools: ["Adobe Podcast"],
     },
