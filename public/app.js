@@ -600,6 +600,12 @@
     });
   });
 
+  // ที่มาของงาน (source ใน content.js) → คำที่ขึ้นบนเว็บ
+  const SOURCES = { "in-house": "In-house", client: "Client", competition: "Competition", personal: "Personal" };
+  const sourceLabel = (w) => SOURCES[String(w.source || "").toLowerCase()] || "";
+  // ปีล่าสุดของงาน ("2025–2026" → 2026) ใช้เรียงงานใหม่ขึ้นก่อน · ไม่มีปี = ไปอยู่ท้าย
+  const yearOf = (w) => Math.max(0, ...(String(w.year || "").match(/\d{4}/g) || []).map(Number));
+
   const categories = (SITE.categories || []).map((c, i) =>
     Object.assign({ sprite: ["phone", "clapper", "camera", "mic", "sparkle"][i % 5] }, c)
   );
@@ -678,12 +684,15 @@
   function workInfo(w, opts) {
     const count = w.clipList.length > 1 ? w.clipList.length + " clips"
       : !w.clipList.length && w.imageList.length > 1 ? w.imageList.length + " images" : "";
-    const meta = [w.client, w.cats.join(" / "), w.year, count].filter(Boolean).join(" · ");
+    const meta = [w.client, sourceLabel(w), w.cats[0], w.year, count].filter(Boolean).join(" · ");
     const children = [
       el("h3", { text: w.title || "Untitled" }),
       meta ? el("p", { class: "work-meta", text: meta }) : null,
     ];
-    if (w.ongoing) children.push(el("p", { class: "roles" }, [el("span", { class: "is-ongoing", text: "Ongoing series" })]));
+    const pills = [];
+    if (w.featured) pills.push(el("span", { class: "is-selected" }, [spriteNode("star"), el("span", { text: "Selected work" })]));
+    if (w.ongoing) pills.push(el("span", { class: "is-ongoing", text: "Ongoing series" }));
+    if (pills.length) children.push(el("p", { class: "roles" }, pills));
     const anyRoles = w.roles.length || w.clipMeta.some((c) => c.role);
     if (anyRoles) {
       // หน้าที่ แยกตามขั้นตอนงาน: Design / Pre-production / Production / Post-production / Publishing
@@ -897,7 +906,10 @@
   const modeById = (id) => asList(SITE.modes).find((m) => m.id === id);
   function worksOfMode(id) {
     const list = works.filter((w) => modeOfWork(w) === id);
-    return list.filter((w) => w.featured).concat(list.filter((w) => !w.featured)); // งานเด่นขึ้นก่อน
+    // งานติดดาว (featured) ขึ้นก่อน → ปีใหม่ไปเก่า → ถ้าปีเท่ากันใช้ลำดับในไฟล์
+    return list.map((w, i) => [w, i]).sort((a, b) =>
+      (b[0].featured ? 1 : 0) - (a[0].featured ? 1 : 0) || yearOf(b[0]) - yearOf(a[0]) || a[1] - b[1]
+    ).map((x) => x[0]);
   }
 
   // กล่องผลงาน 1 ช่อง (รูปปก + ชื่อ + คำบรรยายสั้น) กดแล้วเปิดหน้าต่างดูผลงาน
@@ -928,11 +940,15 @@
     if (n > 1) badge.appendChild(el("b", { text: String(n) }));
     const kindText = isVideo ? (n > 1 ? n + " clips" : "video") : (n > 1 ? n + " images" : "image");
 
-    const btn = el("button", { type: "button", class: "tile", "aria-label": w.title + ", " + kindText, "aria-expanded": opts.inline ? "false" : null }, [
+    const btn = el("button", { type: "button", class: "tile" + (w.featured ? " is-selected" : ""), "aria-label": w.title + ", " + kindText + (w.featured ? ", selected work" : ""), "aria-expanded": opts.inline ? "false" : null }, [
       el("span", { class: "tile-frame" }, [media, badge]),
       el("span", { class: "tile-cap" }, [
-        el("span", { class: "tile-title", text: w.title }),
-        el("span", { class: "tile-meta", text: [w.client, w.year].filter(Boolean).join(" · ") || "\u00a0" }),
+        el("span", { class: "tile-title" }, [w.featured ? el("span", { class: "tile-star", title: "Selected work" }, [spriteNode("star")]) : null, el("span", { text: w.title })]),
+        // 2 บรรทัดเท่ากันทุกใบ: ลูกค้า / ที่มา · ปี (ยาวแค่ไหนปีก็ไม่ถูกตัด)
+        el("span", { class: "tile-meta" }, [
+          el("span", { class: "tile-client", text: w.client || "\u00a0" }),
+          el("span", { class: "tile-sub", text: [sourceLabel(w), w.year].filter(Boolean).join(" · ") || "\u00a0" }),
+        ]),
       ]),
     ]);
     if (!opts.inline) btn.removeAttribute("aria-expanded");

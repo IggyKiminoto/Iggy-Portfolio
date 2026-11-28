@@ -139,6 +139,7 @@
     if (!clips.length && imgs.length && /video|animation/.test(modeOf(w))) need.push("ลิงก์คลิป");
     if (!w.client) need.push("ลูกค้า (client)");
     if (!w.year) need.push("ปี (year)");
+    if (!w.source) need.push("ที่มา (source)");
     if (!asList(w.role).length && !asList(w.clips).some((c) => c && c.role)) need.push("หน้าที่ (role)");
     if (!w.highlight) need.push("จุดเด่น (highlight)");
     if (!own) need.push("ปกที่ทำเอง");
@@ -159,7 +160,7 @@
       const need = r.need.filter((x) => x !== "ปกที่ทำเอง");
       tbody.appendChild(h("tr", {}, [
         h("td", { text: String(i + 1) }),
-        h("td", {}, [h("b", { text: r.w.title || "(ไม่มีชื่อ)" }), r.w.featured ? h("span", { class: "pill ok", text: "งานเด่น" }) : null, r.w.ongoing ? h("span", { class: "pill", text: "ongoing" }) : null]),
+        h("td", {}, [h("b", { text: r.w.title || "(ไม่มีชื่อ)" }), r.w.featured ? h("span", { class: "pill ok", text: "★ งานเด่น" }) : null, r.w.source ? h("span", { class: "pill", text: r.w.source }) : null, r.w.ongoing ? h("span", { class: "pill", text: "ongoing" }) : null]),
         h("td", { text: typeLabel(modeOf(r.w)) }),
         h("td", {}, [cover]),
         h("td", { text: content || "—" }),
