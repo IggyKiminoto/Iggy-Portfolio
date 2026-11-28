@@ -122,7 +122,7 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 | `highlight` | แนะนำ | จุดเด่นสั้น ๆ |
 | `details` | | เบื้องหลังงาน (ช่องที่ว่างจะถูกซ่อน) |
 | `links` | | ลิงก์เพิ่ม: `[{ label: "Facebook post", url: "…" }]` |
-| `featured: true` | | ขึ้นก่อนในโฟลเดอร์ |
+| `featured: true` | | ขึ้นก่อนในโฟลเดอร์ + 4 ชิ้นแรกโชว์ในหน้าต่างบน Cover ตอนเปิดเว็บ |
 | `ongoing: true` | | ป้าย "Ongoing series" |
 | `wip: true` | | **ซ่อนจากเว็บ** (เก็บไว้ทำต่อ) |
 | `cover` | | ระบุไฟล์ปกเอง: `"images/covers/xxx.jpg"` |
@@ -194,6 +194,8 @@ Cloudflare → Workers & Pages → `iggy-portfolio` → **Deployments** → `…
 | ชื่อบนปุ่มโฟลเดอร์ | `modes[].short` | |
 | ไอคอนวาดเองบนโฟลเดอร์ | `modes[].icon` | `"character/icons/video.png"` |
 | มือถือเปิดเว็บมาเห็นโฟลเดอร์ไหนก่อนในส่วน WORK | เพิ่ม `workDefaultMobile: "graphic",` ใน `SITE` | ค่าเริ่มต้น `"video"` |
+| ลำดับกลุ่มงานในส่วน WORK (บนลงล่าง) | `workOrder` | `["video", "graphic", "animation"]` · ไม่เปลี่ยนลำดับโฟลเดอร์บน Cover |
+| งานที่โชว์ในหน้าต่างบน Cover ตอนเปิดเว็บ | ใส่ `featured: true` ที่งาน (เรียงตามลำดับในไฟล์) · จำนวนแก้ที่ `startHereCount` | ค่าเริ่มต้น 4 ชิ้น · ชื่อบนแถบหน้าต่างแก้ที่ `startHereLabel` |
 
 สีหลักของทั้งเว็บ (ครีม น้ำเงิน กรมท่า) อยู่ในโค้ด ถ้าจะเปลี่ยนส่งให้ Claude
 
