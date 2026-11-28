@@ -508,8 +508,8 @@ window.WORKS = [
   {
     title: "iCreator Camp Gen 2: SONY Briefs",
     clips: [
-      { url: "https://www.instagram.com/reel/DJu9Cd9z8Fm/", label: "SONY ZV-E10 II review: placed 5th" },
-      { url: "https://www.instagram.com/reel/DJIZD18zAYo/", label: "One room, made exciting with cut-on-action edits" },
+      { url: "https://www.instagram.com/reel/DJIZD18zAYo/", label: "No More Burnout: One-room cut-on-action edit" },
+      { url: "https://www.instagram.com/reel/DJu9Cd9z8Fm/", label: "SONY ZV-E10 II review" },
     ],
     thumbnail: "images/thumbs/ig-DJu9Cd9z8Fm.jpg",
     categories: ["Short-form & Social", "Event & Creator Content"],
@@ -517,10 +517,10 @@ window.WORKS = [
     client: "iCreator Camp Gen 2 × SONY",
     year: "2025",
     role: [],   // TODO: หน้าที่ (คิด / ถ่าย / ตัด / พากย์?)
-    highlight: "Two competition briefs: a SONY camera review that placed 5th, and a shoot in one room made exciting with cut-on-action editing.",
+    highlight: "Two creator assignments: a one-room short that builds momentum with cut-on-action editing, and a story-led SONY ZV-E10 II review.",
     details: {
       platform: "Instagram Reels · vertical",
-      results: "Placed 5th in the content competition (Top 5)",
+      results: "Placed 5th overall at iCreator Camp Gen 2, based on both assignments.",
       resultsSource: "iCreator Camp Gen 2, presented by SONY, 2025",
     },
   },
