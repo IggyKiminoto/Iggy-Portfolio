@@ -613,6 +613,11 @@ mark {
 }
 .roles li.is-ongoing, .roles .is-ongoing { background: var(--blue); color: var(--cream); }
 .roles .is-ongoing { display: inline-block; font-size: 13px; font-weight: 600; padding: 0 9px; border: 2px solid var(--ink); }
+.roles .is-selected {
+  display: inline-flex; align-items: center; gap: 6px; margin-right: 6px;
+  font-size: 13px; font-weight: 600; padding: 0 9px; border: 2px solid var(--ink); background: var(--yellow); color: var(--ink);
+}
+.roles .is-selected .sprite { width: 12px; height: 12px; }
 /* หน้าที่แยกตามขั้นตอน */
 .phases { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 10px; align-items: baseline; }
 .phases li { display: contents; }
@@ -950,7 +955,15 @@ html.is-locked { overflow: hidden; }
   font-weight: 700; font-size: 15px; line-height: 1.3; min-height: 2.6em;
   overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
-.tile-meta { font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile-meta { font-size: 12px; color: var(--ink-2); display: flex; flex-direction: column; min-width: 0; }
+.tile-client, .tile-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile-sub { font-size: 11px; opacity: .85; }
+/* ดาวงานเด่น (featured) หน้าชื่องาน */
+.tile-star {
+  display: inline-grid; place-items: center; vertical-align: -2px; margin-right: 5px;
+  width: 1.05em; height: 1.05em; background: var(--yellow); border: 1.5px solid var(--ink); color: var(--ink);
+}
+.tile-star .sprite { width: 70%; height: 70%; }
 /* ตรงเป็นปกติ เอียงนิดเดียวตอนเอาเมาส์ชี้ */
 @media (hover: hover) {
   .tile:hover { rotate: -1.2deg; translate: 0 -3px; box-shadow: 5px 5px 0 var(--ink); }

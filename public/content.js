@@ -234,7 +234,9 @@ window.SITE = {
    ผลงาน (WORKS)
    ---------------------------------------------------------------------
    1 ชิ้น = 1 โปรเจกต์ ใส่ได้หลายคลิป (clips) จะมีปุ่ม 1 2 3 ให้สลับดู
-   featured: true = ขึ้นในส่วนงานเด่น (3 ชิ้นแรกที่ติด true) · ongoing: true = ซีรีส์ที่ยังทำต่อ
+   featured: true = งานติดดาว ★ ขึ้นก่อนในโฟลเดอร์ (แนะนำโฟลเดอร์ละไม่เกิน 5) · ongoing: true = ซีรีส์ที่ยังทำต่อ
+   ลำดับบนเว็บเรียงให้เอง: งานติดดาว → ปีใหม่ไปเก่า → ปีเท่ากันใช้ลำดับในไฟล์ (งานไม่มีปีอยู่ท้ายสุด)
+   source = ที่มาของงาน: "in-house" (งานประจำ AIS) / "client" (ลูกค้าจ้าง, barter) / "competition" (ประกวด) / "personal" (ทำเอง)
    wip: true = ซ่อนไว้ไม่ขึ้นเว็บ
    clipLabels = ชื่อสั้น ๆ ของแต่ละคลิป เรียงตามลำดับ clips
    details    = เบื้องหลัง (กดกางอ่าน) ช่องที่ไม่มีข้อมูลไม่ต้องใส่
@@ -246,6 +248,7 @@ window.WORKS = [
   // ผลงานล่าสุด: อยู่บนสุด + featured = ขึ้นช่องแรกในโฟลเดอร์ Video
   {
     title: "BODY HACK: Work Pain Podcast — EP.1",
+    source: "in-house",
     clips: ["https://www.youtube.com/watch?v=712x-5HYMkE"],
     // ปกสำรอง = Thumbnail ของคลิปบน YouTube (ไม่มีแถบดำ) · ปกทำเอง: images/covers/body-hack-work-pain-podcast-ep-1.jpg
     thumbnail: "images/thumbs/yt-712x-5HYMkE.jpg",
@@ -265,6 +268,7 @@ window.WORKS = [
   },
   {
     title: "HR Chatbot Launch Animation",
+    source: "in-house",
     clips: ["https://www.tiktok.com/@ais_club/video/7538425611467902216"],
     categories: ["Motion & Animation", "Brand & Corporate"],
     tags: ["Hand-drawn Animation", "No AI", "Character"],
@@ -280,6 +284,7 @@ window.WORKS = [
   },
   {
     title: "AIS Club Launch: Employer Branding",
+    source: "in-house",
     clips: [
       { url: "https://www.tiktok.com/@ais_club/video/7161622924850367771", label: "My first clip at AIS" },
       { url: "https://www.tiktok.com/@ais_club/video/7173988177990913306", label: "Office Q&A" },
@@ -301,6 +306,7 @@ window.WORKS = [
   },
   {
     title: "RoV Day 2026 at Siam",
+    source: "client",
     clips: [
       { url: "https://www.tiktok.com/@iggylengame/video/7658989879522626836", label: "Mystery Box promo: 68 angles of one box" },
       { url: "https://www.tiktok.com/@iggylengame/video/7664258469968612629", label: "RoV Day, introvert edition" },
@@ -322,6 +328,7 @@ window.WORKS = [
   // ---------------- ผลงานเพิ่มเติม ----------------
   {
     title: "AI & VFX Edits for AIS",
+    source: "in-house",
     clips: [
       { url: "https://www.tiktok.com/@ais_club/video/7701369408421154068", label: "Apply via LINE OA, with AI effects", role: ["Edit", "AI effects"] },
       { url: "https://www.tiktok.com/@ais_club/video/7481265093930437895", label: "Staff Party 2025: AI outfit swap", role: ["Concept", "Shoot", "Edit", "AI effects", "Post"] },
@@ -335,6 +342,7 @@ window.WORKS = [
   },
   {
     title: "JUMP Thailand Hackathon 2026",
+    source: "in-house",
     clips: [
       { url: "https://www.tiktok.com/@ais_club/video/7676400754101423380", label: "Kick-off: a Saturday of ideas", role: ["Edit"] },
       { url: "https://www.tiktok.com/@ais_club/video/7683364721118039313", label: "What the HACK did you learn?", role: ["Shoot", "Edit", "Voiceover"] },
@@ -355,6 +363,7 @@ window.WORKS = [
   },
   {
     title: "AIS Wellness: Hack Your Health",
+    source: "in-house",
     clips: [
       { url: "https://www.tiktok.com/@ais_club/video/7669755196855110919", label: "Program teaser", role: ["Shot list", "Shoot", "Edit", "Sound", "Text & effects"] },
     ],
@@ -372,6 +381,7 @@ window.WORKS = [
   },
   {
     title: "MAKE IT CONTENT Workshop",
+    source: "in-house",
     clips: [
       { url: "https://www.tiktok.com/@ais_club/video/7694612498561207572", label: "Workshop recap", role: ["Shoot", "Edit", "Voiceover"] },
     ],
@@ -388,6 +398,7 @@ window.WORKS = [
   },
   {
     title: "AIS 36th Anniversary",
+    source: "in-house",
     clips: [
       { url: "https://www.tiktok.com/@ais_club/video/7692056564957564181", label: "Anniversary recap", role: ["Edit"] },
     ],
@@ -403,6 +414,7 @@ window.WORKS = [
   },
   {
     title: "RoV 10th Anniversary Exhibition",
+    source: "client",
     clips: ["https://www.tiktok.com/@iggylengame/video/7693598745371495700"],
     categories: ["Event & Creator Content", "Short-form & Social"],
     tags: ["Gaming", "Event", "Paid Partnership"],
@@ -417,6 +429,7 @@ window.WORKS = [
   },
   {
     title: "RoV Community Party",
+    source: "client",
     clips: [
       { url: "https://www.tiktok.com/@iggylengame/video/7597129496097082645", label: "Event recap" },
       { url: "https://www.tiktok.com/@iggylengame/video/7596625148455783701", label: "\"No more parties after this?\"" },
@@ -437,6 +450,7 @@ window.WORKS = [
   },
   {
     title: "RoV × Pasulol Songkran Campaign",
+    source: "client",
     clips: [
       { url: "https://www.tiktok.com/@iggylengame/video/7622302000113700117", label: "What should I offer?" },
       { url: "https://www.tiktok.com/@iggylengame/video/7625189174424980757", label: "Dressing up for the event" },
@@ -453,6 +467,7 @@ window.WORKS = [
   },
   {
     title: "Behind the Scenes: RoV Songkran Music Video",
+    source: "client",
     clips: [
       { url: "https://www.tiktok.com/@iggylengame/video/7629455901514124564", label: "2026 music video" },
       { url: "https://www.tiktok.com/@iggylengame/video/7489839347240275208", label: "2025: my first music video shoot" },
@@ -469,6 +484,8 @@ window.WORKS = [
 
   {
     title: "SB Design Square: Mattress Expo",
+    featured: true,
+    source: "client",
     // คลิปจากเพจ Mattress World (เพจที่นอนของ SB Design Square) · format = รูปทรงคลิป (เว็บเดาจากลิงก์ไม่ได้)
     clips: [
       { url: "https://www.facebook.com/reel/1368411784467787", label: "Mattress Expo: more deals than ever", format: "horizontal", role: ["Concept", "Shoot", "Voiceover", "Edit"] },
@@ -491,6 +508,7 @@ window.WORKS = [
   },
   {
     title: "AIS Sports Day 2024: Team Captains",
+    source: "in-house",
     clips: ["https://www.facebook.com/reel/870470888570657"],
     thumbnail: "images/thumbs/fb-870470888570657.jpg",   // ปกจาก Facebook (Facebook ไม่มีปกอัตโนมัติ)
     categories: ["Brand & Corporate", "Event & Creator Content", "Short-form & Social"],
@@ -507,25 +525,28 @@ window.WORKS = [
 
   {
     title: "iCreator Camp Gen 2: SONY Briefs",
+    featured: true,
+    source: "competition",
     clips: [
-      { url: "https://www.instagram.com/reel/DJu9Cd9z8Fm/", label: "SONY ZV-E10 II review: placed 5th" },
-      { url: "https://www.instagram.com/reel/DJIZD18zAYo/", label: "One room, made exciting with cut-on-action edits" },
+      { url: "https://www.instagram.com/reel/DJu9Cd9z8Fm/", label: "Brief: why upgrade to the SONY ZV-E10 II" },
+      { url: "https://www.instagram.com/reel/DJIZD18zAYo/", label: "Brief: No More Burnout, one room made exciting with cut-on-action edits" },
     ],
     thumbnail: "images/thumbs/ig-DJu9Cd9z8Fm.jpg",
     categories: ["Short-form & Social", "Event & Creator Content"],
     tags: ["Creator Program", "Product Review", "Cut on Action"],
-    client: "iCreator Camp Gen 2 × SONY",
+    client: "iCreator Camp × SONY",
     year: "2025",
     role: [],   // TODO: หน้าที่ (คิด / ถ่าย / ตัด / พากย์?)
-    highlight: "Two competition briefs: a SONY camera review that placed 5th, and a shoot in one room made exciting with cut-on-action editing.",
+    highlight: "The two camp briefs that made me the 5th winner out of 100 creators at iCreator Camp Gen 2, presented by SONY.",
     details: {
       platform: "Instagram Reels · vertical",
-      results: "Placed 5th in the content competition (Top 5)",
-      resultsSource: "iCreator Camp Gen 2, presented by SONY, 2025",
+      results: "5th winner out of 100 campers, judged on both briefs",
+      resultsSource: "iCreator Camp winners announcement, 24 May 2025",
     },
   },
   {
     title: "UGC Reviews: Food & Shopping",
+    source: "client",
     clips: [
       { url: "https://www.instagram.com/reel/DFE5inbvAk_/", label: "Index Living Mall haul (barter via Sale Here)" },
       { url: "https://www.instagram.com/reel/DHSbKQOPv_5/", label: "Jungle Juice flower smoothies (barter via Sale Here)" },
@@ -535,7 +556,7 @@ window.WORKS = [
     thumbnail: "images/thumbs/ig-DFE5inbvAk_.jpg",
     categories: ["Short-form & Social"],
     tags: ["UGC", "Review", "Barter", "Food"],
-    client: "Barter collabs and my own reviews",
+    client: "Barter collabs",
     year: "2023–2025",
     role: [],   // TODO: หน้าที่ (คิด / ถ่าย / ตัด / พากย์?)
     highlight: "Review reels on my Instagram: barter collabs with brands and places I wanted to share myself.",
@@ -543,10 +564,11 @@ window.WORKS = [
   },
   {
     title: "Green Screen: Zero-Budget Movie Scene",
+    source: "personal",
     clips: ["https://www.tiktok.com/@ikkyoxd/video/7616574995463982357"],
     categories: ["Short-form & Social", "Motion & Animation"],
     tags: ["Green Screen", "VFX", "Cinematic", "Personal"],
-    client: "Personal project",
+    client: "@ikkyoxd",
     year: "2026",
     role: [],   // TODO: หน้าที่ (คิด / ถ่าย / ตัด?)
     highlight: "A film-style scene shot against a green screen for zero budget, with the before and after side by side.",
@@ -559,6 +581,7 @@ window.WORKS = [
   // ---------- Graphic ----------
   {
     title: "AIS × 3BB Mascot",
+    source: "in-house",
     images: [
       { src: "images/work/char-ais3bb-1.jpg", caption: "From sketch to final character" },
       { src: "images/work/char-ais3bb-2.jpg", caption: "Standee and bag tag at the Mini Town Hall" },
@@ -573,6 +596,7 @@ window.WORKS = [
   },
   {
     title: "Character Design Proposals",
+    source: "client",
     images: [
       { src: "images/work/char-proposal-1.jpg", caption: "Proposal sketches" },
       { src: "images/work/char-proposal-2.jpg", caption: "Three directions, each tied to a brand value" },
@@ -588,6 +612,7 @@ window.WORKS = [
   },
   {
     title: "Sticker Sheets & LINE Stickers",
+    source: "",   // TODO: in-house / client / competition / personal
     images: [
       { src: "images/work/illus-stickers-1.jpg" },
       { src: "images/work/illus-stickers-2.jpg" },
@@ -606,6 +631,7 @@ window.WORKS = [
   },
   {
     title: "Internal Comms Infographics",
+    source: "in-house",
     images: [
       { src: "images/work/gfx-infographic-1.jpg", caption: "Internal communication" },
       { src: "images/work/gfx-infographic-2.jpg", caption: "Internal event" },
@@ -622,6 +648,7 @@ window.WORKS = [
   },
   {
     title: "Staff Party TikTok Challenge",
+    source: "in-house",
     images: [{ src: "images/work/gfx-tiktok-challenge.jpg" }],
     categories: ["Graphic Design", "Brand & Corporate"],
     tags: ["Campaign", "TikTok", "Engagement"],
@@ -636,6 +663,7 @@ window.WORKS = [
   },
   {
     title: "Social Posts for AIS Club",
+    source: "in-house",
     images: [
       { src: "images/work/gfx-social-posts-1.jpg", caption: "Activity recap and executive quotes" },
       { src: "images/work/gfx-social-posts-2.jpg", caption: "Staff party recap and Songkran event" },
@@ -654,6 +682,7 @@ window.WORKS = [
   },
   {
     title: "Podcast Summary Infographics",
+    source: "in-house",
     images: [
       { src: "images/work/gfx-podcast-summary-1.jpg" },
       { src: "images/work/gfx-podcast-summary-2.jpg" },
@@ -667,6 +696,7 @@ window.WORKS = [
   },
   {
     title: "Rebranding: Visual Identity",
+    source: "client",
     images: [{ src: "images/work/gfx-rebranding.jpg", caption: "Before and after" }],
     categories: ["Graphic Design"],
     tags: ["Branding"],
@@ -678,6 +708,7 @@ window.WORKS = [
   },
   {
     title: "Festival E-card",
+    source: "in-house",
     images: [{ src: "images/work/gfx-ecard-songkran.jpg" }],
     categories: ["Graphic Design", "Brand & Corporate"],
     tags: ["E-card", "Songkran"],
@@ -709,6 +740,7 @@ window.WORKS = [
   },
   {
     title: "Competition Entries",
+    source: "competition",
     images: [
       { src: "images/work/gfx-comp-fastwork.jpg", caption: "#FastChallenge by Fastwork" },
       { src: "images/work/gfx-comp-australian-embassy.jpg", caption: "Australian Embassy's 2023 Rabbit Card Competition" },
@@ -721,6 +753,7 @@ window.WORKS = [
   },
   {
     title: "Better Content with Generative AI",
+    source: "in-house",
     images: [
       { src: "images/work/ld-ai-class-1.jpg", caption: "Don't tell AI everything" },
       { src: "images/work/ld-ai-class-2.jpg", caption: "Class 1: AI as a thinking partner" },
@@ -738,6 +771,8 @@ window.WORKS = [
   // ---------- Video (มีแต่รูปก่อน รอลิงก์คลิป) ----------
   {
     title: "Internal Podcast (Video Series)",
+    source: "in-house",
+    wip: true,   // ซ่อน: รอคลิปสั้นตัดจากพอดแคสต์ (YouTube unlisted) แล้วค่อยเปิด
     clips: [],   // TODO: ลิงก์ตอนที่เปิดเผยได้
     images: [
       { src: "images/work/video-podcast-1.jpg" },
@@ -756,6 +791,7 @@ window.WORKS = [
   },
   {
     title: "Songkran Greeting: Before / After",
+    source: "in-house",
     clips: [
       { url: "https://www.facebook.com/reel/1726035329111426", label: "2026: retouched executives, opened with an AI shot", format: "horizontal", role: ["Photo retouch (Photoshop + AI)", "AI opening shot", "Motion graphics", "Edit"] },
       { url: "https://www.facebook.com/reel/1379832099821431", label: "2025: simple motion graphics made in Canva", format: "vertical", role: ["Motion graphics (Canva)"] },
@@ -783,6 +819,7 @@ window.WORKS = [
   // ---------- Animation ----------
   {
     title: "AIS × 3BB Mascot Animation",
+    source: "in-house",
     clips: [],   // วิดีโออยู่ใน Microsoft Sway (ฝังตรง ๆ ไม่สวย) ถ้าอัปขึ้น YouTube แบบไม่เป็นสาธารณะ ใส่ลิงก์ตรงนี้ได้เลย
     links: [{ label: "Watch on Microsoft Sway", url: "https://sway.cloud.microsoft/jgscij4XgmxJVDFh?ref=Link" }],
     images: [

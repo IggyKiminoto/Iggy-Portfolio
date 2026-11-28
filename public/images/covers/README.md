@@ -68,7 +68,7 @@ Claude อัปเดตตารางนี้ทุกครั้งที�
 | 24 | NFT Game Characters | `nft-game-characters.jpg` |  | 🙈 |
 | 25 | Competition Entries | `competition-entries.jpg` |  | ⬜ |
 | 26 | Better Content with Generative AI | `better-content-with-generative-ai.jpg` |  | ⬜ |
-| 27 | Internal Podcast (Video Series) | `internal-podcast-video-series.jpg` |  | ⬜ |
+| 27 | Internal Podcast (Video Series) | `internal-podcast-video-series.jpg` |  | 🙈 |
 | 28 | SB Design Square: Mattress Expo | `sb-design-square-mattress-expo.jpg` |  | ⬜ |
 | 29 | Songkran Greeting: Before / After | `songkran-greeting-before-after.jpg` |  | ⬜ |
 | 30 | Project VTR | `project-vtr.jpg` |  | 🙈 |
