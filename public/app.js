@@ -1084,11 +1084,22 @@
       screen.scrollTop = 0;
       count.textContent = list.length + (list.length > 1 ? " projects" : " project") + " · tap to open";
     };
+    // ตอนเปิดเว็บ (ยังไม่เลือกโฟลเดอร์): โชว์งานเด่น (featured) 4 ชิ้นแรกไว้ก่อน ไม่ปล่อยจอว่าง
+    const picks = works.filter((w) => w.featured).slice(0, SITE.startHereCount || 4);
     reelApi.off = () => {
       wrap.classList.remove("is-on", "slide-up");
-      screen.replaceChildren(offScreen);
-      label.textContent = appTitle;
-      count.textContent = "READY";
+      if (!picks.length) {
+        screen.replaceChildren(offScreen);
+        label.textContent = appTitle;
+        count.textContent = "READY";
+        return;
+      }
+      const grid = el("div", { class: "tile-grid in-win is-picks" });
+      picks.forEach((w) => grid.appendChild(makeTile(w, picks)));
+      screen.replaceChildren(grid);
+      screen.scrollTop = 0;
+      label.textContent = appTitle + " · " + (SITE.startHereLabel || "Start here");
+      count.textContent = picks.length + " top picks · tap to open";
     };
     reelApi.off();
   }
@@ -1100,20 +1111,28 @@
     const select = document.getElementById("work-filter");
     const wrap = document.getElementById("work-types");
     if (!section) return;
-    const modes = asList(SITE.modes).filter((m) => worksOfMode(m.id).length);
+    // ลำดับกลุ่มในส่วน WORK ตาม workOrder ใน content.js (ไม่กระทบลำดับโฟลเดอร์บน Cover)
+    const order = asList(SITE.workOrder);
+    const rank = (m) => (order.indexOf(m.id) < 0 ? 99 : order.indexOf(m.id));
+    const modes = asList(SITE.modes).filter((m) => worksOfMode(m.id).length).sort((a, b) => rank(a) - rank(b));
     if (!modes.length) return section.remove();
-    const SHOW = 6;
+    // โชว์ 2 แถวเต็มพอดี: จอกว้าง 4 คอลัมน์ = 8 ชิ้น, จอคอมทั่วไป 3 คอลัมน์ = 6 ชิ้น (ขนาดการ์ดเท่าเดิม)
+    const wide = window.matchMedia("(min-width: 1400px)");
+    const showCount = () => (wide.matches ? 8 : 6);
     const mobile = window.matchMedia("(max-width: 899px)");
     const blocks = modes.map((m) => {
       const list = worksOfMode(m.id);
       const grid = el("div", { class: "tile-grid" });
-      list.forEach((w, i) => {
-        const t = makeTile(w, list, { inline: true });
-        if (i >= SHOW) t.classList.add("is-extra");
-        grid.appendChild(t);
-      });
-      const more = list.length > SHOW ? el("button", { type: "button", class: "px-btn px-btn-cream work-more-btn", text: "Show all " + list.length + " ↓" }) : null;
-      if (more) more.addEventListener("click", () => {
+      list.forEach((w) => grid.appendChild(makeTile(w, list, { inline: true })));
+      const more = el("button", { type: "button", class: "px-btn px-btn-cream work-more-btn", text: "Show all " + list.length + " ↓" });
+      const markExtra = () => {
+        const show = showCount();
+        [...grid.children].forEach((t, i) => t.classList.toggle("is-extra", i >= show));
+        more.hidden = list.length <= show;
+      };
+      markExtra();
+      wide.addEventListener("change", markExtra);
+      more.addEventListener("click", () => {
         inline.close();
         const open = grid.classList.toggle("show-all");
         more.textContent = open ? "Show less ↑" : "Show all " + list.length + " ↓";
@@ -1483,7 +1502,20 @@
     const c = SITE.contact || {};
     const links = document.getElementById("contact-links");
     // อีเมล: ซองจดหมายขยับชวนกด แตะแล้วจดหมายโผล่ออกมาพร้อมอีเมล
-    if (c.email) links.appendChild(makeEnvelope(c.email));
+    if (c.email) {
+      links.appendChild(makeEnvelope(c.email));
+      // อีเมลโชว์ใต้ซองเลย ไม่ต้องกดก่อน (HR ก๊อปไปใช้ได้ทันที)
+      const copy = el("button", { type: "button", class: "contact-copy", text: "Copy" });
+      copy.addEventListener("click", () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(c.email).then(() => {
+          copy.textContent = "Copied ✓";
+          setTimeout(() => (copy.textContent = "Copy"), 2000);
+        }, () => {});
+      });
+      links.appendChild(el("p", { class: "contact-email" }, [
+        el("a", { href: "mailto:" + c.email, text: c.email }), copy,
+      ]));
+    }
     // LINE (ถ้ามี)
     [
       c.line && ["LINE", c.line, "Add me on LINE"],

@@ -842,6 +842,11 @@ mark {
 .contact-grid { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); align-items: start; }
 .contact-main { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
 .contact-links { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.contact-email { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; }
+.contact-email a { font-weight: 700; font-size: 18px; color: var(--cream); overflow-wrap: anywhere; text-underline-offset: 4px; }
+.contact-email a:hover { color: var(--yellow); }
+.contact-copy { font: 600 14px/1 var(--font); padding: 6px 12px; border: 2px solid var(--ink); background: var(--yellow); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); cursor: pointer; }
+.contact-copy:active { translate: 2px 2px; box-shadow: none; }
 .contact-link { display: inline-flex; align-items: baseline; gap: 14px; padding: 12px 20px; max-width: 100%; word-break: break-all; text-align: left; }
 .contact-label { font-family: var(--pixel); font-size: 13px; letter-spacing: .06em; }
 .contact-resume { color: var(--cream); font-weight: 600; text-underline-offset: 3px; }
@@ -1018,6 +1023,9 @@ html.is-locked { overflow: hidden; }
 .tile-grid.in-win .tile-kind { top: 3px; right: 3px; padding: 2px; box-shadow: none; }
 .tile-grid.in-win .tile-kind .sprite { width: 11px; height: 11px; }
 .tile-grid.in-win .tile-kind b { font-size: 9px; }
+/* งานเด่นตอนเปิดเว็บ: 2 คอลัมน์ การ์ดใหญ่ขึ้น อ่านชื่อง่าย */
+.tile-grid.in-win.is-picks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 12px; }
+.tile-grid.in-win.is-picks .tile-title { font-size: 14px; }
 .hero .win-screen:has(.is-msg) { display: grid; }
 .hero .win-screen .win-off.is-msg { width: 100%; height: 100%; aspect-ratio: auto; }
 @media (min-width: 1400px) {

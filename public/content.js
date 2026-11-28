@@ -64,6 +64,13 @@ window.SITE = {
     },
   ],
 
+  // ลำดับกลุ่มงานในส่วน WORK (บนลงล่าง) ใช้ id ของ modes ด้านบน · ไม่เปลี่ยนลำดับโฟลเดอร์บน Cover
+  workOrder: ["video", "graphic", "animation"],
+
+  // หน้าต่างบน Cover ตอนเปิดเว็บ: โชว์งาน featured กี่ชิ้น และชื่อบนแถบหน้าต่าง
+  startHereCount: 4,
+  startHereLabel: "Start here",
+
   // แบรนด์ที่เคยทำงานด้วย (ขึ้นเป็นส่วน WORKED WITH ก่อนส่วนติดต่อ)
   workedWith: ["AIS", "Garena RoV Thailand", "Sale Here", "SB Design Square"],
 
@@ -234,7 +241,7 @@ window.SITE = {
    ผลงาน (WORKS)
    ---------------------------------------------------------------------
    1 ชิ้น = 1 โปรเจกต์ ใส่ได้หลายคลิป (clips) จะมีปุ่ม 1 2 3 ให้สลับดู
-   featured: true = ขึ้นในส่วนงานเด่น (3 ชิ้นแรกที่ติด true) · ongoing: true = ซีรีส์ที่ยังทำต่อ
+   featured: true = ขึ้นก่อนในโฟลเดอร์ + 4 ชิ้นแรกที่ติด true โชว์ในหน้าต่างบน Cover ตอนเปิดเว็บ · ongoing: true = ซีรีส์ที่ยังทำต่อ
    wip: true = ซ่อนไว้ไม่ขึ้นเว็บ
    clipLabels = ชื่อสั้น ๆ ของแต่ละคลิป เรียงตามลำดับ clips
    details    = เบื้องหลัง (กดกางอ่าน) ช่องที่ไม่มีข้อมูลไม่ต้องใส่

@@ -20,7 +20,7 @@ The owner's editing guide (Thai) is `HOW-TO.md`. Keep both files up to date when
 | `public/app.js` | Renders everything from content.js. Main pieces: `parseVideo`, `makePlayer` (facade: cover first, iframe on click), `renderHero`/`renderReel` (XP window gallery on the cover), `renderHost` (character and folders), `renderWork`, `makeTile`, `inline` (mobile expand), `viewer` (XP modal), `renderSide`, `renderServices`, `renderAbout`/`renderMoments`, `makeEnvelope`/`renderContact`. |
 | `public/style.css` | Tokens on `:root`, layout. Desktop ≥900px; mobile `max-width: 899px`. |
 | `public/fx.js`, `fx.css` | Optional motion: tile pop on scroll, cover folder pop, pixel cursor, hover wiggle. Respects reduced motion. |
-| `public/index.html` | Page skeleton. Order: topbar → hero (character, folders, XP window) → ticker → WORK → Services and Process → About (photo, highlights, experience, tools, moments) → Side Projects → Worked With → Contact. |
+| `public/index.html` | Page skeleton. Order: topbar → hero (character, folders, XP window) → ticker → WORK → About (photo, highlights, experience, tools, moments) → Services and Process → Side Projects → Worked With → Contact. |
 | `public/2_chkz.html` | Hidden check page (noindex): content.js syntax errors with the line number, missing data, covers and files, TODO lines. Obscure name chosen by the owner on purpose. |
 | `wrangler.jsonc` | `assets.directory: ./public` and `"previews": {}` (needed for PR preview builds; don't remove it). |
 
@@ -52,10 +52,12 @@ The owner's editing guide (Thai) is `HOW-TO.md`. Keep both files up to date when
 - "Show everything" floats **under the folders** and must not move them.
 - **Rejected:** PR #8's fixed 4:5 player frame ("not pretty"). It was rolled back in PR #9. Don't reintroduce it.
 - **Work cards:** straight by default with a slight tilt on hover. Pixel icon badge (play or images plus count) at the top corner. Square cover with the title as a caption.
-- **Desktop WORK:** two columns per mode (left: title and description; right: grid of 6, then "Show all"). Dropdown filter.
+- **Desktop WORK:** two columns per mode (left: title and description; right: two full rows of tiles, i.e. 6 at 3 columns or 8 at 4 columns (≥1400px), then "Show all"). Dropdown filter. Group order comes from `SITE.workOrder` (Video first, since video is the main skill); the cover folders keep `modes` order.
+- **Cover window on load (HR-friendly):** instead of "NO SIGNAL", the XP window shows the first `startHereCount` (4) `featured` works in a 2-column grid labelled "Start here". Picking a folder works as before; "Show everything" returns to the picks. Mobile still hides the window until a folder is picked.
+- **Section order:** Work → About → Services (HR reads About before Services).
 - **Mobile WORK:** short scroll, "pick what you want to see". A list with rows that expand inline, one open at a time. Desktop is "complete and clearly divided"; mobile is "less scrolling". They are intentionally different.
 - **Viewer:** XP-style modal with prev/next, Esc and focus trap.
-- **Contact:** envelope card ("contact me!") that opens to show the email.
+- **Contact:** envelope card ("contact me!") that opens to show the email (the email is also visible under it).
 - "Worked With" sits near the bottom of the page, not up top.
 - "Garena RoV Thailand" is one client name; don't split it.
 - The DNA and Culture Animation project was removed on purpose.
